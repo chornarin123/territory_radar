@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Filter prospects</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;family=Noto+Sans+Khmer:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#12305A}a:hover{color:#0A1E3A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F4F6; font-family: 'IBM Plex Sans', 'Noto Sans Khmer', system-ui, sans-serif; color: #15171C">
+  <div style="background: #FBEBD3; color: #6B3005; font-size: 12px; font-weight: 600; padding: 6px 16px; display: flex; align-items: center; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #C2620F"></span>Demo data · fictional businesses</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E4E9; padding: 8px 12px; display: flex; align-items: center; gap: 8px">
+    <a href="Prospects.dc.html" aria-label="Close filters" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #12305A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></a>
+    <span style="font-size: 17px; font-weight: 700; flex: 1">Filter prospects</span>
+    <button onClick="{{reset}}" style="min-height: 44px; padding: 0 12px; border: none; background: none; color: #12305A; font-size: 14px; font-weight: 600; cursor: pointer">Reset</button>
+  </header>
+  <div style="flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px">
+    <section style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">QUICK VIEWS</span>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{presets}}" as="q" hint-placeholder-count="4">
+          <button onClick="{{q.pick}}" style="{{q.style}}"><span style="font-size: 14px; font-weight: 700">{{q.label}}</span><span style="font-size: 12px; opacity: 0.8">{{q.sub}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">SANGKAT</span><span style="font-size: 12px; color: #555A64">Your territory</span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{areas}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">DISCUSSION CATEGORY</span><span style="font-size: 12px; color: #555A64"></span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{prods}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">SIGNAL</span><span style="font-size: 12px; color: #555A64"></span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{sigs}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">PIPELINE STATUS</span><span style="font-size: 12px; color: #555A64"></span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{stats}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">VISIT PRIORITY</span><span style="font-size: 12px; color: #555A64">Not a loan probability</span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{bands}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">FINANCING INTEREST</span><span style="font-size: 12px; color: #555A64"></span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{ints}}" as="o" hint-placeholder-count="4">
+          <button onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}<span style="{{o.nStyle}}">{{o.n}}</span></button>
+        </sc-for>
+      </div>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">DATA QUALITY</span>
+      <sc-for list="{{toggles}}" as="t" hint-placeholder-count="3">
+        <button onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="display: flex; align-items: center; gap: 12px; min-height: 48px; background: none; border: none; border-top: 1px solid #EEF1F5; padding: 6px 0; text-align: left; cursor: pointer; font-family: inherit">
+          <span style="display: flex; flex-direction: column; gap: 2px; flex: 1"><span style="font-size: 14px; font-weight: 600; color: #15171C">{{t.label}}</span><span style="font-size: 12px; color: #555A64">{{t.sub}}</span></span>
+          <span style="{{t.track}}"><span style="{{t.knob}}"></span></span>
+        </button>
+      </sc-for>
+    </section>
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">SORT BY</span>
+      <div style="display: flex; gap: 4px; background: #EEF1F5; border-radius: 10px; padding: 4px">
+        <sc-for list="{{sorts}}" as="s" hint-placeholder-count="3"><button onClick="{{s.pick}}" style="{{s.style}}">{{s.label}}</button></sc-for>
+      </div>
+    </section>
+    <section style="display: flex; flex-direction: column; gap: 6px; padding-bottom: 4px">
+      <span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.05em">PREVIEW · TOP MATCHES</span>
+      <sc-for list="{{preview}}" as="p" hint-placeholder-count="3">
+        <div style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 12px; padding: 8px 10px">
+          <span style="{{p.badge}}">{{p.score}}</span>
+          <span style="display: flex; flex-direction: column; flex: 1; min-width: 0"><span style="font-size: 14px; font-weight: 600">{{p.name}}</span><span style="font-size: 12px; color: #555A64">{{p.sub}}</span></span>
+        </div>
+      </sc-for>
+      <sc-if value="{{none}}" hint-placeholder-val="{{ false }}">
+        <span style="font-size: 13px; color: #555A64; background: #FFFFFF; border: 1px dashed #C5CCD8; border-radius: 12px; padding: 14px; text-align: center">No prospects match. Remove a filter or tap Reset.</span>
+      </sc-if>
+    </section>
+  </div>
+  <div style="background: #FFFFFF; border-top: 1px solid #E2E4E9; padding: 10px 16px 14px; display: flex; flex-direction: column; gap: 6px">
+    <span style="font-size: 12px; color: #555A64">{{activeLabel}}</span>
+    <a href="Prospects.dc.html" style="{{cta}}">{{ctaLabel}}</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const ROWS = [["001", "Lotus Corner Café", "food_beverage", "new", 90, "high", "Tonle Bassac", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.545, 104.9305]], ["002", "Mekong Fresh Mart", "retail", "qualified", 90, "high", "Tonle Bassac", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.547, 104.932]], ["003", "Angkor Wood Studio", "manufacturing", "visit_planned", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.549, 104.9335]], ["004", "Bassac Learning Hub", "education", "contacted", 90, "high", "Tonle Bassac", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.543, 104.935]], ["005", "Saffron Bowl Kitchen", "food_beverage", "new", 47, "low", "Tonle Bassac", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.545, 104.929]], ["006", "Riverlight Dental Studio", "healthcare", "follow_up", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.547, 104.9305]], ["007", "Palm Leaf Homeware", "retail", "new", 90, "high", "Tonle Bassac", "unknown", "6", "New imported product line", "fresh", "moderate", [], [11.549, 104.932]], ["008", "Urban Sprout Grocer", "retail", "not_interested", 90, "high", "Tonle Bassac", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.543, 104.9335]], ["009", "Toul Craft Bakery", "food_beverage", "visit_planned", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.92]], ["010", "Blue Lotus Garments", "manufacturing", "qualified", 76, "medium", "Tuol Tumpung Ti Muoy", "confirmed", "2", "Additional staff recruitment", "fresh", "weak", [], [11.54, 104.914]], ["011", "Golden Spoke Workshop", "automotive", "contacted", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.542, 104.9155]], ["012", "Morning Dew Laundry", "services", "new", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.536, 104.917]], ["013", "Kiri Print House", "services", "follow_up", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.9185]], ["014", "Sokha Demo Supply", "wholesale", "application_referred", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.54, 104.92]], ["015", "Pepper Lane Eatery", "food_beverage", "new", 47, "low", "Tuol Tumpung Ti Muoy", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.542, 104.914]], ["016", "Bamboo Pixel Studio", "services", "unreachable", 76, "medium", "Tuol Tumpung Ti Muoy", "unknown", "2", "Additional staff recruitment", "fresh", "weak", [], [11.536, 104.9155]], ["017", "North Star Packaging", "manufacturing", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.583, 104.9]], ["018", "Green Cart Logistics", "logistics", "visit_planned", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.585, 104.9015]], ["019", "Silver Palm Mini Mart", "retail", "new", 90, "high", "Boeng Kak Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.587, 104.903]], ["020", "Cloud Nine Tuition", "education", "follow_up", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.581, 104.897]], ["021", "Ruby Tile Depot", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "New imported product line", "fresh", "moderate", [], [11.583, 104.8985]], ["022", "Lotus Petal Florist", "retail", "not_interested", 90, "high", "Boeng Kak Ti Muoy", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.585, 104.9]], ["023", "Moonbeam Fitness", "services", "closed", 90, "high", "Boeng Kak Ti Muoy", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.587, 104.9015]], ["024", "Orchid Repair Lab", "services", "new", 47, "low", "Boeng Kak Ti Muoy", "unknown", "3", "Opening announcement found", "fresh", "weak", ["missing_coordinates", "limited_operating_history"], null], ["025", "West Gate Furniture", "retail", "new", 75, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Second location announced", "stale", "moderate", ["stale_evidence"], [11.579, 104.887]], ["026", "Kampong Harvest Foods", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Pir", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.581, 104.8885]], ["027", "Coral Cup Roastery", "food_beverage", "contacted", 90, "high", "Boeng Kak Ti Pir", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.583, 104.89]], ["028", "Jasmine Textile House", "manufacturing", "new", 70, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Additional staff recruitment", "fresh", "weak", ["conflicting_address"], [11.577, 104.8915]], ["029", "Daybreak Bookshop", "retail", "follow_up", 90, "high", "Boeng Kak Ti Pir", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.579, 104.893]], ["030", "Amber Tools Trading", "wholesale", "application_referred", 90, "high", "Boeng Kak Ti Pir", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.581, 104.887]], ["031", "Canopy Demo Residences", "property_project", "new", 90, "high", "Boeng Kak Ti Pir", "unknown", "4", "Housing project phase announced", "fresh", "moderate", [], [11.583, 104.8885]], ["032", "Horizon Demo Services", "employer", "new", 63, "medium", "Boeng Kak Ti Pir", "unknown", "5", "New workplace announced", "fresh", "weak", ["limited_operating_history"], [11.577, 104.89]]];
+const STATUS = { new: 'New', contacted: 'Contacted', qualified: 'Qualified', visit_planned: 'Visit planned', follow_up: 'Follow-up', unreachable: 'Unreachable', application_referred: 'Referred', not_interested: 'Not interested', closed: 'Closed' };
+const PROD = { '1': 'Working Capital', '2': 'Business Expansion', '3': 'Equipment Finance', '4': 'Property Purchase', '5': 'Personal Finance', '6': 'Trade Finance' };
+const FLAG = { limited_operating_history: 'Limited history', missing_coordinates: 'No map pin', stale_evidence: 'Stale evidence', conflicting_address: 'Address conflict' };
+const SECTOR = { food_beverage: 'Food & beverage', retail: 'Retail', manufacturing: 'Manufacturing', education: 'Education', healthcare: 'Healthcare', automotive: 'Automotive', services: 'Services', wholesale: 'Wholesale', logistics: 'Logistics', property_project: 'Property project', employer: 'Employer' };
+const BAND = { high: '#12305A', medium: '#5B83BE', low: '#9AA0AA' };
+const P = ROWS.map(r => ({ id: r[0], name: r[1], sector: r[2], status: r[3], score: r[4], band: r[5], commune: r[6], interest: r[7], product: r[8], signal: r[9], fresh: r[10], strength: r[11], flags: r[12], loc: r[13] }));
+const chip = (on) => 'flex-shrink: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; ' + (on ? 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A' : 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8');
+const interestLabel = i => i === 'confirmed' ? 'Interest confirmed' : i === 'not_interested' ? 'No financing need' : 'Interest unconfirmed';
+const interestStyle = i => 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (i === 'confirmed' ? 'background: #E5F2E8; color: #1F5E33' : i === 'not_interested' ? 'background: #EEF0F3; color: #555A64' : 'background: #FDF0E3; color: #8A3F06');
+
+const SIG = { exp: 'Expansion', equip: 'Equipment', stock: 'Stock & trade', newbiz: 'New opening', other: 'Housing & employer' };
+const sigOf = s => /location|renovation|staff/.test(s) ? 'exp' : /Equipment/.test(s) ? 'equip' : /stock|imported|orders/.test(s) ? 'stock' : /Opening/.test(s) ? 'newbiz' : 'other';
+const STAGE = { open: ['new', 'contacted', 'qualified'], visit: ['visit_planned', 'follow_up'], referred: ['application_referred'], stuck: ['unreachable'], done: ['not_interested', 'closed'] };
+const STAGEL = { open: 'New & qualifying', visit: 'Visit / follow-up', referred: 'Referred', stuck: 'Unreachable', done: 'Closed / no need' };
+const EMPTY = { area: [], prod: [], sig: [], stage: [], band: [], int: [], hideFlag: false, fresh: false, pinned: false, sort: 'priority' };
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { ...EMPTY, area: ['Tonle Bassac'], band: ['high'], int: ['unknown'] }; }
+  match(p, S, skip) {
+    if (skip !== 'area' && S.area.length && !S.area.includes(p.commune)) return false;
+    if (skip !== 'prod' && S.prod.length && !S.prod.includes(p.product)) return false;
+    if (skip !== 'sig' && S.sig.length && !S.sig.includes(sigOf(p.signal))) return false;
+    if (skip !== 'stage' && S.stage.length && !S.stage.some(g => STAGE[g].includes(p.status))) return false;
+    if (skip !== 'band' && S.band.length && !S.band.includes(p.band)) return false;
+    if (skip !== 'int' && S.int.length && !S.int.includes(p.interest)) return false;
+    if (S.hideFlag && p.flags.length) return false;
+    if (S.fresh && p.fresh !== 'fresh') return false;
+    if (S.pinned && !p.loc) return false;
+    return true;
+  }
+  renderVals() {
+    const S = this.state;
+    const tog = (k, v) => () => { const a = S[k]; this.setState({ [k]: a.includes(v) ? a.filter(x => x !== v) : [...a, v] }); };
+    const opts = (k, entries, test) => entries.map(([v, label]) => {
+      const on = S[k].includes(v); const n = P.filter(p => this.match(p, S, k) && test(p, v)).length;
+      return { label, n: String(n), on: on ? 'true' : 'false', pick: tog(k, v),
+        style: 'min-height: 44px; padding: 0 12px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; ' + (on ? 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A' : n ? 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8' : 'background: #F6F7F9; color: #8A9099; border: 1px dashed #D5DAE1'),
+        nStyle: 'font-family: \'IBM Plex Mono\', monospace; font-size: 11px; padding: 1px 6px; border-radius: 6px; ' + (on ? 'background: #2A4A7A; color: #FFFFFF' : 'background: #EEF1F5; color: #3B3F47') };
+    });
+    const areas = opts('area', ['Tonle Bassac', 'Tuol Tumpung Ti Muoy', 'Boeng Kak Ti Muoy', 'Boeng Kak Ti Pir'].map(a => [a, a]), (p, v) => p.commune === v);
+    const prods = opts('prod', Object.entries(PROD), (p, v) => p.product === v);
+    const sigs = opts('sig', Object.entries(SIG), (p, v) => sigOf(p.signal) === v);
+    const stats = opts('stage', Object.entries(STAGEL), (p, v) => STAGE[v].includes(p.status));
+    const bands = opts('band', [['high', 'High 80+'], ['medium', 'Medium 60–79'], ['low', 'Low < 60']], (p, v) => p.band === v);
+    const ints = opts('int', [['unknown', 'Unconfirmed'], ['confirmed', 'Confirmed'], ['not_interested', 'No need']], (p, v) => p.interest === v);
+    const T = [['hideFlag', 'Hide flagged prospects', 'Address conflict, stale evidence, limited history, no pin'], ['fresh', 'Fresh evidence only', 'Skip signals that need a refresh'], ['pinned', 'Has a map location', 'Needed for Radar and route planning']];
+    const toggles = T.map(([k, label, sub]) => ({ label, sub, on: S[k] ? 'true' : 'false', pick: () => this.setState({ [k]: !S[k] }),
+      track: 'width: 46px; height: 28px; border-radius: 14px; flex-shrink: 0; position: relative; ' + (S[k] ? 'background: #12305A' : 'background: #C5CCD8'),
+      knob: 'position: absolute; top: 3px; left: ' + (S[k] ? '21px' : '3px') + '; width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF' }));
+    const sorts = [['priority', 'Priority'], ['fresh', 'Newest signal'], ['name', 'Name A–Z']].map(([id, label]) => ({ label, pick: () => this.setState({ sort: id }),
+      style: 'flex: 1; min-height: 38px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; ' + (S.sort === id ? 'background: #FFFFFF; color: #12305A; box-shadow: 0 1px 2px rgba(0,0,0,0.12)' : 'background: transparent; color: #555A64') }));
+    const PR = [
+      { label: 'New to review', sub: 'New · high · unconfirmed', s: { ...EMPTY, stage: ['open'], band: ['high'], int: ['unknown'] } },
+      { label: 'Ready to visit', sub: 'Interest confirmed · pinned', s: { ...EMPTY, int: ['confirmed'], pinned: true, stage: ['open', 'visit'] } },
+      { label: 'Needs checking', sub: 'Flagged or stale data', s: { ...EMPTY, band: ['medium', 'low'] } },
+      { label: 'Trade & stock', sub: 'Trade / working capital', s: { ...EMPTY, prod: ['1', '6'], stage: ['open', 'visit', 'referred'] } }
+    ];
+    const presets = PR.map(q => ({ label: q.label, sub: q.sub, pick: () => this.setState(q.s),
+      style: 'min-height: 64px; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; cursor: pointer; font-family: inherit; ' + (JSON.stringify(S) === JSON.stringify(q.s) ? 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A' : 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8') }));
+    let res = P.filter(p => this.match(p, S));
+    res.sort(S.sort === 'name' ? (a, b) => a.name.localeCompare(b.name) : S.sort === 'fresh' ? (a, b) => (a.fresh === b.fresh ? b.score - a.score : a.fresh === 'fresh' ? -1 : 1) : (a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    const preview = res.slice(0, 3).map(p => ({ name: p.name, score: p.score, sub: p.commune + ' · ' + PROD[p.product] + ' · ' + STATUS[p.status], badge: 'font-family: \'IBM Plex Mono\', monospace; font-size: 15px; font-weight: 600; min-width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; background: ' + BAND[p.band] }));
+    const active = ['area', 'prod', 'sig', 'stage', 'band', 'int'].reduce((t, k) => t + S[k].length, 0) + ['hideFlag', 'fresh', 'pinned'].filter(k => S[k]).length;
+    const n = res.length;
+    return { areas, prods, sigs, stats, bands, ints, toggles, sorts, presets, preview, none: n === 0,
+      reset: () => this.setState({ ...EMPTY }),
+      activeLabel: active + (active === 1 ? ' filter' : ' filters') + ' active · ' + n + ' of ' + P.length + ' prospects',
+      ctaLabel: n ? 'Show ' + n + ' prospect' + (n === 1 ? '' : 's') : 'No matches',
+      cta: 'min-height: 50px; border-radius: 12px; text-decoration: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; ' + (n ? 'background: #12305A; color: #FFFFFF' : 'background: #E2E4E9; color: #6A707C; pointer-events: none') };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Prospect detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;family=Noto+Sans+Khmer:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#12305A}a:hover{color:#0A1E3A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F4F6; font-family: 'IBM Plex Sans', 'Noto Sans Khmer', system-ui, sans-serif; color: #15171C">
+  <div style="background: #FBEBD3; color: #6B3005; font-size: 12px; font-weight: 600; padding: 6px 16px; display: flex; align-items: center; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #C2620F"></span>Demo data · fictional businesses</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E4E9; padding: 8px 12px; display: flex; align-items: center; gap: 8px">
+    <a href="Prospects.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #12305A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></a>
+    <span style="font-size: 16px; font-weight: 600">Prospect</span>
+  </header>
+  <div style="flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+    <section style="display: flex; flex-direction: column; gap: 6px">
+      <h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 1.2">Lotus Corner Café</h1>
+      <span style="font-size: 13px; color: #555A64">Food &amp; beverage · Tonle Bassac · operating ~30 months</span>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; padding-top: 2px">
+        <span style="font-size: 12px; font-weight: 600; color: #12305A; background: #E6EDF7; padding: 3px 9px; border-radius: 6px">{{statusLabel}}</span>
+        <span style="{{iStyle}}">{{iLabel}}</span>
+        <span style="font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; border: 1px solid #C5CCD8; color: #3B3F47">Needs officer verification</span>
+      </div>
+    </section>
+
+    <section style="background: #12305A; color: #FFFFFF; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 700; color: #C9D5E8; letter-spacing: 0.04em">VISIT PRIORITY</span><span style="font-size: 12px; color: #C9D5E8">Not a loan probability</span></div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 600">90<span style="font-size: 16px; color: #C9D5E8">/100</span></span>
+      </div>
+      <sc-for list="{{factors}}" as="f" hint-placeholder-count="5">
+        <div style="display: grid; grid-template-columns: 120px 1fr 44px; gap: 8px; align-items: center">
+          <span style="font-size: 12px; color: #E4EAF3">{{f.label}}</span>
+          <div style="height: 6px; background: #2A4A7A; border-radius: 3px; overflow: hidden"><div style="{{f.bar}}"></div></div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-align: right">{{f.v}}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 15px; font-weight: 700">Signals &amp; evidence</span>
+      <sc-for list="{{signals}}" as="s" hint-placeholder-count="2">
+        <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #EEF1F5; padding-top: 10px">
+          <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 600">{{s.title}}</span><span style="{{s.strStyle}}">{{s.strength}}</span></div>
+          <span style="font-size: 13px; color: #3B3F47; line-height: 1.45">{{s.interp}}</span>
+          <span style="font-size: 12px; color: #555A64">{{s.src}}</span>
+        </div>
+      </sc-for>
+      <span style="font-size: 12px; color: #8A3F06; background: #FDF0E3; border-radius: 8px; padding: 8px 10px">Loan interest cannot be established from these observations.</span>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Suggested discussion</span><span style="font-size: 11px; color: #555A64">Not an eligibility decision</span></div>
+      <span style="font-size: 17px; font-weight: 700; color: #12305A">Business Expansion — DEMO</span>
+      <div style="display: flex; gap: 4px; background: #EEF1F5; border-radius: 10px; padding: 4px">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+          <button onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+        </sc-for>
+      </div>
+      <sc-for list="{{tabRows}}" as="r" hint-placeholder-count="3">
+        <div style="display: flex; gap: 10px; align-items: flex-start"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: #12305A; min-width: 16px; padding-top: 2px">{{r.n}}</span><span style="font-size: 14px; line-height: 1.45">{{r.text}}</span></div>
+      </sc-for>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 15px; font-weight: 700">Record outcome</span>
+      <span style="font-size: 12px; color: #555A64">Financing interest is only recorded from a real conversation.</span>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <button onClick="{{confirm}}" style="{{confirmStyle}}">Interest confirmed</button>
+        <button onClick="{{noNeed}}" style="{{noNeedStyle}}">No financing need</button>
+      </div>
+      <span style="font-size: 12px; font-weight: 700; color: #555A64; letter-spacing: 0.04em; padding-top: 4px">MOVE TO</span>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{moves}}" as="m" hint-placeholder-count="5">
+          <button onClick="{{m.pick}}" style="{{m.style}}">{{m.label}}</button>
+        </sc-for>
+      </div>
+      <sc-for list="{{log}}" as="g" hint-placeholder-count="2">
+        <div style="display: flex; gap: 10px; font-size: 12px; color: #3B3F47; border-top: 1px solid #EEF1F5; padding-top: 8px"><span style="font-family: 'IBM Plex Mono', monospace; color: #555A64">{{g.t}}</span><span>{{g.text}}</span></div>
+      </sc-for>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <a href="Visits.dc.html" style="min-height: 48px; border-radius: 12px; background: #12305A; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center">Plan a visit</a>
+      <span style="min-height: 48px; border-radius: 12px; background: #EEF0F3; color: #8A9099; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px">Call disabled · no contact consent</span>
+    </section>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const ROWS = [["001", "Lotus Corner Café", "food_beverage", "new", 90, "high", "Tonle Bassac", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.545, 104.9305]], ["002", "Mekong Fresh Mart", "retail", "qualified", 90, "high", "Tonle Bassac", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.547, 104.932]], ["003", "Angkor Wood Studio", "manufacturing", "visit_planned", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.549, 104.9335]], ["004", "Bassac Learning Hub", "education", "contacted", 90, "high", "Tonle Bassac", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.543, 104.935]], ["005", "Saffron Bowl Kitchen", "food_beverage", "new", 47, "low", "Tonle Bassac", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.545, 104.929]], ["006", "Riverlight Dental Studio", "healthcare", "follow_up", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.547, 104.9305]], ["007", "Palm Leaf Homeware", "retail", "new", 90, "high", "Tonle Bassac", "unknown", "6", "New imported product line", "fresh", "moderate", [], [11.549, 104.932]], ["008", "Urban Sprout Grocer", "retail", "not_interested", 90, "high", "Tonle Bassac", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.543, 104.9335]], ["009", "Toul Craft Bakery", "food_beverage", "visit_planned", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.92]], ["010", "Blue Lotus Garments", "manufacturing", "qualified", 76, "medium", "Tuol Tumpung Ti Muoy", "confirmed", "2", "Additional staff recruitment", "fresh", "weak", [], [11.54, 104.914]], ["011", "Golden Spoke Workshop", "automotive", "contacted", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.542, 104.9155]], ["012", "Morning Dew Laundry", "services", "new", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.536, 104.917]], ["013", "Kiri Print House", "services", "follow_up", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.9185]], ["014", "Sokha Demo Supply", "wholesale", "application_referred", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.54, 104.92]], ["015", "Pepper Lane Eatery", "food_beverage", "new", 47, "low", "Tuol Tumpung Ti Muoy", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.542, 104.914]], ["016", "Bamboo Pixel Studio", "services", "unreachable", 76, "medium", "Tuol Tumpung Ti Muoy", "unknown", "2", "Additional staff recruitment", "fresh", "weak", [], [11.536, 104.9155]], ["017", "North Star Packaging", "manufacturing", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.583, 104.9]], ["018", "Green Cart Logistics", "logistics", "visit_planned", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.585, 104.9015]], ["019", "Silver Palm Mini Mart", "retail", "new", 90, "high", "Boeng Kak Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.587, 104.903]], ["020", "Cloud Nine Tuition", "education", "follow_up", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.581, 104.897]], ["021", "Ruby Tile Depot", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "New imported product line", "fresh", "moderate", [], [11.583, 104.8985]], ["022", "Lotus Petal Florist", "retail", "not_interested", 90, "high", "Boeng Kak Ti Muoy", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.585, 104.9]], ["023", "Moonbeam Fitness", "services", "closed", 90, "high", "Boeng Kak Ti Muoy", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.587, 104.9015]], ["024", "Orchid Repair Lab", "services", "new", 47, "low", "Boeng Kak Ti Muoy", "unknown", "3", "Opening announcement found", "fresh", "weak", ["missing_coordinates", "limited_operating_history"], null], ["025", "West Gate Furniture", "retail", "new", 75, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Second location announced", "stale", "moderate", ["stale_evidence"], [11.579, 104.887]], ["026", "Kampong Harvest Foods", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Pir", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.581, 104.8885]], ["027", "Coral Cup Roastery", "food_beverage", "contacted", 90, "high", "Boeng Kak Ti Pir", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.583, 104.89]], ["028", "Jasmine Textile House", "manufacturing", "new", 70, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Additional staff recruitment", "fresh", "weak", ["conflicting_address"], [11.577, 104.8915]], ["029", "Daybreak Bookshop", "retail", "follow_up", 90, "high", "Boeng Kak Ti Pir", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.579, 104.893]], ["030", "Amber Tools Trading", "wholesale", "application_referred", 90, "high", "Boeng Kak Ti Pir", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.581, 104.887]], ["031", "Canopy Demo Residences", "property_project", "new", 90, "high", "Boeng Kak Ti Pir", "unknown", "4", "Housing project phase announced", "fresh", "moderate", [], [11.583, 104.8885]], ["032", "Horizon Demo Services", "employer", "new", 63, "medium", "Boeng Kak Ti Pir", "unknown", "5", "New workplace announced", "fresh", "weak", ["limited_operating_history"], [11.577, 104.89]]];
+const STATUS = { new: 'New', contacted: 'Contacted', qualified: 'Qualified', visit_planned: 'Visit planned', follow_up: 'Follow-up', unreachable: 'Unreachable', application_referred: 'Referred', not_interested: 'Not interested', closed: 'Closed' };
+const PROD = { '1': 'Working Capital', '2': 'Business Expansion', '3': 'Equipment Finance', '4': 'Property Purchase', '5': 'Personal Finance', '6': 'Trade Finance' };
+const FLAG = { limited_operating_history: 'Limited history', missing_coordinates: 'No map pin', stale_evidence: 'Stale evidence', conflicting_address: 'Address conflict' };
+const SECTOR = { food_beverage: 'Food & beverage', retail: 'Retail', manufacturing: 'Manufacturing', education: 'Education', healthcare: 'Healthcare', automotive: 'Automotive', services: 'Services', wholesale: 'Wholesale', logistics: 'Logistics', property_project: 'Property project', employer: 'Employer' };
+const BAND = { high: '#12305A', medium: '#5B83BE', low: '#9AA0AA' };
+const P = ROWS.map(r => ({ id: r[0], name: r[1], sector: r[2], status: r[3], score: r[4], band: r[5], commune: r[6], interest: r[7], product: r[8], signal: r[9], fresh: r[10], strength: r[11], flags: r[12], loc: r[13] }));
+const chip = (on) => 'flex-shrink: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; ' + (on ? 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A' : 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8');
+const interestLabel = i => i === 'confirmed' ? 'Interest confirmed' : i === 'not_interested' ? 'No financing need' : 'Interest unconfirmed';
+const interestStyle = i => 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (i === 'confirmed' ? 'background: #E5F2E8; color: #1F5E33' : i === 'not_interested' ? 'background: #EEF0F3; color: #555A64' : 'background: #FDF0E3; color: #8A3F06');
+
+const NEXT = { new: ['contacted', 'qualified', 'visit_planned', 'not_interested', 'unreachable', 'closed'], contacted: ['qualified', 'visit_planned', 'follow_up', 'not_interested', 'unreachable', 'closed'], qualified: ['visit_planned', 'follow_up', 'application_referred', 'not_interested', 'closed'], visit_planned: ['contacted', 'qualified', 'follow_up', 'application_referred', 'not_interested', 'unreachable', 'closed'], follow_up: ['contacted', 'qualified', 'visit_planned', 'application_referred', 'not_interested', 'unreachable', 'closed'], unreachable: ['contacted', 'visit_planned', 'follow_up', 'not_interested', 'closed'], application_referred: ['follow_up', 'closed'], not_interested: ['contacted'], closed: [] };
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { status: 'new', interest: 'unknown', tab: 'open', log: [] }; }
+  renderVals() {
+    const S = this.state;
+    const F = [['Signal strength', 32, 35], ['Freshness', 18, 20], ['Business maturity', 16, 20], ['Product relevance', 15, 15], ['Evidence quality', 9, 10]];
+    const factors = F.map(([label, v, m]) => ({ label, v: v + '/' + m, bar: 'height: 6px; border-radius: 3px; background: #A9C1E2; width: ' + Math.round(v / m * 100) + '%' }));
+    const strS = s => 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (s === 'moderate' ? 'background: #E6EDF7; color: #12305A' : 'background: #F3F4F6; color: #555A64');
+    const signals = [
+      { title: 'Second location announced', strength: 'moderate', interp: 'Expansion may create a funding need; the business may also be self-funded.', src: 'Business social post · 11 Oct · unverified demo evidence' },
+      { title: 'Business listing observed', strength: 'weak', interp: 'Directory presence provides context, not proof of loan demand.', src: 'Local directory · 8 Oct · unverified demo evidence' }
+    ].map(s => ({ ...s, strStyle: strS(s.strength) }));
+    const C = {
+      open: ['I saw the update about your new branch. Would you be open to discussing your plans and whether any financing is needed?'],
+      ask: ['Is this activity already fully funded?', 'What amount and timing would be useful?', 'Who decides on financing for the business?'],
+      verify: ['Actual financing need', 'Repayment capacity', 'Applicable product eligibility', 'Existing funding arrangements']
+    };
+    const tabs = [['open', 'Opening line'], ['ask', 'Ask'], ['verify', 'Still to verify']].map(([id, label]) => ({ label, pick: () => this.setState({ tab: id }),
+      style: 'flex: 1; min-height: 38px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; ' + (S.tab === id ? 'background: #FFFFFF; color: #12305A; box-shadow: 0 1px 2px rgba(0,0,0,0.12)' : 'background: transparent; color: #555A64') }));
+    const tabRows = C[S.tab].map((text, i) => ({ text, n: S.tab === 'open' ? '“' : String(i + 1) }));
+    const add = (text, extra) => this.setState({ ...extra, log: [{ t: '15 Oct', text }, ...S.log].slice(0, 3) });
+    const btn = (on, tone) => 'min-height: 46px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; ' + (on ? (tone === 'g' ? 'background: #1F5E33; color: #FFFFFF; border: 1px solid #1F5E33' : 'background: #555A64; color: #FFFFFF; border: 1px solid #555A64') : 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8');
+    const moves = (NEXT[S.status] || []).map(st => ({ label: STATUS[st], pick: () => add('Status: ' + STATUS[S.status] + ' → ' + STATUS[st], { status: st }),
+      style: 'min-height: 40px; padding: 0 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8' }));
+    return {
+      factors, signals, tabs, tabRows, moves, log: S.log.length ? S.log : [{ t: '25 Sep', text: 'Discovered from synthetic demo import' }],
+      statusLabel: STATUS[S.status], iLabel: interestLabel(S.interest), iStyle: interestStyle(S.interest),
+      confirm: () => add('Financing interest confirmed by officer', { interest: 'confirmed' }), confirmStyle: btn(S.interest === 'confirmed', 'g'),
+      noNeed: () => add('No financing need recorded', { interest: 'not_interested', status: 'not_interested' }), noNeedStyle: btn(S.interest === 'not_interested', 'x')
+    };
+  }
+}
+</script>
+</body>
+</html>

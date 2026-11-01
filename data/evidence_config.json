@@ -1,0 +1,63 @@
+{
+  "about": "Evidence pack config for 'Why this score'. Which OpenStreetMap tags count as a loan type's businesses, and the public sources each signal comes from. Only public data: OSM/Overpass, NIS Census 2019, and Radar's own public-data scan.",
+  "staleAfterDays": 30,
+  "leadSignals": {
+    "car": ["equipment_purchase", "new_branch"],
+    "home": ["renovation", "housing_project"],
+    "payroll": ["hiring", "new_employer"],
+    "songkhoem": ["new_employer", "hiring"],
+    "sme_soben": ["new_opening", "inventory_growth", "renovation"],
+    "personal": ["new_employer", "housing_project"],
+    "trade_finance": ["imports", "purchase_order", "inventory_growth"]
+  },
+  "loanTypes": {
+    "car": {
+      "businessTitle": "New car-related businesses",
+      "osmTags": ["shop=car", "shop=car_repair", "shop=tyres", "shop=car_parts", "amenity=car_wash"]
+    },
+    "home": {
+      "businessTitle": "New home and building businesses",
+      "osmTags": [
+        "shop=hardware",
+        "shop=doityourself",
+        "shop=furniture",
+        "office=estate_agent",
+        "craft=builder"
+      ]
+    },
+    "payroll": {
+      "businessTitle": "New company offices",
+      "osmTags": ["office=company", "office=ngo", "office=it", "office=financial"]
+    },
+    "songkhoem": {
+      "businessTitle": "New factories and worker housing",
+      "osmTags": ["landuse=industrial", "man_made=works", "building=dormitory", "craft=tailor"]
+    },
+    "sme_soben": {
+      "businessTitle": "New small shops and workshops",
+      "osmTags": ["shop=convenience", "shop=clothes", "shop=beauty", "shop=mobile_phone", "craft=*"]
+    },
+    "personal": {
+      "businessTitle": "New consumer shops",
+      "osmTags": ["shop=electronics", "shop=mobile_phone", "shop=clothes", "shop=motorcycle"]
+    },
+    "trade_finance": {
+      "businessTitle": "New wholesalers and warehouses",
+      "osmTags": ["shop=wholesale", "shop=trade", "building=warehouse", "industrial=warehouse"]
+    }
+  },
+  "sources": {
+    "osm": { "label": "OpenStreetMap", "url": "https://www.openstreetmap.org/" },
+    "census": {
+      "label": "NIS Census 2019",
+      "url": "https://www.nis.gov.kh/index.php/en/15-gpc/79-press-release-of-the-2019-cambodian-general-population-census"
+    },
+    "radar": { "label": "Radar public-data scan", "url": null }
+  },
+  "limitations": [
+    "Income and credit data are not public at sangkat level.",
+    "OpenStreetMap misses businesses nobody has mapped yet, so new openings are undercounted.",
+    "Census household figures are from 2019 and may be out of date in fast-growing sangkats.",
+    "Radar can't see whether a business already has a loan or is self-funded."
+  ]
+}

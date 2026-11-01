@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "name": "Loan need signals: signs that a business or person needs a loan",
+    "prepared_on": "2026-10-24",
+    "companion_files": ["loan_products.json (product ids)", "demand_signals.json (area scoring and Overpass queries)"],
+    "how_to_read": "Each signal = something you can observe. 'means' = why it points to borrowing. 'loans' = PPCBank products from loan_products.json, best first. 'detect' = where you see it (public data or officer in the field). 'strength' = how reliable it is on its own. 'ask_on_visit' = the question that confirms it.",
+    "strength_scale": {
+      "strong": "Usually means a funding need within 0 to 6 months",
+      "medium": "Often means a need; confirm with one more signal",
+      "weak": "Context only; never send a lead on this alone"
+    },
+    "privacy_rule": "Business signals can be tracked per business, because businesses are public. Personal signals are used at the location or group level only (for example 'this new borey', 'this factory's workers', 'this Korean-language school'). Do not build profiles of named private individuals from public data."
+  },
+
+  "business_signals": [
+    {
+      "id": "B01",
+      "signal": "Business just opened (0 to 6 months)",
+      "means": "Owner spent heavily on fit-out and stock; now needs working capital or to refinance expensive informal money.",
+      "loans": ["sme_100", "business_loan_miro", "business_loan_small"],
+      "detect": ["OSM object created recently (version 1)", "Grand-opening banners or balloons spotted by officer", "New Facebook or TikTok page with opening posts", "Telegram bot submission from officer"],
+      "strength": "strong",
+      "ask_on_visit": "How did you fund the setup, and how much stock do you keep?"
+    },
+    {
+      "id": "B02",
+      "signal": "Shop under renovation or 'coming soon'",
+      "means": "Construction and equipment bills are coming now.",
+      "loans": ["sme_100", "sme_300", "home_improvement_loan"],
+      "detect": ["Scaffolding or shutters with 'coming soon' signs", "OSM building=construction at a business address", "Hardware and material deliveries"],
+      "strength": "strong",
+      "ask_on_visit": "What is the renovation budget and when do you open?"
+    },
+    {
+      "id": "B03",
+      "signal": "Opening a second or third branch",
+      "means": "Growth needs capital; a classic expansion loan.",
+      "loans": ["sme_300", "sme_700", "business_loan_medium"],
+      "detect": ["Same business name appears at a new location in OSM", "Facebook posts announcing a new branch", "Officer sees a known brand at a new site"],
+      "strength": "strong",
+      "ask_on_visit": "Are you planning more branches this year?"
+    },
+    {
+      "id": "B04",
+      "signal": "Always full, long queues, sold out early",
+      "means": "Demand is higher than capacity; owner needs more space, staff or equipment.",
+      "loans": ["sme_300", "sme_100", "business_loan_small"],
+      "detect": ["Review count rising fast", "Reviews mentioning 'always full', 'waited long', 'sold out'", "Officer observation at peak hours"],
+      "strength": "medium",
+      "ask_on_visit": "If you had more space or another machine, could you sell more?"
+    },
+    {
+      "id": "B05",
+      "signal": "Hiring a lot of staff",
+      "means": "Business is growing; payroll and working capital go up before revenue does.",
+      "loans": ["credit_line", "sme_300", "business_loan_medium"],
+      "detect": ["'Staff wanted' signs outside", "Repeated job posts on the business's Facebook page", "Officer sees new uniforms or staff"],
+      "strength": "medium",
+      "ask_on_visit": "How many people are you adding and why?"
+    },
+    {
+      "id": "B06",
+      "signal": "Adding delivery or growing a vehicle fleet",
+      "means": "Needs to buy trucks, vans or cars.",
+      "loans": ["business_car_loan"],
+      "detect": ["Branded delivery vehicles", "Depots or warehouses in OSM", "Logistics office near industrial areas", "Rented vehicles in use (sign they want to own)"],
+      "strength": "strong",
+      "ask_on_visit": "Do you rent or own your vehicles, and how many do you need?"
+    },
+    {
+      "id": "B07",
+      "signal": "Heavy stock with seasonal peaks",
+      "means": "Must buy stock before Khmer New Year, Pchum Ben, harvest or school season and gets paid later.",
+      "loans": ["credit_line", "business_loan_small", "business_loan_medium"],
+      "detect": ["Wholesale shops, building-material dealers, supermarkets", "Stock piled outside", "Calendar: 1 to 2 months before big holidays"],
+      "strength": "medium",
+      "ask_on_visit": "When is your busiest season and how do you pay suppliers before it?"
+    },
+    {
+      "id": "B08",
+      "signal": "Sells on credit to customers (contractors, distributors)",
+      "means": "Cash is stuck in unpaid invoices, so it needs a revolving facility.",
+      "loans": ["credit_line", "business_loan_medium"],
+      "detect": ["Building materials, hardware, distributors", "Contractors with multiple active sites"],
+      "strength": "medium",
+      "ask_on_visit": "How long do customers take to pay you?"
+    },
+    {
+      "id": "B09",
+      "signal": "Imports goods",
+      "means": "Pays suppliers abroad before selling locally.",
+      "loans": ["credit_line", "business_loan_medium"],
+      "cross_sell": ["letter_of_credit", "document_collection"],
+      "detect": ["Container deliveries", "Trading office near port, dry port or border", "Imported brand distributor signage"],
+      "strength": "medium",
+      "ask_on_visit": "How do you pay your foreign suppliers now?"
+    },
+    {
+      "id": "B10",
+      "signal": "Won a contract or tender",
+      "means": "Needs a guarantee and working capital to deliver it.",
+      "loans": ["credit_line", "business_loan_medium"],
+      "cross_sell": ["bank_guarantee"],
+      "detect": ["Public procurement award announcements", "Company Facebook posts about new projects"],
+      "strength": "strong",
+      "ask_on_visit": "Do you need a performance guarantee or upfront materials?"
+    },
+    {
+      "id": "B11",
+      "signal": "Buying or upgrading machines",
+      "means": "Equipment purchase; term loan with grace period fits.",
+      "loans": ["sme_300", "sme_700", "business_loan_medium"],
+      "detect": ["Factories and workshops extending buildings", "Machine deliveries", "Job posts for machine operators"],
+      "strength": "medium",
+      "ask_on_visit": "What equipment are you planning to buy in the next year?"
+    },
+    {
+      "id": "B12",
+      "signal": "Moving to a bigger location",
+      "means": "Deposit, fit-out and moving costs.",
+      "loans": ["sme_100", "sme_300"],
+      "detect": ["'We are moving' posts", "Same name appears at a larger address", "Old shop with relocation notice"],
+      "strength": "strong",
+      "ask_on_visit": "Will you rent or buy the new place?"
+    },
+    {
+      "id": "B13",
+      "signal": "Online seller growing (Facebook or TikTok shop)",
+      "means": "Needs stock and packing space, but usually has no land title.",
+      "loans": ["loan_against_deposit", "sme_100"],
+      "detect": ["Fast follower or order growth", "Home address turning into a mini warehouse"],
+      "strength": "weak",
+      "ask_on_visit": "Do you own any titled property or keep savings in a fixed deposit?"
+    }
+  ],
+
+  "person_signals": [
+    {
+      "id": "P01",
+      "signal": "New borey or condo project selling units",
+      "means": "Its buyers need a mortgage.",
+      "loans": ["home_loan"],
+      "detect": ["New residential developments in OSM", "Show units and sales booths", "Developer ads"],
+      "unit": "per development (partner with the developer)",
+      "strength": "strong",
+      "ask_on_visit": "Ask the developer: how many buyers still need financing?"
+    },
+    {
+      "id": "P02",
+      "signal": "House being built or renovated",
+      "means": "Construction bills now, often paid with costly short-term money.",
+      "loans": ["home_improvement_loan"],
+      "detect": ["Houses under construction", "Clusters of construction-material shops", "OSM building=construction in residential areas"],
+      "unit": "per street or village",
+      "strength": "strong",
+      "ask_on_visit": "Is the land hard-titled? (required for this loan)"
+    },
+    {
+      "id": "P03",
+      "signal": "Workers at large employers (factories, malls, hospitals, hotels)",
+      "means": "Salaried people with payslips often need small urgent loans or a first car.",
+      "loans": ["annatean_rohas", "car_loan_personal", "home_loan"],
+      "detect": ["Industrial zones and large employers in OSM", "Shift-change crowds"],
+      "unit": "per employer (payroll partnership)",
+      "strength": "medium",
+      "ask_on_visit": "Ask HR: is staff payroll paid through a bank, and which one?"
+    },
+    {
+      "id": "P04",
+      "signal": "People preparing to work in South Korea",
+      "means": "Need money for training, documents, flight and first months.",
+      "loans": ["songkhoem_loan"],
+      "detect": ["Korean-language schools", "EPS training centres", "Recruitment agencies"],
+      "unit": "per school or agency (partnership)",
+      "strength": "strong",
+      "ask_on_visit": "Ask the school: how many students passed the exam and are waiting to depart?"
+    },
+    {
+      "id": "P05",
+      "signal": "Students admitted to Korean universities",
+      "means": "Tuition and living costs.",
+      "loans": ["songkhoem_loan"],
+      "detect": ["Study-abroad agencies", "Korean-language schools with university pathways"],
+      "unit": "per agency",
+      "strength": "strong",
+      "ask_on_visit": "When do students need to pay the first tuition?"
+    },
+    {
+      "id": "P06",
+      "signal": "Car showrooms and dealer events",
+      "means": "Buyers need car financing.",
+      "loans": ["car_loan_personal"],
+      "detect": ["Car dealers in OSM", "Dealer promotion events"],
+      "unit": "per dealer (partnership; PPCBank has partner brands)",
+      "strength": "strong",
+      "ask_on_visit": "Ask the dealer: what share of buyers pay by loan?"
+    },
+    {
+      "id": "P07",
+      "signal": "Car owners needing quick cash (Phnom Penh)",
+      "means": "Emergency need; car can secure the loan.",
+      "loans": ["car_for_cash"],
+      "detect": ["Hard to see publicly; best via car insurers, repair shops and existing customers"],
+      "unit": "via partners",
+      "strength": "weak",
+      "ask_on_visit": "Not a cold-visit product."
+    },
+    {
+      "id": "P08",
+      "signal": "Seasonal spending peaks (school fees, Khmer New Year, Pchum Ben, weddings)",
+      "means": "Short-term cash need for employees.",
+      "loans": ["annatean_rohas"],
+      "detect": ["Calendar timing"],
+      "unit": "timing for campaigns, not individual leads",
+      "strength": "weak",
+      "ask_on_visit": "Use for timing of Telegram or HR campaigns."
+    }
+  ],
+
+  "red_flags_do_not_push": [
+    {"id": "R01", "signal": "Closing-down sale, 'for rent' or 'for sale' sign on the shop", "means": "Business is exiting; any loan would be distress borrowing."},
+    {"id": "R02", "signal": "Reviews saying 'closed', 'moved', 'not open'", "means": "Lead is dead; mark Closed."},
+    {"id": "R03", "signal": "Shorter opening hours, empty shelves, staff leaving", "means": "Cash trouble; high default risk."},
+    {"id": "R04", "signal": "Owner already borrowing from several lenders", "means": "Possible over-indebtedness; check credit bureau at application, do not pitch more debt."},
+    {"id": "R05", "signal": "Business rents and has no titled property", "means": "Not a red flag on demand, but most PPCBank business loans need a hard title; offer Business Car Loan or Loan Against Deposit instead."}
+  ],
+
+  "how_to_get_high_accuracy": {
+    "rule_1": "Never send a lead on one weak signal. Send when there is 1 strong signal, or 2 medium signals.",
+    "rule_2": "Check red flags before sending. Any of R01 to R03 cancels the lead.",
+    "rule_3": "Re-check the business is still open right before sending.",
+    "rule_4": "Every visit result (Interested, Applied, No need, Closed, Wrong info) goes back into the system to correct which signals actually work.",
+    "best_combos": [
+      {"combo": ["B01", "B04"], "meaning": "New and already busy: very likely to need capital to grow", "loan": "sme_100"},
+      {"combo": ["B03", "B05"], "meaning": "New branch plus hiring: expansion underway", "loan": "sme_300"},
+      {"combo": ["B06", "B07"], "meaning": "Fleet plus stock cycles: distributor", "loan": "business_car_loan + credit_line"},
+      {"combo": ["P01", "P03"], "meaning": "New borey near a large employer: salaried home buyers", "loan": "home_loan"},
+      {"combo": ["P02", "B02"], "meaning": "Shophouse being rebuilt: home and business need at once", "loan": "home_improvement_loan or sme_100"}
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "territory-radar",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.23.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter @territory-radar/shared build && pnpm --filter @territory-radar/api build && pnpm --parallel --filter @territory-radar/shared --filter @territory-radar/api --filter @territory-radar/worker dev",
+    "worker": "node apps/worker/dist/cli.js",
+    "worker:start": "node apps/worker/dist/main.js",
+    "mobile": "pnpm --filter @territory-radar/mobile start",
+    "mobile:web": "pnpm --filter @territory-radar/mobile web",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm --filter @territory-radar/shared build && pnpm --filter @territory-radar/api build && pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "db:generate": "pnpm --filter @territory-radar/api db:generate",
+    "db:migrate": "pnpm --filter @territory-radar/api db:migrate",
+    "mock:server": "node scripts/mock-server.mjs"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "0.125.0",
+    "@eslint/js": "^10.0.1",
+    "@turf/boolean-point-in-polygon": "^7.4.0",
+    "@turf/helpers": "^7.4.0",
+    "@turf/union": "^7.4.0",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.0"
+  }
+}

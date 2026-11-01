@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Visits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;family=Noto+Sans+Khmer:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#12305A}a:hover{color:#0A1E3A}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F4F6; font-family: 'IBM Plex Sans', 'Noto Sans Khmer', system-ui, sans-serif; color: #15171C">
+  <div style="background: #FBEBD3; color: #6B3005; font-size: 12px; font-weight: 600; padding: 6px 16px; display: flex; align-items: center; gap: 6px"><span style="width: 6px; height: 6px; border-radius: 3px; background: #C2620F"></span>Demo data · fictional businesses</div>
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E4E9; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 4px">
+    <span style="font-size: 22px; font-weight: 700">Visits</span>
+    <span style="font-size: 13px; color: #555A64">Thu 15 Oct · Morning discovery visits · {{routeStatus}}</span>
+  </header>
+  <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column">
+    <div style="position: relative; height: 200px; background: #E9ECE6; flex-shrink: 0; overflow: hidden">
+      <div style="position: absolute; left: -20px; top: 120px; width: 430px; height: 10px; background: #FFFFFF; transform: rotate(-6deg)"></div>
+      <div style="position: absolute; left: 230px; top: -20px; width: 10px; height: 260px; background: #FFFFFF; transform: rotate(8deg)"></div>
+      <svg width="390" height="200" viewBox="0 0 390 200" style="position: absolute; left: 0; top: 0"><polyline points="{{line}}" fill="none" stroke="#12305A" stroke-width="3" stroke-dasharray="{{dash}}" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+      <span style="{{startStyle}}">PPCB</span>
+      <sc-for list="{{pins}}" as="p" hint-placeholder-count="3"><span style="{{p.style}}">{{p.n}}</span></sc-for>
+    </div>
+    <section style="margin: -16px 16px 0; position: relative; background: #12305A; color: #FFFFFF; border-radius: 16px; padding: 12px 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <div style="display: flex; flex-direction: column"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600">3</span><span style="font-size: 12px; color: #C9D5E8">visits · 30 min</span></div>
+      <div style="display: flex; flex-direction: column"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600">{{km}}</span><span style="font-size: 12px; color: #C9D5E8">km straight-line</span></div>
+      <div style="display: flex; flex-direction: column"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600">{{done}}/3</span><span style="font-size: 12px; color: #C9D5E8">completed</span></div>
+    </section>
+    <div style="padding: 12px 16px 0">
+      <button onClick="{{optimize}}" style="{{optStyle}}">{{optLabel}}</button>
+      <span style="display: block; font-size: 11px; color: #555A64; padding-top: 6px">Simulated straight-line distances, not real road navigation.</span>
+    </div>
+    <div style="padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{visits}}" as="v" hint-placeholder-count="3">
+        <div style="background: #FFFFFF; border: 1px solid #E2E4E9; border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span style="{{v.numStyle}}">{{v.n}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; flex: 1"><div style="display: flex; justify-content: space-between"><span style="font-size: 15px; font-weight: 600">{{v.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #12305A">{{v.time}}</span></div><span style="font-size: 12px; color: #555A64">{{v.sub}}</span></div>
+          </div>
+          <span style="font-size: 13px; color: #3B3F47">{{v.objective}}</span>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap"><span style="{{v.cStyle}}">{{v.cLabel}}</span><span style="{{v.lStyle}}">{{v.lLabel}}</span></div>
+          <sc-if value="{{v.canCheck}}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{v.check}}" style="min-height: 44px; border-radius: 12px; border: 1px solid #12305A; background: #FFFFFF; color: #12305A; font-size: 14px; font-weight: 600; cursor: pointer">Check in</button>
+          </sc-if>
+          <sc-if value="{{v.canFinish}}" hint-placeholder-val="{{ false }}">
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+              <button onClick="{{v.o1}}" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD8; background: #FFFFFF; color: #12305A; font-size: 12px; font-weight: 600; cursor: pointer">Interested</button>
+              <button onClick="{{v.o2}}" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD8; background: #FFFFFF; color: #12305A; font-size: 12px; font-weight: 600; cursor: pointer">Follow-up</button>
+              <button onClick="{{v.o3}}" style="min-height: 44px; border-radius: 10px; border: 1px solid #C5CCD8; background: #FFFFFF; color: #12305A; font-size: 12px; font-weight: 600; cursor: pointer">No need</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{v.isDone}}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 13px; color: #1F5E33; background: #E5F2E8; border-radius: 10px; padding: 8px 10px">Completed · {{v.outcome}}</span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <nav style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E2E4E9; padding: 6px 4px 10px">
+    <a href="Today.dc.html" style="text-decoration: none; color: #6A707C; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; font-size: 11px; min-height: 44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Today</a>
+    <a href="Radar.dc.html" style="text-decoration: none; color: #6A707C; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; font-size: 11px; min-height: 44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><path d="M12 12 19 5"></path></svg>Radar</a>
+    <a href="Prospects.dc.html" style="text-decoration: none; color: #6A707C; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; font-size: 11px; min-height: 44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>Prospects</a>
+    <a href="Visits.dc.html" style="text-decoration: none; color: #12305A; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; font-size: 11px; font-weight: 700; min-height: 44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Visits</a>
+    <a href="Profile.dc.html" style="text-decoration: none; color: #6A707C; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; font-size: 11px; min-height: 44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Profile</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+const ROWS = [["001", "Lotus Corner Café", "food_beverage", "new", 90, "high", "Tonle Bassac", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.545, 104.9305]], ["002", "Mekong Fresh Mart", "retail", "qualified", 90, "high", "Tonle Bassac", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.547, 104.932]], ["003", "Angkor Wood Studio", "manufacturing", "visit_planned", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.549, 104.9335]], ["004", "Bassac Learning Hub", "education", "contacted", 90, "high", "Tonle Bassac", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.543, 104.935]], ["005", "Saffron Bowl Kitchen", "food_beverage", "new", 47, "low", "Tonle Bassac", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.545, 104.929]], ["006", "Riverlight Dental Studio", "healthcare", "follow_up", 90, "high", "Tonle Bassac", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.547, 104.9305]], ["007", "Palm Leaf Homeware", "retail", "new", 90, "high", "Tonle Bassac", "unknown", "6", "New imported product line", "fresh", "moderate", [], [11.549, 104.932]], ["008", "Urban Sprout Grocer", "retail", "not_interested", 90, "high", "Tonle Bassac", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.543, 104.9335]], ["009", "Toul Craft Bakery", "food_beverage", "visit_planned", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.92]], ["010", "Blue Lotus Garments", "manufacturing", "qualified", 76, "medium", "Tuol Tumpung Ti Muoy", "confirmed", "2", "Additional staff recruitment", "fresh", "weak", [], [11.54, 104.914]], ["011", "Golden Spoke Workshop", "automotive", "contacted", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Premises renovation announced", "fresh", "moderate", [], [11.542, 104.9155]], ["012", "Morning Dew Laundry", "services", "new", 90, "high", "Tuol Tumpung Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.536, 104.917]], ["013", "Kiri Print House", "services", "follow_up", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.538, 104.9185]], ["014", "Sokha Demo Supply", "wholesale", "application_referred", 90, "high", "Tuol Tumpung Ti Muoy", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.54, 104.92]], ["015", "Pepper Lane Eatery", "food_beverage", "new", 47, "low", "Tuol Tumpung Ti Muoy", "unknown", "1", "Opening announcement found", "fresh", "weak", ["limited_operating_history"], [11.542, 104.914]], ["016", "Bamboo Pixel Studio", "services", "unreachable", 76, "medium", "Tuol Tumpung Ti Muoy", "unknown", "2", "Additional staff recruitment", "fresh", "weak", [], [11.536, 104.9155]], ["017", "North Star Packaging", "manufacturing", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.583, 104.9]], ["018", "Green Cart Logistics", "logistics", "visit_planned", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.585, 104.9015]], ["019", "Silver Palm Mini Mart", "retail", "new", 90, "high", "Boeng Kak Ti Muoy", "unknown", "2", "Second location announced", "fresh", "moderate", [], [11.587, 104.903]], ["020", "Cloud Nine Tuition", "education", "follow_up", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.581, 104.897]], ["021", "Ruby Tile Depot", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Muoy", "confirmed", "6", "New imported product line", "fresh", "moderate", [], [11.583, 104.8985]], ["022", "Lotus Petal Florist", "retail", "not_interested", 90, "high", "Boeng Kak Ti Muoy", "not_interested", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.585, 104.9]], ["023", "Moonbeam Fitness", "services", "closed", 90, "high", "Boeng Kak Ti Muoy", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.587, 104.9015]], ["024", "Orchid Repair Lab", "services", "new", 47, "low", "Boeng Kak Ti Muoy", "unknown", "3", "Opening announcement found", "fresh", "weak", ["missing_coordinates", "limited_operating_history"], null], ["025", "West Gate Furniture", "retail", "new", 75, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Second location announced", "stale", "moderate", ["stale_evidence"], [11.579, 104.887]], ["026", "Kampong Harvest Foods", "wholesale", "qualified", 90, "high", "Boeng Kak Ti Pir", "confirmed", "1", "Larger stock range advertised", "fresh", "moderate", [], [11.581, 104.8885]], ["027", "Coral Cup Roastery", "food_beverage", "contacted", 90, "high", "Boeng Kak Ti Pir", "unknown", "3", "Equipment upgrade mentioned", "fresh", "moderate", [], [11.583, 104.89]], ["028", "Jasmine Textile House", "manufacturing", "new", 70, "medium", "Boeng Kak Ti Pir", "unknown", "2", "Additional staff recruitment", "fresh", "weak", ["conflicting_address"], [11.577, 104.8915]], ["029", "Daybreak Bookshop", "retail", "follow_up", 90, "high", "Boeng Kak Ti Pir", "confirmed", "2", "Premises renovation announced", "fresh", "moderate", [], [11.579, 104.893]], ["030", "Amber Tools Trading", "wholesale", "application_referred", 90, "high", "Boeng Kak Ti Pir", "confirmed", "6", "Larger orders invited", "fresh", "moderate", [], [11.581, 104.887]], ["031", "Canopy Demo Residences", "property_project", "new", 90, "high", "Boeng Kak Ti Pir", "unknown", "4", "Housing project phase announced", "fresh", "moderate", [], [11.583, 104.8885]], ["032", "Horizon Demo Services", "employer", "new", 63, "medium", "Boeng Kak Ti Pir", "unknown", "5", "New workplace announced", "fresh", "weak", ["limited_operating_history"], [11.577, 104.89]]];
+const STATUS = { new: 'New', contacted: 'Contacted', qualified: 'Qualified', visit_planned: 'Visit planned', follow_up: 'Follow-up', unreachable: 'Unreachable', application_referred: 'Referred', not_interested: 'Not interested', closed: 'Closed' };
+const PROD = { '1': 'Working Capital', '2': 'Business Expansion', '3': 'Equipment Finance', '4': 'Property Purchase', '5': 'Personal Finance', '6': 'Trade Finance' };
+const FLAG = { limited_operating_history: 'Limited history', missing_coordinates: 'No map pin', stale_evidence: 'Stale evidence', conflicting_address: 'Address conflict' };
+const SECTOR = { food_beverage: 'Food & beverage', retail: 'Retail', manufacturing: 'Manufacturing', education: 'Education', healthcare: 'Healthcare', automotive: 'Automotive', services: 'Services', wholesale: 'Wholesale', logistics: 'Logistics', property_project: 'Property project', employer: 'Employer' };
+const BAND = { high: '#12305A', medium: '#5B83BE', low: '#9AA0AA' };
+const P = ROWS.map(r => ({ id: r[0], name: r[1], sector: r[2], status: r[3], score: r[4], band: r[5], commune: r[6], interest: r[7], product: r[8], signal: r[9], fresh: r[10], strength: r[11], flags: r[12], loc: r[13] }));
+const chip = (on) => 'flex-shrink: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; ' + (on ? 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A' : 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8');
+const interestLabel = i => i === 'confirmed' ? 'Interest confirmed' : i === 'not_interested' ? 'No financing need' : 'Interest unconfirmed';
+const interestStyle = i => 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (i === 'confirmed' ? 'background: #E5F2E8; color: #1F5E33' : i === 'not_interested' ? 'background: #EEF0F3; color: #555A64' : 'background: #FDF0E3; color: #8A3F06');
+
+const hav = (a, b) => { const R = 6371, r = x => x * Math.PI / 180; const dLa = r(b[0] - a[0]), dLo = r(b[1] - a[1]); const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { opt: false, st: {} }; }
+  renderVals() {
+    const S = this.state;
+    const start = [11.555, 104.923];
+    const V = [
+      { id: 'v1', name: 'Angkor Wood Studio', sub: 'Tonle Bassac · priority 90', loc: [11.549, 104.9335], time: '10:00' },
+      { id: 'v2', name: 'Toul Craft Bakery', sub: 'Tuol Tumpung Ti Muoy · priority 90', loc: [11.538, 104.92], time: '11:00' },
+      { id: 'v3', name: 'Green Cart Logistics', sub: 'Boeng Kak Ti Muoy · priority 90', loc: [11.585, 104.9015], time: '12:00' }
+    ];
+    let order = V;
+    if (S.opt) { const left = [...V]; order = []; let cur = start; while (left.length) { left.sort((a, b) => hav(cur, a.loc) - hav(cur, b.loc)); const n = left.shift(); order.push(n); cur = n.loc; } }
+    let km = 0, cur = start; order.forEach(v => { km += hav(cur, v.loc); cur = v.loc; });
+    const X = lng => (lng - 104.893) / (104.940 - 104.893) * 330 + 20;
+    const Y = lat => (11.592 - lat) / (11.592 - 11.532) * 160 + 14;
+    const pt = l => Math.round(X(l[1])) + ',' + Math.round(Y(l[0]));
+    const times = ['10:00', '11:00', '12:00'];
+    const visits = order.map((v, i) => {
+      const s = S.st[v.id] || {};
+      const setS = o => this.setState({ st: { ...S.st, [v.id]: { ...s, ...o } } });
+      return { n: String(i + 1), name: v.name, sub: v.sub, time: S.opt ? times[i] : v.time, objective: 'Discuss equipment purchase and verify financing interest.',
+        cLabel: s.in ? 'Contact confirmed' : 'Contact not confirmed', cStyle: 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (s.in ? 'background: #E5F2E8; color: #1F5E33' : 'background: #F3F4F6; color: #555A64'),
+        lLabel: s.in ? 'Location verified' : 'Location not verified', lStyle: 'font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; ' + (s.in ? 'background: #E5F2E8; color: #1F5E33' : 'background: #F3F4F6; color: #555A64'),
+        canCheck: !s.in, canFinish: !!s.in && !s.out, isDone: !!s.out, outcome: s.out || '',
+        check: () => setS({ in: true }), o1: () => setS({ out: 'interest confirmed' }), o2: () => setS({ out: 'follow-up task created' }), o3: () => setS({ out: 'no financing need' }),
+        numStyle: 'width: 28px; height: 28px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: \'IBM Plex Mono\', monospace; font-size: 13px; font-weight: 600; ' + (s.out ? 'background: #1F5E33; color: #FFFFFF' : 'background: #12305A; color: #FFFFFF'),
+        loc: v.loc };
+    });
+    const pins = visits.map(v => ({ n: v.n, style: 'position: absolute; left: ' + (Math.round(X(v.loc[1])) - 14) + 'px; top: ' + (Math.round(Y(v.loc[0])) - 14) + 'px; width: 28px; height: 28px; border-radius: 14px; background: #12305A; color: #FFFFFF; border: 2px solid #FFFFFF; box-sizing: border-box; font-family: \'IBM Plex Mono\', monospace; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center' }));
+    return { visits, pins, line: [pt(start), ...order.map(v => pt(v.loc))].join(' '), dash: S.opt ? '0' : '7 6',
+      startStyle: 'position: absolute; left: ' + (Math.round(X(start[1])) - 17) + 'px; top: ' + (Math.round(Y(start[0])) - 12) + 'px; padding: 4px 6px; border-radius: 8px; background: #E8913F; color: #2B1606; font-size: 10px; font-weight: 700',
+      km: km.toFixed(1), done: Object.values(S.st).filter(s => s.out).length,
+      routeStatus: S.opt ? 'optimized (simulated)' : 'draft, not optimized',
+      optimize: () => this.setState({ opt: !S.opt }), optLabel: S.opt ? '↺ Back to planned order' : 'Optimize route order',
+      optStyle: 'width: 100%; min-height: 46px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; ' + (S.opt ? 'background: #FFFFFF; color: #12305A; border: 1px solid #C5CCD8' : 'background: #12305A; color: #FFFFFF; border: 1px solid #12305A') };
+  }
+}
+</script>
+</body>
+</html>

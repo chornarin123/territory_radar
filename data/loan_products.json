@@ -1,0 +1,908 @@
+{
+  "meta": {
+    "bank": "PPCBank (Phnom Penh Commercial Bank Plc)",
+    "country": "Cambodia",
+    "verified_on": "2026-10-24",
+    "source_policy": "Every figure in `products[*].terms`, `collateral`, `eligibility` and `required_documents` was read from PPCBank's own public product pages on the verified_on date. Everything under `business_type_profiles`, `demand_signals` and `ai_evaluation` is analyst heuristics, not bank policy. Rates and limits change; confirm with a branch before quoting a customer.",
+    "currency_note": "Amounts are in USD unless stated. Several products are offered in KHR as well as USD. Annatean Rohas is KHR only.",
+    "data_safety": "This file contains only public product information. No customer or transaction data.",
+    "sources": [
+      "https://www.ppcbank.com.kh/business-banking/loan/",
+      "https://www.ppcbank.com.kh/personal-banking/loan/",
+      "https://www.ppcbank.com.kh/trade-finance/letter-of-credit/"
+    ]
+  },
+
+  "products": [
+    {
+      "id": "sme_100",
+      "name": "SME 100",
+      "segment": "business",
+      "category": "sme_term_loan",
+      "purpose": "Start, expand or sustain a small business with a low fixed-rate loan.",
+      "description": "Entry-level SME term loan for micro and small businesses and for people starting their first business. Fixed 7.5% per year, principal grace period up to 24 months, and a fast decision (2 business days; PPCBank's page also states 48 hours for loans up to USD 50,000). The catch is collateral: it needs a hard land or building title, so businesses that rent and own no titled property usually cannot use it.",
+      "target_customers": ["micro and small businesses", "first-time business owners with a registered business", "home-based entrepreneurs"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 3000,
+        "amount_max_usd": 100000,
+        "rate_text": "From 7.5% per year, fixed",
+        "rate_pa_min": 7.5,
+        "rate_pa_max": 7.5,
+        "tenor_max_months": 84,
+        "grace_period_text": "Principal grace up to 24 months",
+        "approval_time": "2 business days (up to 48 hours for loans up to USD 50,000)",
+        "ltv_max_pct": null
+      },
+      "collateral": "Land / building (hard title deed)",
+      "eligibility": ["Registered business with business registration certificate and tax patent"],
+      "required_documents": [
+        "Valid ID card or passport",
+        "Family book or book of residence",
+        "Business registration certificate and tax patent",
+        "Employment contract or copy of title deed"
+      ],
+      "ideal_for": ["Restaurants, shops, salons and clinics that own or can pledge a titled property", "Owners who want a cheap fixed rate and a repayment holiday"],
+      "not_suitable_for": ["Tenants with no titled property", "Needs above USD 100,000"],
+      "demand_signals": ["New small shops, cafes, salons or clinics opening in the area", "Business owners with visible fixtures and a fitted-out premises"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/sme-100/"
+    },
+    {
+      "id": "sme_300",
+      "name": "SME 300",
+      "alt_names": ["Annatean 300"],
+      "segment": "business",
+      "category": "sme_term_loan",
+      "purpose": "Expand an established SME: new branch, equipment, bigger premises, stock build-up.",
+      "description": "Mid-size SME loan in the USD 100,001 to 300,000 band. Rate is 6.99% to 7.99% per year, tenor up to 10 years, and a principal grace period up to 24 months. Approval within 3 business days of submitting complete documents. Launched in 2021 as PPCBank's fast-track SME product.",
+      "target_customers": ["established SMEs", "owners with 2 or more years of trading history", "businesses opening a second outlet"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 100001,
+        "amount_max_usd": 300000,
+        "rate_text": "6.99% to 7.99% per year",
+        "rate_pa_min": 6.99,
+        "rate_pa_max": 7.99,
+        "tenor_max_months": 120,
+        "grace_period_text": "Principal grace up to 24 months",
+        "approval_time": "3 business days after complete documents",
+        "ltv_max_pct": null
+      },
+      "collateral": "Land / building (hard title)",
+      "eligibility": ["Individual borrower at least 18 years old (Cambodian or foreigner)"],
+      "required_documents": [
+        "ID card or passport",
+        "Family book or book of residence",
+        "Business registration certificate and tax patent"
+      ],
+      "ideal_for": ["Hotels, mid-size clinics, schools, workshops, wholesalers expanding", "Foreign owners of Cambodian businesses (foreigners are explicitly allowed)"],
+      "not_suitable_for": ["Businesses without hard-title collateral", "Pure working-capital swings better served by a credit line"],
+      "demand_signals": ["Second or third branch of a local chain", "Construction or renovation at an existing business premises", "Growing review velocity and expanding opening hours"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/sme-300/"
+    },
+    {
+      "id": "sme_700",
+      "name": "SME 700",
+      "segment": "business",
+      "category": "sme_term_loan",
+      "purpose": "Fund larger expansion or development of a growing business.",
+      "description": "Upper mid-market SME loan for USD 300,001 to 700,000. Same pricing structure as SME 300 (6.99% to 7.99%), up to 10 years, up to 24 months principal grace, 3 business day approval.",
+      "target_customers": ["large SMEs", "multi-site operators", "light manufacturers and hospitality operators"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 300001,
+        "amount_max_usd": 700000,
+        "rate_text": "6.99% to 7.99% per year",
+        "rate_pa_min": 6.99,
+        "rate_pa_max": 7.99,
+        "tenor_max_months": 120,
+        "grace_period_text": "Principal grace up to 24 months",
+        "approval_time": "3 business days after complete documents",
+        "ltv_max_pct": null
+      },
+      "collateral": "Land / building (hard title deed)",
+      "eligibility": ["Registered business with ID, business registration certificate and tax patent"],
+      "required_documents": [
+        "Valid ID card or passport",
+        "Family book or book of residence",
+        "Business registration certificate and tax patent",
+        "Employment contract or copy of title deed"
+      ],
+      "ideal_for": ["Hotels and resorts, factories, fuel stations, large schools, developers of small projects"],
+      "not_suitable_for": ["Small shops and salons (over-sized)", "Needs above USD 700,000"],
+      "demand_signals": ["Large new buildings or compounds under construction", "Factories, hotels or large-format venues recently opened or extending"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/sme-700/"
+    },
+    {
+      "id": "sme_1000",
+      "name": "SME 1000",
+      "segment": "business",
+      "category": "sme_term_loan",
+      "purpose": "Capital for operations and investment of larger legal entities and companies.",
+      "description": "Top of the SME ladder at USD 700,001 to 1,000,000, 6.99% to 7.99% per year, up to 10 years, up to 24 months principal grace. Underwriting asks for more: borrower aged 18 to 65, permanent address in Cambodia, income proof and documents proving the purpose of the loan.",
+      "target_customers": ["larger legal entities and companies", "established multi-year operators"],
+      "terms": {
+        "currency": ["KHR", "USD"],
+        "amount_min_usd": 700001,
+        "amount_max_usd": 1000000,
+        "rate_text": "6.99% to 7.99% per year",
+        "rate_pa_min": 6.99,
+        "rate_pa_max": 7.99,
+        "tenor_max_months": 120,
+        "grace_period_text": "Principal grace up to 24 months",
+        "approval_time": "3 business days after complete documents",
+        "ltv_max_pct": null
+      },
+      "collateral": "Land / building (hard title deed)",
+      "eligibility": [
+        "Borrower aged 18 to 65",
+        "Permanent address in Cambodia",
+        "Income with proof document",
+        "Documents proving loan purpose"
+      ],
+      "required_documents": ["Valid ID / passport", "Tax patent", "Business registration certificate", "Proof of income", "Documents on proof of loan purpose"],
+      "ideal_for": ["Large factories, hotels, schools, developers, trading companies"],
+      "not_suitable_for": ["Anything under USD 700,000", "Borrowers over 65"],
+      "demand_signals": ["Large industrial or commercial sites", "Multi-storey hotel or mixed-use construction"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/sme-1000/"
+    },
+    {
+      "id": "business_loan_miro",
+      "name": "Business Loan: Miro Loan",
+      "segment": "business",
+      "category": "business_loan",
+      "purpose": "Small working-capital or equipment loans for micro businesses.",
+      "description": "Smallest tier of PPCBank's Business Loan family: USD 2,000 to 10,000 at about 1.08% per month. Repayment is flexible (bullet, negotiable principal, installment or amortization), which suits irregular or seasonal cash flow. Still secured by a hard title.",
+      "target_customers": ["micro businesses", "market stall and small shop owners with titled property"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 2001,
+        "amount_max_usd": 10000,
+        "rate_text": "About 1.08% per month",
+        "rate_pm_approx": 1.08,
+        "rate_pa_simple_x12": 12.96,
+        "tenor_max_months": 72,
+        "grace_period_text": "Not stated; repayment mode is negotiable",
+        "repayment_modes": ["bullet", "negotiable principal", "installment", "amortization"],
+        "approval_time": "Described as fast; no figure published"
+      },
+      "collateral": "Land and building (hard title)",
+      "eligibility": ["Business with good status and legal profitability", "Resident with an address", "Demonstrated ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Tiny shops, mobile vendors with a family titled property, salon top-ups"],
+      "not_suitable_for": ["Anyone who can qualify for SME 100's 7.5% rate (compare effective rates)"],
+      "demand_signals": ["Micro shops, stalls and home businesses in dense residential areas"],
+      "notes": "Rate is published as a monthly figure. Confirm with the branch whether it is flat or declining-balance before comparing to SME 100.",
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/business-loan/"
+    },
+    {
+      "id": "business_loan_small",
+      "name": "Business Loan: Small Loan",
+      "segment": "business",
+      "category": "business_loan",
+      "purpose": "Working capital, stock and equipment for small businesses.",
+      "description": "USD 10,000 to 50,000 at about 0.84% per month, up to 6 years, flexible repayment modes including bullet. A good fit when the cash cycle is lumpy and a fixed amortisation schedule would hurt.",
+      "target_customers": ["small businesses", "seasonal traders"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 10001,
+        "amount_max_usd": 50000,
+        "rate_text": "About 0.84% per month",
+        "rate_pm_approx": 0.84,
+        "rate_pa_simple_x12": 10.08,
+        "tenor_max_months": 72,
+        "grace_period_text": "Not stated; repayment mode is negotiable",
+        "repayment_modes": ["bullet", "negotiable principal", "installment", "amortization"],
+        "approval_time": "Described as fast; no figure published"
+      },
+      "collateral": "Land and building (hard title)",
+      "eligibility": ["Business with good status and legal profitability", "Resident with an address", "Demonstrated ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Restaurants, retail, agri-traders, workshops that need flexible repayment"],
+      "not_suitable_for": ["Borrowers who want a long principal grace period (SME 100 offers 24 months)"],
+      "demand_signals": ["Established small shops and workshops with steady foot traffic"],
+      "notes": "Overlaps SME 100 in the USD 10,000 to 50,000 range. SME 100 is 7.5% p.a. fixed with 24-month grace; this product is more flexible on repayment shape. Compare effective cost.",
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/business-loan/"
+    },
+    {
+      "id": "business_loan_medium",
+      "name": "Business Loan: Medium Loan",
+      "segment": "business",
+      "category": "business_loan",
+      "purpose": "Growth, equipment and working capital for mid-size businesses.",
+      "description": "USD 50,000 to 500,000 at about 0.64% per month, up to 6 years, flexible repayment including bullet and negotiable principal.",
+      "target_customers": ["mid-size businesses", "owners who prefer flexible repayment shapes"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 50001,
+        "amount_max_usd": 500000,
+        "rate_text": "About 0.64% per month",
+        "rate_pm_approx": 0.64,
+        "rate_pa_simple_x12": 7.68,
+        "tenor_max_months": 72,
+        "grace_period_text": "Not stated; repayment mode is negotiable",
+        "repayment_modes": ["bullet", "negotiable principal", "installment", "amortization"],
+        "approval_time": "Described as fast; no figure published"
+      },
+      "collateral": "Land and building (hard title)",
+      "eligibility": ["Business with good status and legal profitability", "Resident with an address", "Demonstrated ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Wholesalers, contractors, hotels, manufacturers with lumpy receivables"],
+      "not_suitable_for": ["Borrowers who want the 10-year tenor of SME 300 / 700"],
+      "demand_signals": ["Busy wholesale or trading premises", "Contractors with multiple active sites"],
+      "notes": "Overlaps SME 300 and SME 700. SME products give longer tenor (10 years) and 24-month grace; Medium Loan gives repayment flexibility.",
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/business-loan/"
+    },
+    {
+      "id": "business_loan_large",
+      "name": "Business Loan: Large Loan",
+      "segment": "business",
+      "category": "business_loan",
+      "purpose": "Large-scale corporate financing above USD 500,000.",
+      "description": "Over USD 500,000 at about 0.59% per month, up to 6 years, flexible repayment. The cheapest published monthly rate in the family, for larger borrowers.",
+      "target_customers": ["large companies", "developers", "industrial operators"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": 500001,
+        "amount_max_usd": null,
+        "rate_text": "About 0.59% per month",
+        "rate_pm_approx": 0.59,
+        "rate_pa_simple_x12": 7.08,
+        "tenor_max_months": 72,
+        "grace_period_text": "Not stated; repayment mode is negotiable",
+        "repayment_modes": ["bullet", "negotiable principal", "installment", "amortization"],
+        "approval_time": "Described as fast; no figure published"
+      },
+      "collateral": "Land and building (hard title)",
+      "eligibility": ["Business with good status and legal profitability", "Resident with an address", "Demonstrated ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Large factories, hotel groups, property developers"],
+      "not_suitable_for": ["Anything under USD 500,000"],
+      "demand_signals": ["Large industrial parks, big construction sites, multi-building compounds"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/business-loan/"
+    },
+    {
+      "id": "business_car_loan",
+      "name": "Business Car Loan",
+      "alt_names": ["Corporate Car Loan"],
+      "segment": "business",
+      "category": "vehicle_finance",
+      "purpose": "Buy vehicles for the business: cars, mini buses and trucks, new or used.",
+      "description": "Finances up to 10 vehicles per borrower at up to 80% of car price, up to USD 1,000,000 and up to 9 years, from 9.99% per year. The vehicle acts as the security, so businesses without titled property can still borrow to grow their fleet.",
+      "target_customers": ["logistics and delivery firms", "contractors", "tour and passenger transport operators", "any company that needs vehicles"],
+      "terms": {
+        "currency": ["USD", "KHR"],
+        "amount_min_usd": null,
+        "amount_max_usd": 1000000,
+        "rate_text": "From 9.99% per year",
+        "rate_pa_min": 9.99,
+        "rate_pa_max": null,
+        "tenor_max_months": 108,
+        "ltv_max_pct": 80,
+        "max_units": 10,
+        "grace_period_text": "Not stated",
+        "approval_time": "Not stated"
+      },
+      "collateral": "Financed vehicles (confirm exact security package with branch)",
+      "eligibility": ["Registered business", "Financial statements available"],
+      "required_documents": [
+        "Board resolution, if any (copy)",
+        "Business license, registration, MOA, patent and tax documents (copies)",
+        "Financial statement"
+      ],
+      "ideal_for": ["Trucking, delivery, tour operators, rental fleets, contractors"],
+      "not_suitable_for": ["Working-capital needs", "Single private car for personal use (use personal Car Loan)"],
+      "demand_signals": ["Truck yards and depots", "Logistics or tour offices with visible fleets", "Construction sites with heavy vehicles"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/car-loan/"
+    },
+    {
+      "id": "credit_line",
+      "name": "Credit Line",
+      "segment": "business",
+      "category": "revolving_facility",
+      "purpose": "A pre-approved borrowing limit to draw on when cash flow needs it. Not a loan until money is drawn.",
+      "description": "A maximum credit limit that PPCBank commits to based on the customer's creditworthiness. It is not a loan unless the customer actually draws cash. Suits businesses with swinging working capital such as stock purchases, receivable gaps and seasonal peaks. PPCBank does not publish limits, rates or tenor on the page, so those must be asked at the branch.",
+      "target_customers": ["established companies with stable cash flow", "individuals aged 18+ (Cambodian)"],
+      "terms": {
+        "currency": ["not published"],
+        "amount_min_usd": null,
+        "amount_max_usd": null,
+        "rate_text": "Not published",
+        "tenor_max_months": null,
+        "grace_period_text": "Not published",
+        "approval_time": "Not published"
+      },
+      "collateral": "Not published",
+      "eligibility": [
+        "Company with good reputation, stable business record and financial standing",
+        "Registered and licensed under Cambodian law",
+        "Stable and transparent cash flow",
+        "Individuals: Cambodian citizen aged 18 or above with family book, ID card or alternatives"
+      ],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Wholesalers, importers, building-material dealers, supermarkets with big stock cycles"],
+      "not_suitable_for": ["Businesses with unstable or undocumented cash flow", "One-off capex purchases (use a term loan)"],
+      "demand_signals": ["High-turnover stock-heavy premises", "Businesses paying suppliers on credit terms"],
+      "source_url": "https://www.ppcbank.com.kh/business-banking/loan/credit-line/"
+    },
+
+    {
+      "id": "home_loan",
+      "name": "Home Loan",
+      "segment": "personal",
+      "category": "mortgage",
+      "purpose": "Buy a house or property to live in or as an investment.",
+      "description": "Mortgage financing up to 80% of collateral value, up to 20 years, from 7.90% per year in KHR or USD. Accepts both soft and hard title. Rates can be lower for homes bought from PPCBank partner borey or condo developments. Applicants need a steady salary or sufficient income and a residential address.",
+      "target_customers": ["salaried employees", "business owners buying a home", "property investors"],
+      "terms": {
+        "currency": ["KHR", "USD"],
+        "amount_min_usd": 2000,
+        "amount_max_usd": null,
+        "rate_text": "From 7.90% per year (depends on term and loan ratio; partner borey or condo can be lower)",
+        "rate_pa_min": 7.9,
+        "rate_pa_max": null,
+        "tenor_max_months": 240,
+        "ltv_max_pct": 80,
+        "repayment_modes": ["amortization", "installment", "negotiable principal"],
+        "grace_period_text": "Not stated",
+        "approval_time": "Described as fast; no figure published"
+      },
+      "collateral": "The purchased house, or a substitute property; soft or hard title accepted",
+      "eligibility": ["Steady salary or sufficient income", "Resident with an address", "Ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["First-home buyers", "Buyers in partner borey or condo projects"],
+      "not_suitable_for": ["Renovating a home already owned (use Home Improvement Loan)"],
+      "demand_signals": ["New borey, condo or shophouse developments", "Active real-estate agents and show units", "Rising residential building permits and construction"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/home-loan/"
+    },
+    {
+      "id": "home_improvement_loan",
+      "name": "Home Improvement Loan",
+      "segment": "personal",
+      "category": "mortgage",
+      "purpose": "Build on or renovate a residential property you own.",
+      "description": "Up to USD 200,000, up to 20 years, up to 80% of collateral value. Rate depends on loan ratio and term, and construction is priced a little below renovation. Only hard titles are accepted.",
+      "target_customers": ["homeowners building a new floor or house", "homeowners renovating"],
+      "terms": {
+        "currency": ["USD"],
+        "amount_min_usd": null,
+        "amount_max_usd": 200000,
+        "rate_text": "From 9.40% per year",
+        "rate_pa_min": 9.4,
+        "rate_pa_max": 13.0,
+        "tenor_max_months": 240,
+        "ltv_max_pct": 80,
+        "repayment_modes": ["amortization", "installment", "negotiable principal"],
+        "rate_grid_pa": {
+          "construction": {
+            "ltv_le_50": {"le_5y": 9.4, "le_10y": 10.0, "le_15y": 10.5, "le_20y": 11.0},
+            "ltv_le_60": {"le_5y": 10.5, "le_10y": 11.0, "le_15y": 11.5, "le_20y": 12.0},
+            "ltv_le_70": {"le_5y": 11.5, "le_10y": 12.0, "le_15y": 12.5, "le_20y": 13.0}
+          },
+          "renovation": {
+            "ltv_le_50": {"le_5y": 10.0, "le_10y": 10.5},
+            "ltv_le_60": {"le_5y": 11.0, "le_10y": 11.5},
+            "ltv_le_70": {"le_5y": 12.0, "le_10y": 12.5}
+          }
+        }
+      },
+      "collateral": "Residential property, hard title only",
+      "eligibility": ["Homeowner with hard title", "Ability to repay"],
+      "required_documents": ["Not itemised on the product page; confirm with branch"],
+      "ideal_for": ["Owners adding a floor, rebuilding, or upgrading a home"],
+      "not_suitable_for": ["Soft-title properties", "Buying a new home (use Home Loan)"],
+      "demand_signals": ["Visible home construction or renovation", "Clusters of building-material shops and active contractors", "Older housing stock being rebuilt"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/home-improvement-loan/"
+    },
+    {
+      "id": "car_loan_personal",
+      "name": "Car Loan (Personal)",
+      "segment": "personal",
+      "category": "vehicle_finance",
+      "purpose": "Buy a new or used car for personal use.",
+      "description": "USD 2,000 to 300,000, up to 7 years, up to 80% of the car price, from 9.5% per year, for up to 2 cars per individual. A 2021 PPCBank press release says the car itself can be the collateral (no property needed), with lower rates for partner brands such as Hyundai, Mazda, Ford and Nissan. That press release is old, so treat its rate and approval-time claims as dated.",
+      "target_customers": ["salaried employees", "business owners buying a personal vehicle"],
+      "terms": {
+        "currency": ["USD"],
+        "amount_min_usd": 2000,
+        "amount_max_usd": 300000,
+        "rate_text": "From 9.5% per year",
+        "rate_pa_min": 9.5,
+        "rate_pa_max": null,
+        "tenor_max_months": 84,
+        "ltv_max_pct": 80,
+        "max_units": 2,
+        "grace_period_text": "Not stated",
+        "approval_time": "Not stated on the product page"
+      },
+      "collateral": "Financed vehicle (per 2021 press release; confirm with branch)",
+      "eligibility": ["Demonstrated ability to pay back PPCBank"],
+      "required_documents": ["Employment ID, employment contract, bank statement and salary slip (from the 2021 press release; confirm current list)"],
+      "ideal_for": ["Buyers at partner car dealers", "Salaried applicants with documented income"],
+      "not_suitable_for": ["Business fleet purchases (use Business Car Loan)", "Cash needs against a car you already own (use Car for Cash)"],
+      "demand_signals": ["Car dealerships and showrooms", "High car ownership and parking pressure in dense areas"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/car-loan/"
+    },
+    {
+      "id": "car_for_cash",
+      "name": "Car for Cash (Car Collateral Loan)",
+      "segment": "personal",
+      "category": "secured_personal",
+      "purpose": "Emergency cash secured against a car you already own.",
+      "description": "Borrow up to 50% of the vehicle's value at 12.9% per year for 12 to 60 months. The loan limit depends on brand tier: Toyota, Lexus and Ford get 50%, Hyundai, Kia, Mazda, BYD and Chevrolet get 40%, other brands get 30%. Phnom Penh only. Needs car insurance, GPS installation, a driving license and no existing car loan with another bank.",
+      "target_customers": ["car owners with valid income who need quick cash", "small-business owners without titled property"],
+      "terms": {
+        "currency": ["USD"],
+        "amount_min_usd": null,
+        "amount_max_usd": null,
+        "rate_text": "12.9% per year",
+        "rate_pa_min": 12.9,
+        "rate_pa_max": 12.9,
+        "tenor_min_months": 12,
+        "tenor_max_months": 60,
+        "ltv_max_pct": 50,
+        "ltv_by_brand_tier": {"tier_1": {"brands": ["Toyota", "Lexus", "Ford"], "pct": 50}, "tier_2": {"brands": ["Hyundai", "Kia", "Mazda", "BYD", "Chevrolet"], "pct": 40}, "tier_3": {"brands": ["Other brands"], "pct": 30}},
+        "grace_period_text": "Not stated"
+      },
+      "collateral": "Vehicle (identified by vehicle identification card); GPS required",
+      "eligibility": [
+        "Cambodian citizenship",
+        "Valid income",
+        "Driving license",
+        "Car insurance",
+        "No existing car loan with other banks",
+        "Applicable in Phnom Penh area only"
+      ],
+      "required_documents": [
+        "National ID card or passport",
+        "Resident book, family book or residential certificate",
+        "Letter of employment confirmation",
+        "Pay slip",
+        "Bank statement",
+        "Proof of income",
+        "Property rental contract and other relevant documents",
+        "GPS installation"
+      ],
+      "ideal_for": ["Phnom Penh car owners with an urgent short-term cash need"],
+      "not_suitable_for": ["Provincial customers", "Cars with an existing loan elsewhere"],
+      "demand_signals": ["Dense urban Phnom Penh neighbourhoods with high car ownership", "Small business owners running delivery or ride-hail vehicles"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/car-for-cash/"
+    },
+    {
+      "id": "loan_against_deposit",
+      "name": "Loan Against Deposit",
+      "segment": "personal_and_business",
+      "category": "secured_by_deposit",
+      "purpose": "Emergency cash secured by your own fixed deposit, without breaking the deposit or losing accrued interest.",
+      "description": "Borrow up to 95% of a fixed deposit, applied for instantly in the PPCBank Mobile App. No fees and no early-repayment penalty. Loan term follows the deposit's maturity date. The page states a rate of 3% per year on the deposit amount for accounts opened at a branch and 2% per year for accounts opened in the app. That wording is ambiguous, so confirm how the cost is computed at the branch. Available to individuals and registered businesses.",
+      "target_customers": ["existing PPCBank fixed-deposit holders", "businesses with idle cash needing short-term liquidity"],
+      "terms": {
+        "currency": ["not stated"],
+        "amount_min_usd": null,
+        "amount_max_usd": null,
+        "rate_text": "Page states 3% p.a. (deposit opened at branch) or 2% p.a. (opened via app). Interpretation unclear; confirm with branch.",
+        "ltv_max_pct": 95,
+        "tenor_text": "Follows the fixed deposit maturity date",
+        "fees": "No fees; no penalty for early repayment"
+      },
+      "collateral": "The customer's own fixed deposit at PPCBank",
+      "eligibility": ["Holds a PPCBank fixed deposit"],
+      "required_documents": [
+        "Personal: National ID card or valid passport",
+        "Business: certificate of registration, current tax patent or VAT registration certificate"
+      ],
+      "ideal_for": ["Existing deposit customers, including online sellers and service firms with cash but no titled property"],
+      "not_suitable_for": ["Customers with no fixed deposit"],
+      "demand_signals": ["No reliable public signal. This is an existing-customer product; target via the bank's own channels."],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/loan-against-deposit/"
+    },
+    {
+      "id": "songkhoem_loan",
+      "name": "Songkhoem Loan",
+      "segment": "personal",
+      "category": "migration_education",
+      "purpose": "Fund a move to South Korea: either to work there or to study there.",
+      "description": "Two variants. The worker loan is USD 1,000 to 10,000, up to 24 months, 12.00% per year with collateral or 14.50% without, with a 6-month grace period. The student loan is USD 2,000 to 25,000, up to 36 months, from 14.50% per year, also with a 6-month grace period. A guarantor is required. Repayments can be deposited through Jeonbuk Bank in Korea and paid back to PPCBank via KHQR, with no transfer fees from Jeonbuk Bank to PPCBank.",
+      "target_customers": ["Cambodians preparing to work in South Korea", "Cambodian students admitted to Korean institutions"],
+      "terms": {
+        "currency": ["USD"],
+        "amount_min_usd": 1000,
+        "amount_max_usd": 25000,
+        "rate_text": "Worker: 12.00% p.a. (collateral) or 14.50% p.a. (no collateral). Student: from 14.50% p.a.",
+        "rate_pa_min": 12.0,
+        "rate_pa_max": 14.5,
+        "tenor_max_months": 36,
+        "grace_period_text": "6 months",
+        "variants": [
+          {"id": "worker", "amount_min_usd": 1000, "amount_max_usd": 10000, "tenor_max_months": 24, "rate_pa_secured": 12.0, "rate_pa_unsecured": 14.5, "grace_months": 6},
+          {"id": "student", "amount_min_usd": 2000, "amount_max_usd": 25000, "tenor_max_months": 36, "rate_pa_from": 14.5, "grace_months": 6}
+        ]
+      },
+      "collateral": "Optional for workers (lower rate with collateral). Guarantor required for all.",
+      "eligibility": ["Aged 18 or over", "Guarantor required", "Employment certificate (worker) or admission certificate (student)"],
+      "required_documents": [
+        "National ID card or valid passport",
+        "Family book",
+        "Birth certificate",
+        "Employment certificate / admission certificate",
+        "Health certificate",
+        "Guarantor"
+      ],
+      "ideal_for": ["Workers with an approved Korean work placement", "Students with Korean university admission"],
+      "not_suitable_for": ["Anyone not going to South Korea"],
+      "demand_signals": ["Korean-language schools and training centres", "Labour recruitment and manpower agencies", "Provinces and communes with high migrant departures to Korea"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/songkhoem-loan/"
+    },
+    {
+      "id": "annatean_rohas",
+      "name": "Annatean Rohas (Quick Loan)",
+      "segment": "personal",
+      "category": "salary_advance_style",
+      "purpose": "Small, fast loans for employees with an urgent financial need, applied for entirely in the mobile app.",
+      "description": "KHR 1,200,000 to 4,000,000 over 3 to 12 months, applied via the PPCBank Mobile App with no branch visit. Aimed at employees with proof of income. The page says repayment mode is not required and does not publish an interest rate.",
+      "target_customers": ["salaried employees", "workers with provable income"],
+      "terms": {
+        "currency": ["KHR"],
+        "amount_min_khr": 1200000,
+        "amount_max_khr": 4000000,
+        "amount_min_usd": null,
+        "amount_max_usd": null,
+        "rate_text": "Described as competitive; no rate published",
+        "tenor_min_months": 3,
+        "tenor_max_months": 12,
+        "application_channel": "PPCBank Mobile App"
+      },
+      "collateral": "None stated",
+      "eligibility": ["Employee", "Proof of income"],
+      "required_documents": [
+        "National ID card or valid passport",
+        "Family book or book of residence",
+        "Proof of income",
+        "Additional documents (optional)"
+      ],
+      "ideal_for": ["Factory and shop employees", "Staff of businesses that bank with PPCBank"],
+      "not_suitable_for": ["Self-employed with no income proof", "Amounts above KHR 4,000,000"],
+      "demand_signals": ["Large employers nearby: garment factories, malls, hotels, hospitals", "Factory districts with high headcount"],
+      "source_url": "https://www.ppcbank.com.kh/personal-banking/loan/annatean-rohas/"
+    }
+  ],
+
+  "related_non_loan_products": [
+    {
+      "id": "letter_of_credit",
+      "name": "Letter of Credit",
+      "purpose": "Secures payment between importers and exporters. PPCBank trade-finance staff also arrange loans for LC payment and export negotiation.",
+      "ideal_for": ["import_export_trading", "manufacturing", "supermarket_wholesale"],
+      "source_url": "https://www.ppcbank.com.kh/trade-finance/letter-of-credit/"
+    },
+    {
+      "id": "document_collection",
+      "name": "Document Collection",
+      "purpose": "Trade-document handling for cross-border sales without a full LC.",
+      "ideal_for": ["import_export_trading"],
+      "source_url": "https://www.ppcbank.com.kh/trade-finance/document-collection/"
+    },
+    {
+      "id": "bank_guarantee",
+      "name": "Bank Guarantee",
+      "purpose": "Bank-backed guarantee for contracts, tenders and trade obligations.",
+      "ideal_for": ["construction", "import_export_trading"],
+      "source_url": "https://www.ppcbank.com.kh/trade-finance/bank-guarantee/"
+    },
+    {
+      "id": "escrow_service",
+      "name": "Escrow Service",
+      "purpose": "Holds funds until agreed conditions are met.",
+      "ideal_for": ["real_estate", "import_export_trading"],
+      "source_url": "https://www.ppcbank.com.kh/trade-finance/escrow-service/"
+    }
+  ],
+
+  "business_type_profiles": [
+    {
+      "id": "food_beverage",
+      "label": "Restaurants, cafes, bakeries, bars",
+      "osm_tags": ["amenity=restaurant", "amenity=cafe", "amenity=fast_food", "amenity=bar", "amenity=pub", "amenity=food_court", "shop=bakery"],
+      "typical_needs": ["fit-out and equipment", "second outlet", "stock and daily working capital"],
+      "typical_loan_size_usd": [3000, 150000],
+      "collateral_likelihood": "medium (many rent their premises)",
+      "recommended": [
+        {"product_id": "sme_100", "fit": 90, "rationale": "Right size and cheapest fixed rate, but only if the owner can pledge a hard title (own shophouse or family land)."},
+        {"product_id": "business_loan_small", "fit": 80, "rationale": "Bullet and negotiable repayment cope with uneven daily sales."},
+        {"product_id": "business_loan_miro", "fit": 70, "rationale": "For small top-ups such as a new kitchen line or equipment."},
+        {"product_id": "credit_line", "fit": 50, "rationale": "Helps with supplier gaps once the business has a stable, documented cash flow."}
+      ],
+      "cautions": ["Tenants without titled property cannot use most business loans. Qualify collateral before pitching."]
+    },
+    {
+      "id": "retail_shop",
+      "label": "Small retail: groceries, mini-marts, clothing, phones, electronics",
+      "osm_tags": ["shop=convenience", "shop=general", "shop=clothes", "shop=mobile_phone", "shop=electronics", "shop=kiosk", "shop=variety_store"],
+      "typical_needs": ["stock purchase", "shop fit-out", "second location"],
+      "typical_loan_size_usd": [2000, 80000],
+      "collateral_likelihood": "medium",
+      "recommended": [
+        {"product_id": "sme_100", "fit": 88, "rationale": "Best rate and 24-month principal grace for building stock."},
+        {"product_id": "business_loan_miro", "fit": 80, "rationale": "Smaller tickets, flexible repayment."},
+        {"product_id": "business_loan_small", "fit": 75, "rationale": "USD 10k to 50k for stock and renovation."},
+        {"product_id": "credit_line", "fit": 55, "rationale": "Useful for inventory swings if cash flow is well documented."}
+      ],
+      "cautions": ["Many small retailers have informal books. Expect documentation to be the gating step."]
+    },
+    {
+      "id": "supermarket_wholesale",
+      "label": "Supermarkets, department stores, wholesalers",
+      "osm_tags": ["shop=supermarket", "shop=department_store", "shop=wholesale", "shop=mall"],
+      "typical_needs": ["large stock cycles", "new branch", "cold-chain equipment"],
+      "typical_loan_size_usd": [50000, 700000],
+      "collateral_likelihood": "high",
+      "recommended": [
+        {"product_id": "credit_line", "fit": 85, "rationale": "Stock-heavy and receivable-heavy: a revolving limit matches the cash cycle better than a term loan."},
+        {"product_id": "sme_300", "fit": 80, "rationale": "New outlet or warehouse with 10-year tenor and grace."},
+        {"product_id": "business_loan_medium", "fit": 78, "rationale": "Flexible repayment for lumpy receivables."},
+        {"product_id": "sme_700", "fit": 65, "rationale": "For multi-site expansion."}
+      ],
+      "cautions": ["Check supplier concentration and receivable ageing before sizing the limit."]
+    },
+    {
+      "id": "health",
+      "label": "Pharmacies, clinics, dental, hospitals",
+      "osm_tags": ["amenity=pharmacy", "amenity=clinic", "amenity=dentist", "amenity=doctors", "amenity=hospital"],
+      "typical_needs": ["medical equipment", "new clinic or branch", "pharmacy stock"],
+      "typical_loan_size_usd": [10000, 400000],
+      "collateral_likelihood": "medium to high",
+      "recommended": [
+        {"product_id": "sme_100", "fit": 80, "rationale": "Pharmacies and small clinics fit the size band."},
+        {"product_id": "sme_300", "fit": 75, "rationale": "Bigger clinics buying imaging or lab equipment."},
+        {"product_id": "business_loan_small", "fit": 70, "rationale": "Equipment financing with flexible repayment."},
+        {"product_id": "credit_line", "fit": 45, "rationale": "Pharmacy stock replenishment."}
+      ],
+      "cautions": ["Licensed premises and professional registration matter; verify licences."]
+    },
+    {
+      "id": "hospitality",
+      "label": "Hotels, guesthouses, resorts, hostels",
+      "osm_tags": ["tourism=hotel", "tourism=guest_house", "tourism=hostel", "tourism=resort", "tourism=apartment"],
+      "typical_needs": ["building or extension", "renovation", "FF&E fit-out"],
+      "typical_loan_size_usd": [30000, 1000000],
+      "collateral_likelihood": "high (owned land and building)",
+      "recommended": [
+        {"product_id": "sme_300", "fit": 85, "rationale": "10-year tenor and 24-month grace fit a build-then-ramp-up revenue curve."},
+        {"product_id": "sme_700", "fit": 80, "rationale": "Mid-size hotels and resorts."},
+        {"product_id": "business_loan_medium", "fit": 75, "rationale": "Bullet and negotiable principal for seasonality."},
+        {"product_id": "sme_100", "fit": 65, "rationale": "Small guesthouses and hostels."},
+        {"product_id": "sme_1000", "fit": 60, "rationale": "Large resorts."}
+      ],
+      "cautions": ["Tourism seasonality. Prefer structures with grace or flexible repayment."]
+    },
+    {
+      "id": "beauty_services",
+      "label": "Salons, spas, massage, gyms, laundries",
+      "osm_tags": ["shop=hairdresser", "shop=beauty", "shop=massage", "leisure=fitness_centre", "shop=laundry"],
+      "typical_needs": ["equipment", "renovation", "second branch"],
+      "typical_loan_size_usd": [2000, 50000],
+      "collateral_likelihood": "low to medium",
+      "recommended": [
+        {"product_id": "business_loan_miro", "fit": 85, "rationale": "Small tickets suit equipment and fit-out."},
+        {"product_id": "sme_100", "fit": 82, "rationale": "Cheapest rate if a titled property is available."},
+        {"product_id": "business_loan_small", "fit": 70, "rationale": "Second branch or larger refit."},
+        {"product_id": "loan_against_deposit", "fit": 40, "rationale": "Alternative if the owner has savings but no title."}
+      ],
+      "cautions": ["Often rented premises, so collateral is the main hurdle."]
+    },
+    {
+      "id": "automotive",
+      "label": "Car dealers, repair shops, car wash, tyre and parts shops, fuel stations",
+      "osm_tags": ["shop=car", "shop=car_repair", "shop=car_parts", "shop=tyres", "shop=motorcycle", "amenity=car_wash", "amenity=fuel"],
+      "typical_needs": ["vehicle stock", "equipment and lifts", "site development (fuel stations)"],
+      "typical_loan_size_usd": [10000, 700000],
+      "collateral_likelihood": "medium to high",
+      "recommended": [
+        {"product_id": "credit_line", "fit": 75, "rationale": "Dealers and parts shops carry large, fast-turning stock."},
+        {"product_id": "sme_300", "fit": 80, "rationale": "Showroom or workshop expansion."},
+        {"product_id": "sme_100", "fit": 78, "rationale": "Repair shops and small parts dealers."},
+        {"product_id": "business_loan_small", "fit": 72, "rationale": "Equipment and stock with flexible repayment."},
+        {"product_id": "sme_700", "fit": 60, "rationale": "Fuel stations and large dealerships."}
+      ],
+      "cross_sell": ["car_loan_personal for dealership customers", "car_for_cash for car owners in Phnom Penh"],
+      "cautions": ["Dealer stock financing may need a structure beyond standard products; ask the branch."]
+    },
+    {
+      "id": "construction",
+      "label": "Contractors, building materials, hardware, interior fit-out",
+      "osm_tags": ["shop=hardware", "shop=doityourself", "shop=trade", "shop=paint", "craft=carpenter", "craft=electrician", "craft=plumber", "office=construction_company"],
+      "typical_needs": ["material stock", "trucks and equipment", "project working capital", "performance guarantees"],
+      "typical_loan_size_usd": [20000, 500000],
+      "collateral_likelihood": "medium",
+      "recommended": [
+        {"product_id": "credit_line", "fit": 80, "rationale": "Project payments arrive late; revolving limit bridges them."},
+        {"product_id": "sme_300", "fit": 75, "rationale": "Equipment and yard expansion."},
+        {"product_id": "business_loan_medium", "fit": 75, "rationale": "Bullet repayment lines up with project payment milestones."},
+        {"product_id": "business_car_loan", "fit": 72, "rationale": "Trucks and utility vehicles, up to 10 units at up to 80%."},
+        {"product_id": "sme_100", "fit": 68, "rationale": "Small contractors and hardware shops."}
+      ],
+      "cross_sell": ["bank_guarantee for tenders", "home_improvement_loan for homeowner customers"],
+      "cautions": ["Receivable concentration with a few clients is the main risk."]
+    },
+    {
+      "id": "manufacturing",
+      "label": "Factories, garment, food processing, furniture and workshops",
+      "osm_tags": ["man_made=works", "landuse=industrial", "industrial=factory", "craft=*", "building=industrial"],
+      "typical_needs": ["machinery", "factory extension", "raw-material working capital", "export financing"],
+      "typical_loan_size_usd": [50000, 1000000],
+      "collateral_likelihood": "high (land and building)",
+      "recommended": [
+        {"product_id": "sme_700", "fit": 82, "rationale": "Machinery and plant expansion with 10-year tenor."},
+        {"product_id": "business_loan_medium", "fit": 80, "rationale": "Flexible repayment for order-driven revenue."},
+        {"product_id": "sme_1000", "fit": 75, "rationale": "Larger plants."},
+        {"product_id": "credit_line", "fit": 72, "rationale": "Raw-material purchases."},
+        {"product_id": "business_loan_large", "fit": 68, "rationale": "Above USD 500k."},
+        {"product_id": "sme_300", "fit": 70, "rationale": "Smaller workshops."}
+      ],
+      "cross_sell": ["letter_of_credit for imported inputs or exports", "annatean_rohas for employees (payroll relationship)"],
+      "cautions": ["Check order book stability and customer concentration."]
+    },
+    {
+      "id": "logistics_transport",
+      "label": "Trucking, delivery, couriers, bus and tour transport",
+      "osm_tags": ["office=logistics", "industrial=depot", "amenity=bus_station", "office=courier", "shop=rental"],
+      "typical_needs": ["fleet purchase", "fleet renewal", "depot"],
+      "typical_loan_size_usd": [20000, 1000000],
+      "collateral_likelihood": "medium (vehicle can be security)",
+      "recommended": [
+        {"product_id": "business_car_loan", "fit": 95, "rationale": "Built for this: up to 10 vehicles, up to 80% of price, up to 9 years, no title needed if the vehicle is the security."},
+        {"product_id": "sme_300", "fit": 68, "rationale": "Depot or warehouse expansion."},
+        {"product_id": "sme_100", "fit": 62, "rationale": "Small operators with a titled property."},
+        {"product_id": "credit_line", "fit": 50, "rationale": "Fuel and maintenance working capital."}
+      ],
+      "cross_sell": ["car_for_cash for owner-operators in Phnom Penh"],
+      "cautions": ["Vehicle depreciation and utilisation rates drive risk. Ask for fleet utilisation data."]
+    },
+    {
+      "id": "education",
+      "label": "Private schools, kindergartens, language and training centres",
+      "osm_tags": ["amenity=school", "amenity=kindergarten", "amenity=language_school", "amenity=college", "amenity=driving_school", "amenity=training"],
+      "typical_needs": ["new campus", "building extension", "equipment"],
+      "typical_loan_size_usd": [20000, 700000],
+      "collateral_likelihood": "medium to high",
+      "recommended": [
+        {"product_id": "sme_300", "fit": 78, "rationale": "Long tenor and grace match a build-then-enrol revenue curve."},
+        {"product_id": "business_loan_medium", "fit": 72, "rationale": "Repayment can be shaped around term-start cash peaks."},
+        {"product_id": "sme_100", "fit": 70, "rationale": "Kindergartens and small training centres."},
+        {"product_id": "sme_700", "fit": 68, "rationale": "Larger schools."}
+      ],
+      "cross_sell": ["songkhoem_loan for students and workers trained at Korean-language schools"],
+      "cautions": ["Enrolment is seasonal. Look at fee collection patterns."]
+    },
+    {
+      "id": "agriculture",
+      "label": "Agribusiness: rice mills, farms, agri-input shops, livestock",
+      "osm_tags": ["landuse=farmland", "landuse=farmyard", "shop=agrarian", "shop=farm", "craft=agricultural_engines", "man_made=works"],
+      "typical_needs": ["seasonal inputs", "milling or storage equipment", "livestock expansion"],
+      "typical_loan_size_usd": [5000, 500000],
+      "collateral_likelihood": "medium (rural land is often soft-titled)",
+      "recommended": [
+        {"product_id": "business_loan_small", "fit": 78, "rationale": "Bullet repayment lines up with harvest income."},
+        {"product_id": "sme_100", "fit": 72, "rationale": "Good rate if a hard title is available."},
+        {"product_id": "business_loan_medium", "fit": 70, "rationale": "Rice mills and larger operations."},
+        {"product_id": "credit_line", "fit": 55, "rationale": "Seasonal input purchases."}
+      ],
+      "cautions": ["PPCBank's loan pages reviewed do not list a dedicated agriculture product. Rural land is often soft-titled, and most business loans need hard titles."]
+    },
+    {
+      "id": "real_estate",
+      "label": "Developers, estate agents, borey and condo projects",
+      "osm_tags": ["office=estate_agent", "building=construction", "landuse=construction", "building=apartments", "landuse=residential"],
+      "typical_needs": ["project finance", "land bank", "end-buyer financing"],
+      "typical_loan_size_usd": [100000, 5000000],
+      "collateral_likelihood": "high",
+      "recommended": [
+        {"product_id": "sme_1000", "fit": 78, "rationale": "Mid-size projects up to USD 1m."},
+        {"product_id": "business_loan_large", "fit": 75, "rationale": "Projects above USD 500k."},
+        {"product_id": "sme_700", "fit": 72, "rationale": "Smaller developments."},
+        {"product_id": "business_loan_medium", "fit": 68, "rationale": "Bullet repayment for sale-linked cash flows."}
+      ],
+      "cross_sell": ["home_loan for end buyers (partner borey and condo can carry lower rates)", "escrow_service for sale proceeds"],
+      "cautions": ["The strongest play is often the buyer side: each new development is a pipeline of Home Loan prospects."]
+    },
+    {
+      "id": "import_export_trading",
+      "label": "Import, export and distribution companies",
+      "osm_tags": ["shop=wholesale", "office=company", "industrial=warehouse", "building=warehouse", "office=trading"],
+      "typical_needs": ["supplier payments", "LC and trade settlement", "inventory"],
+      "typical_loan_size_usd": [50000, 1000000],
+      "collateral_likelihood": "medium to high",
+      "recommended": [
+        {"product_id": "credit_line", "fit": 85, "rationale": "Revolving limit matches import-to-sale cycles."},
+        {"product_id": "business_loan_medium", "fit": 72, "rationale": "Flexible and bullet repayment."},
+        {"product_id": "sme_300", "fit": 70, "rationale": "Warehouse expansion."},
+        {"product_id": "sme_700", "fit": 66, "rationale": "Larger distributors."}
+      ],
+      "cross_sell": ["letter_of_credit", "document_collection", "bank_guarantee"],
+      "cautions": ["FX exposure when selling in KHR and buying in USD."]
+    },
+    {
+      "id": "online_it_services",
+      "label": "Online sellers, IT firms, agencies, co-working",
+      "osm_tags": ["office=it", "office=advertising_agency", "office=coworking", "office=company", "shop=computer"],
+      "typical_needs": ["working capital", "equipment", "growth runway"],
+      "typical_loan_size_usd": [2000, 50000],
+      "collateral_likelihood": "low (asset-light, rented offices)",
+      "recommended": [
+        {"product_id": "loan_against_deposit", "fit": 65, "rationale": "Works without titled property if the owner holds a fixed deposit."},
+        {"product_id": "credit_line", "fit": 45, "rationale": "Possible once cash flow is stable and documented."},
+        {"product_id": "sme_100", "fit": 40, "rationale": "Only if the owner has a hard title to pledge."},
+        {"product_id": "business_loan_miro", "fit": 40, "rationale": "Same collateral condition."}
+      ],
+      "cautions": ["The main gap is collateral, not demand. Do not push title-secured loans at asset-light firms without confirming collateral."]
+    }
+  ],
+
+  "ai_evaluation": {
+    "purpose": "Given a detected business or place, rank PPCBank loan products by likely fit and explain why, using only public signals.",
+    "pipeline": [
+      {"step": 1, "name": "classify", "description": "Map the place's OSM tags (or Google Places types) to one `business_type_profiles[*].id`. If nothing matches, use `unknown` and rely on the generic rules."},
+      {"step": 2, "name": "prefilter", "description": "Drop products that cannot apply (see `hard_rules`)."},
+      {"step": 3, "name": "score", "description": "Start from the profile's `recommended[*].fit`, then adjust with `score_adjustments` using observed public signals."},
+      {"step": 4, "name": "explain", "description": "Ask the LLM for a short loan-officer brief using the prompt template. The LLM may reorder and explain but must not invent figures, products or eligibility."}
+    ],
+    "hard_rules": [
+      {"id": "collateral_title", "rule": "SME 100, SME 300, SME 700, SME 1000 and all Business Loan tiers require hard-title land or building. If the business is clearly a tenant with no titled property, demote these and prefer business_car_loan (vehicle security) or loan_against_deposit (deposit security)."},
+      {"id": "size_band", "rule": "Respect amount bands: SME 100 up to 100k; SME 300 100,001 to 300k; SME 700 300,001 to 700k; SME 1000 700,001 to 1m; Miro up to 10k; Small 10k to 50k; Medium 50k to 500k; Large over 500k."},
+      {"id": "phnom_penh_only", "rule": "car_for_cash is available in the Phnom Penh area only."},
+      {"id": "personal_vs_business", "rule": "Personal products (home_loan, home_improvement_loan, car_loan_personal, car_for_cash, songkhoem_loan, annatean_rohas) apply to individuals. For a business place, treat them as cross-sell to the owner or staff, not as the main recommendation."},
+      {"id": "songkhoem_scope", "rule": "songkhoem_loan only applies to people going to South Korea to work or study."},
+      {"id": "no_invented_numbers", "rule": "Quote rates, limits and tenors only from `products[*].terms`. Say 'not published' when a field is null."}
+    ],
+    "score_adjustments": [
+      {"signal": "owns_shophouse_or_visible_titled_building", "delta": 8, "applies_to": ["sme_100", "sme_300", "sme_700", "sme_1000", "business_loan_small", "business_loan_medium", "business_loan_large"]},
+      {"signal": "appears_to_rent_premises_or_in_mall_unit", "delta": -15, "applies_to": ["sme_100", "sme_300", "sme_700", "sme_1000", "business_loan_miro", "business_loan_small", "business_loan_medium", "business_loan_large"]},
+      {"signal": "new_opening_within_6_months", "delta": 5, "applies_to": ["sme_100", "business_loan_miro", "business_loan_small"]},
+      {"signal": "review_velocity_spike_or_expansion_signal", "delta": 8, "applies_to": ["sme_300", "sme_700", "business_loan_medium", "credit_line"]},
+      {"signal": "multiple_branches_detected", "delta": 8, "applies_to": ["sme_300", "sme_700", "sme_1000", "credit_line"]},
+      {"signal": "visible_fleet_of_vehicles", "delta": 10, "applies_to": ["business_car_loan"]},
+      {"signal": "stock_heavy_or_high_turnover", "delta": 8, "applies_to": ["credit_line"]},
+      {"signal": "seasonal_business", "delta": 6, "applies_to": ["business_loan_small", "business_loan_medium", "business_loan_large"]}
+    ],
+    "fit_scale": {
+      "85_100": "Strong fit. Lead with this product.",
+      "70_84": "Good fit. Offer as primary or strong secondary.",
+      "50_69": "Possible fit. Only if conditions are confirmed.",
+      "below_50": "Weak fit. Do not recommend unless the owner asks."
+    },
+    "prompt": {
+      "system": "You are an assistant for PPCBank loan officers in Cambodia. You help rank PPCBank loan products for a business that was found from public data (OpenStreetMap, public reviews). You never see customer or transaction data. You MUST only use the product facts supplied in <products>. Never invent rates, limits, tenors, eligibility rules or product names. If a fact is missing, say 'not published'. Public signals are weak evidence: say what is unknown (ownership of premises, income, collateral) and what the officer should verify. Return valid JSON matching the output schema and nothing else.",
+      "user_template": "<business>\nname: {{name}}\nosm_tags: {{osm_tags}}\naddress_area: {{area}}\nopened_or_first_seen: {{first_seen}}\nreview_summary: {{review_summary}}\nobserved_signals: {{signals}}\n</business>\n<profile>{{matched_business_type_profile}}</profile>\n<products>{{candidate_products_json}}</products>\nTask: Rank the top 3 products for this business, with a fit score from 0 to 100 for each, one-sentence rationale, the main condition to verify, and the cross-sell opportunities. Respect the hard rules supplied. Keep the whole brief under 150 words."
+    },
+    "output_schema": {
+      "type": "object",
+      "required": ["business_type", "recommendations", "unknowns_to_verify", "confidence"],
+      "properties": {
+        "business_type": {"type": "string", "description": "id from business_type_profiles, or 'unknown'"},
+        "estimated_loan_size_usd": {"type": "object", "properties": {"low": {"type": "number"}, "high": {"type": "number"}}},
+        "recommendations": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": ["product_id", "fit", "rationale", "verify"],
+            "properties": {
+              "product_id": {"type": "string"},
+              "fit": {"type": "integer", "minimum": 0, "maximum": 100},
+              "rationale": {"type": "string"},
+              "verify": {"type": "string", "description": "Single most important condition for the officer to confirm"}
+            }
+          }
+        },
+        "cross_sell": {"type": "array", "items": {"type": "string", "description": "product ids"}},
+        "unknowns_to_verify": {"type": "array", "items": {"type": "string"}},
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]}
+      }
+    },
+    "guardrails": [
+      "Only public data goes into the prompt. Never include customer or transaction data.",
+      "Present results as a lead hint for the loan officer, not a credit decision.",
+      "Re-check rates and limits against PPCBank's pages periodically; this file is a snapshot."
+    ]
+  }
+}

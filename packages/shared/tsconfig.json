@@ -1,0 +1,15 @@
+{
+  // Purity guard: no DOM and no Node typings, so fetch, fs, process, console and
+  // timers don't type-check in src/. Tests live in test/ and are checked by
+  // tsconfig.test.json, because vitest's types pull in Node globals.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": [],
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src"]
+}
