@@ -121,7 +121,13 @@ export function rankCommunes(
   return communes
     .filter((n) => demand.communes[n.code])
     .map((n) => ({ node: n, score: demand.communes[n.code]!.score[type] }))
-    .sort((a, b) => b.score - a.score || a.node.name_en.localeCompare(b.node.name_en));
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        // Rounded scores tie at the top: the bigger share still ranks first.
+        demand.communes[b.node.code]!.mix[type] - demand.communes[a.node.code]!.mix[type] ||
+        a.node.name_en.localeCompare(b.node.name_en),
+    );
 }
 
 /** Average score of the communes with data, rounded; null when none have any. */
@@ -141,5 +147,16 @@ export function mixRows(d: CommuneDemand): { type: LoanType; pct: number }[] {
   return LOAN_TYPES.map((type) => ({ type, pct: d.mix[type] ?? 0 })).sort((a, b) => b.pct - a.pct);
 }
 
-/** Bar width for a mix share: 33% fills the bar, so small shares stay visible. */
-export const mixBarWidth = (pct: number) => Math.min(100, pct * 3);
+/** Bar width for a mix share: the share itself, so 25% fills a quarter of the bar. */
+export const mixBarWidth = (pct: number) => Math.max(0, Math.min(100, pct));
+
+/**
+ * What a score means in words. A score ranks this loan type's share of an area's
+ * demand (`pct`) against its share in every commune in Cambodia.
+ */
+export function scoreMeaning(score: number, pct: number, label: string): string {
+  const share = `${label} is ${pct}% of predicted loan demand here`;
+  if (score >= 100) return `${share}, one of the biggest shares of any area in Cambodia.`;
+  if (score <= 0) return `${share}, one of the smallest shares of any area in Cambodia.`;
+  return `${share}, a bigger share than in ${score}% of areas in Cambodia.`;
+}

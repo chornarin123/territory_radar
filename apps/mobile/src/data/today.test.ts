@@ -134,7 +134,14 @@ describe('new leads and numbers', () => {
         .map((v) => v.id)
         .sort(),
     ).toEqual(filtered.map((v) => v.id).sort());
-    expect(filtered).toHaveLength(11);
+    // New since the last scan: status new and first seen on or after it.
+    const expected = ws.prospects.filter(
+      (p) =>
+        p.pipelineStatus === 'new' &&
+        Date.parse(p.first_seen_at) >= Date.parse(ws.metadata.lastScanAt),
+    ).length;
+    expect(filtered).toHaveLength(expected);
+    expect(expected).toBeGreaterThan(0);
   });
 
   it('break priority ties by distance, when location is known', () => {

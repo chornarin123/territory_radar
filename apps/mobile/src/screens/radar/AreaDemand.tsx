@@ -15,6 +15,7 @@ import {
   fillFor,
   lightTextOn,
   mixBarWidth,
+  scoreMeaning,
   mixRows,
   rankCommunes,
   shortName,
@@ -306,10 +307,12 @@ export function AreaDemand({
               <View style={{ alignItems: 'flex-end' }}>
                 <Txt style={s.bigScore}>{d.score[type]}</Txt>
                 <Txt style={s.meta}>{label} score</Txt>
+                <Txt style={s.meta}>vs other {unit}s</Txt>
               </View>
             </View>
+            <Txt style={s.explain}>{scoreMeaning(d.score[type], d.mix[type], label)}</Txt>
 
-            <Txt style={s.section}>Loan mix in this {unit}</Txt>
+            <Txt style={s.section}>Loan mix in this {unit} · share of demand</Txt>
             {mixRows(d).map((row) => {
               const on = row.type === type;
               return (
@@ -519,5 +522,6 @@ const s = StyleSheet.create({
     color: color.text,
   },
   whyRow: { flexDirection: 'row', gap: 8, marginTop: 6 },
+  explain: { fontFamily: font.regular, fontSize: 12, lineHeight: 17, color: C.label },
   footnote: { fontFamily: font.regular, fontSize: 11, color: C.label, lineHeight: 16 },
 });

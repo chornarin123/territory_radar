@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { MapPin } from 'lucide-react-native';
 import { ProspectMiniRow } from '../components/ProspectCard';
 import { Card, Chip, PrimaryButton, SectionLabel, Segmented, Toggle, Txt } from '../components/ui';
-import { tickOf, toggleArea } from '../data/areas';
+import { selectionSummary, tickOf, toggleArea, topCommunes } from '../data/areas';
 import { useFilters } from '../data/FilterContext';
 import { useAreaTree } from '../data/useAreaTree';
 import {
@@ -18,6 +19,7 @@ import {
 } from '../data/labels';
 import {
   QUICK_VIEWS,
+  areaCounts,
   activeFilterCount,
   chipCounts,
   matchesFilters,
@@ -34,6 +36,9 @@ import { useLoadedWorkspace } from '../data/WorkspaceProvider';
 import type { InterestStatus, PriorityBand } from '../data/types';
 import { color, font, type } from '../theme/tokens';
 
+/** Territory shortcuts on the filter; the picker has every area. */
+const TERRITORY_CHIPS = 6;
+
 const INTEREST_OPTS: [InterestStatus, string][] = [
   ['unknown', 'Unconfirmed'],
   ['confirmed', 'Confirmed'],
@@ -42,7 +47,7 @@ const INTEREST_OPTS: [InterestStatus, string][] = [
 
 export function FiltersScreen() {
   const { ws, views } = useLoadedWorkspace();
-  const { filters: f, setFilters, list } = useFilters();
+  const { filters: f, setFilters, list, toggleMinScore, toggleHideNoNeed } = useFilters();
   const nav = useNavigation();
 
   // Counts and the result honour the Prospects screen's own toggles too, so
@@ -58,15 +63,21 @@ export function FiltersScreen() {
       return { ...prev, [k]: next };
     });
 
-  // Sangkats the officer's prospects are in, by code. The filter also takes whole
-  // districts or provinces (from Radar's area sheet), so chips use the same ticks.
-  const communes = useMemo(() => {
-    const byCode = new Map<string, string>();
-    for (const v of views) if (v.communeCode) byCode.set(v.communeCode, v.commune);
-    return [...byCode].sort((a, b) => a[1].localeCompare(b[1]));
-  }, [views]);
+  // Area: faceted counts per province, district and commune, one pass per change.
   const { tree } = useAreaTree();
   const areaSel = new Set(f.area);
+  const counts = useMemo(() => areaCounts(views, f, base), [views, f, base]);
+  const inArea = f.area.length
+    ? views.filter((v) => base(v) && matchesFilters(v, f)).length
+    : views.filter((v) => base(v) && matchesFilters(v, f, 'area')).length;
+  const summary = selectionSummary(f.area, tree, inArea);
+  // Territory chips: the sangkats with the most of the officer's prospects.
+  const communeName = useMemo(() => {
+    const byCode = new Map<string, string>();
+    for (const v of views) if (v.communeCode) byCode.set(v.communeCode, v.commune);
+    return byCode;
+  }, [views]);
+  const territory = useMemo(() => topCommunes(counts, TERRITORY_CHIPS), [counts]);
   const toggleSangkat = (code: string) =>
     setFilters((prev) => {
       const sel = new Set(prev.area);
@@ -83,11 +94,6 @@ export function FiltersScreen() {
       test: (v: ProspectView, o: T) => boolean,
     ) => chipCounts(views, f, g, opts, test, base);
     return {
-      area: count(
-        'area',
-        communes.map(([code]) => code),
-        (v, code) => v.communeCode === code,
-      ),
       prod: count(
         'prod',
         ws.products.map((p) => p.id),
@@ -108,7 +114,7 @@ export function FiltersScreen() {
         (v, i) => v.interest === i,
       ),
     };
-  }, [views, f, base, ws, communes]);
+  }, [views, f, base, ws]);
 
   const result = useMemo(
     () =>
@@ -124,7 +130,10 @@ export function FiltersScreen() {
     list.hideNoNeed ? 'Hide no-need' : null,
   ].filter(Boolean);
 
-  const chipRow = <K extends ChipGroup>(k: K, opts: [FilterState[K][number], string][]) => (
+  const chipRow = <K extends Exclude<ChipGroup, 'area'>>(
+    k: K,
+    opts: [FilterState[K][number], string][],
+  ) => (
     <View style={s.chipWrap}>
       {opts.map(([value, label]) => (
         <Chip
@@ -133,6 +142,10 @@ export function FiltersScreen() {
           label={label}
           selected={(f[k] as string[]).includes(value as string)}
           count={(groups[k] as Record<string, number>)[value as string] ?? 0}
+          disabled={
+            !((groups[k] as Record<string, number>)[value as string] ?? 0) &&
+            !(f[k] as string[]).includes(value as string)
+          }
           onPress={() => toggle(k, value)}
         />
       ))}
@@ -168,19 +181,40 @@ export function FiltersScreen() {
         </View>
 
         <Card>
-          <SectionLabel right="Your territory">Sangkat</SectionLabel>
-          <View style={s.chipWrap}>
-            {communes.map(([code, name]) => (
-              <Chip
-                key={code}
-                shape="square"
-                label={name}
-                selected={tickOf(areaSel, code) === 'on'}
-                count={groups.area[code] ?? 0}
-                onPress={() => toggleSangkat(code)}
-              />
-            ))}
-          </View>
+          <SectionLabel>Area</SectionLabel>
+          <Pressable
+            onPress={() => nav.navigate('AreaPicker')}
+            accessibilityRole="button"
+            accessibilityLabel={`Area: ${summary.title}, ${summary.sub}. Change area`}
+            style={({ pressed }) => [s.areaRow, pressed && { opacity: 0.8 }]}
+          >
+            <MapPin size={18} color={color.navy} />
+            <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+              <Txt style={s.areaTitle} numberOfLines={1}>
+                {summary.title}
+              </Txt>
+              <Txt style={type.caption} numberOfLines={1}>
+                {summary.sub}
+              </Txt>
+            </View>
+            <Txt style={s.areaChange}>Change ›</Txt>
+          </Pressable>
+          {territory.length ? (
+            <>
+              <Txt style={type.caption}>Your territory · most prospects</Txt>
+              <View style={s.chipWrap}>
+                {territory.map((code) => (
+                  <Chip
+                    key={code}
+                    label={tree?.byCode.get(code)?.name_en ?? communeName.get(code) ?? code}
+                    selected={tickOf(areaSel, code) === 'on'}
+                    count={counts.get(code) ?? 0}
+                    onPress={() => toggleSangkat(code)}
+                  />
+                ))}
+              </View>
+            </>
+          ) : null}
         </Card>
         <Card>
           <SectionLabel>Discussion category</SectionLabel>
@@ -204,6 +238,24 @@ export function FiltersScreen() {
         <Card>
           <SectionLabel>Financing interest</SectionLabel>
           {chipRow('int', INTEREST_OPTS)}
+        </Card>
+
+        <Card style={{ gap: 0 }}>
+          <View style={{ paddingBottom: 6 }}>
+            <SectionLabel>Prospects list</SectionLabel>
+          </View>
+          <Toggle
+            label={`Priority ≥ ${list.minScore}`}
+            sub="Hide prospects below the visit-priority floor"
+            value={list.minScoreOn}
+            onChange={toggleMinScore}
+          />
+          <Toggle
+            label="Hide no-need"
+            sub="Except on the Closed tab"
+            value={list.hideNoNeed}
+            onChange={toggleHideNoNeed}
+          />
         </Card>
 
         <Card style={{ gap: 0 }}>
@@ -253,6 +305,7 @@ export function FiltersScreen() {
             onChange={(sort) => setFilters((p) => ({ ...p, sort }))}
             options={[
               { id: 'priority', label: 'Priority' },
+              { id: 'nearest', label: 'Nearest' },
               { id: 'fresh', label: 'Newest signal' },
               { id: 'name', label: 'Name A–Z' },
             ]}
@@ -324,6 +377,18 @@ const s = StyleSheet.create({
   presetLabel: { fontFamily: font.bold, fontSize: 14 },
   presetSub: { fontFamily: font.regular, fontSize: 12 },
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  areaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    minHeight: 52,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    backgroundColor: '#f6f8fb',
+  },
+  areaTitle: { fontFamily: font.semibold, fontSize: 15, color: color.text },
+  areaChange: { fontFamily: font.semibold, fontSize: 14, color: '#1d4ed8' },
   none: {
     backgroundColor: color.surface,
     borderWidth: 1,

@@ -17,6 +17,7 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 import { FiltersScreen } from '../screens/FiltersScreen';
 import { ProspectDetailScreen } from '../screens/ProspectDetailScreen';
 import { CoachScreen } from '../screens/CoachScreen';
+import { AreaPickerScreen } from '../screens/AreaPickerScreen';
 import { EvidenceScreen } from '../screens/EvidenceScreen';
 import type { RootStackParamList, TabParamList } from './types';
 
@@ -40,6 +41,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       ProspectDetail: 'prospect/:id',
       Coach: 'prospect/:id/coach',
       Filters: 'filters',
+      AreaPicker: 'filters/area',
       Evidence: 'areas/:code/evidence/:loanType',
     },
   },
@@ -155,6 +157,12 @@ export function RootNavigator() {
             headerLeft: () => <BackButton />,
             headerRight: () => <ResetButton />,
           }}
+        />
+        {/* Draws its own header: back steps out of search and up levels first. */}
+        <Stack.Screen
+          name="AreaPicker"
+          component={AreaPickerScreen}
+          options={{ headerShown: false }}
         />
         {/* Draws its own navy header. */}
         <Stack.Screen name="Evidence" component={EvidenceScreen} options={{ headerShown: false }} />

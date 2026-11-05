@@ -1,117 +1,242 @@
 import React, { useMemo } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, SectionList, StyleSheet, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { SlidersHorizontal } from 'lucide-react-native';
-import { ProspectCard } from '../components/ProspectCard';
-import { Chip, OutlineButton, ToggleChip, Txt } from '../components/ui';
+import { ArrowUpDown, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react-native';
+import { OutlineButton, Txt } from '../components/ui';
 import { useFilters } from '../data/FilterContext';
-import { STATUS_LABEL } from '../data/labels';
 import {
+  PROSPECT_TABS,
   activeFilterCount,
   matchesFilters,
   matchesListControls,
-  sortViews,
-  type ListStatus,
 } from '../data/selectors';
+import { localDay } from '../data/time';
+import { routeOrder } from '../data/today';
+import { useTodayPlan } from '../data/useVisitPlan';
+import { timeSlot } from '../data/visitPlan';
 import { useLoadedWorkspace } from '../data/WorkspaceProvider';
-import { color, font, type } from '../theme/tokens';
+import type { Task } from '../data/types';
+import { ProspectListCard } from '../features/prospects/ProspectListCard';
+import {
+  SORT_LABEL,
+  TAB_LABEL,
+  buildRows,
+  nextSort,
+  nowOf,
+  sections,
+  summaryText,
+  tabCounts,
+} from '../features/prospects/selectors';
+import { color, font } from '../theme/tokens';
+import { toCandidates } from './visits/shared';
 
-const STATUS_CHIPS: { id: ListStatus; label: string }[] = [
-  { id: 'active', label: 'All active' },
-  { id: 'new', label: STATUS_LABEL.new },
-  { id: 'contacted', label: STATUS_LABEL.contacted },
-  { id: 'qualified', label: STATUS_LABEL.qualified },
-  { id: 'visit_planned', label: STATUS_LABEL.visit_planned },
-  { id: 'follow_up', label: STATUS_LABEL.follow_up },
-  { id: 'application_referred', label: STATUS_LABEL.application_referred },
-  { id: 'unreachable', label: STATUS_LABEL.unreachable },
-  { id: 'closedset', label: 'Closed / no need' },
-];
-
-const SORT_CAPTION = {
-  priority: 'sorted by visit priority',
-  fresh: 'newest signal first',
-  name: 'sorted by name',
+// Header colours, the same as Radar's navy header.
+const HEAD = {
+  text: '#e8edf5',
+  soft: '#a9b7cc',
+  field: '#1c3560',
+  border: '#2f4870',
 };
 
+/** "What should I do next?" — the officer's prospects, grouped by what's due. */
 export function ProspectsScreen() {
-  const { views, copy } = useLoadedWorkspace();
-  const { filters, list, setListStatus, toggleMinScore, toggleHideNoNeed, clearAll } = useFilters();
+  const { ws, views } = useLoadedWorkspace();
+  const { filters, setFilters, list, setTab, setSearch, clearAll } = useFilters();
+  const { plan } = useTodayPlan();
   const nav = useNavigation();
 
-  const shown = useMemo(
+  const today = localDay(nowOf(ws));
+  const branch = ws.branch?.location ?? null;
+
+  // Today's visit times, in the same order and slots as the Visits route.
+  const visitTimes = useMemo(() => {
+    if (!plan) return new Map<string, string>();
+    const order = routeOrder(plan, toCandidates(views), plan.start?.point ?? branch);
+    return new Map(order.map((c, i) => [c.id, timeSlot(i)]));
+  }, [plan, views, branch]);
+
+  const tasks = useMemo(() => {
+    const byProspect = new Map<string, Task[]>();
+    for (const t of ws.tasks) {
+      if (t.status !== 'open') continue;
+      byProspect.set(t.prospectId, [...(byProspect.get(t.prospectId) ?? []), t]);
+    }
+    return byProspect;
+  }, [ws.tasks]);
+
+  // Everything that passes the filters, with no-need kept for the Closed tab.
+  const rows = useMemo(
     () =>
-      sortViews(
-        views.filter((v) => matchesFilters(v, filters) && matchesListControls(v, list)),
-        filters.sort,
+      buildRows(
+        views.filter(
+          (v) =>
+            v.p.assignmentOfficerId === ws.officer.id &&
+            matchesFilters(v, filters) &&
+            matchesListControls(v, { ...list, tab: 'closed' }),
+        ),
+        { today, visitTimes, tasks },
+        branch,
       ),
-    [views, filters, list],
+    [views, ws.officer.id, filters, list, today, visitTimes, tasks, branch],
   );
+  const live = useMemo(
+    () => (list.hideNoNeed ? rows.filter((r) => r.v.status !== 'not_interested') : rows),
+    [rows, list.hideNoNeed],
+  );
+  const counts = useMemo(
+    () => ({ ...tabCounts(live), closed: tabCounts(rows).closed }),
+    [live, rows],
+  );
+  const groups = useMemo(
+    () => sections(list.tab === 'closed' ? rows : live, list.tab, filters.sort),
+    [rows, live, list.tab, filters.sort],
+  );
+  const shown = groups.reduce((n, g) => n + g.data.length, 0);
+  const todayCount = live.filter((r) => r.today).length;
   const nFilters = activeFilterCount(filters);
 
   return (
     <View style={s.screen}>
+      {ws.settings.showSyntheticDataBanner ? (
+        <View style={s.banner}>
+          <Txt style={s.bannerText}>Demo data · fictional businesses</Txt>
+        </View>
+      ) : null}
+
       <View style={s.header}>
         <View style={s.titleRow}>
-          <Txt style={type.screenTitle}>{copy('pipeline')}</Txt>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Txt style={s.title}>Prospects</Txt>
+            <Txt style={s.subtitle}>
+              {shown} shown · {todayCount} need action today
+            </Txt>
+          </View>
+          <Pressable
+            onPress={() => nav.navigate('Tabs', { screen: 'Radar', params: { view: 'prospects' } })}
+            accessibilityRole="button"
+            accessibilityLabel="Show on the map"
+            style={({ pressed }) => [s.iconBtn, pressed && { opacity: 0.7 }]}
+          >
+            <MapIcon size={20} color={HEAD.text} />
+          </Pressable>
+        </View>
+
+        <View style={s.searchRow}>
+          <View style={s.search}>
+            <Search size={18} color={HEAD.soft} />
+            <TextInput
+              value={list.search}
+              onChangeText={setSearch}
+              placeholder="Search name, sector, sangkat"
+              placeholderTextColor={HEAD.soft}
+              style={s.searchInput}
+              accessibilityLabel="Search prospects"
+              autoCorrect={false}
+              returnKeyType="search"
+            />
+            {list.search ? (
+              <Pressable
+                onPress={() => setSearch('')}
+                accessibilityRole="button"
+                accessibilityLabel="Clear search"
+                style={s.clearBtn}
+              >
+                <X size={16} color={HEAD.soft} />
+              </Pressable>
+            ) : null}
+          </View>
           <Pressable
             onPress={() => nav.navigate('Filters')}
             accessibilityRole="button"
-            accessibilityLabel={`Filters, ${nFilters} active`}
-            style={({ pressed }) => [
-              s.filterBtn,
-              nFilters > 0 && s.filterBtnOn,
-              pressed && { opacity: 0.8 },
-            ]}
+            accessibilityLabel={`Filter, ${nFilters} active`}
+            style={({ pressed }) => [s.filterBtn, pressed && { opacity: 0.7 }]}
           >
-            <SlidersHorizontal
-              size={16}
-              color={nFilters ? color.surface : color.navy}
-              strokeWidth={2}
-            />
-            <Txt style={[s.filterText, nFilters > 0 && { color: color.surface }]}>
-              Filters{nFilters ? ` · ${nFilters}` : ''}
-            </Txt>
+            <SlidersHorizontal size={16} color={HEAD.text} />
+            <Txt style={s.filterText}>Filter</Txt>
+            {nFilters ? (
+              <View style={s.badge}>
+                <Txt style={s.badgeText}>{nFilters}</Txt>
+              </View>
+            ) : null}
           </Pressable>
         </View>
-        <Txt style={type.caption}>
-          {shown.length} shown · {SORT_CAPTION[filters.sort]}
-        </Txt>
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.chips}
+          contentContainerStyle={s.tabs}
+          accessibilityRole="tablist"
         >
-          {STATUS_CHIPS.map((c) => (
-            <Chip
-              key={c.id}
-              label={c.label}
-              selected={list.status === c.id}
-              onPress={() => setListStatus(c.id)}
-            />
-          ))}
+          {PROSPECT_TABS.map((t) => {
+            const on = list.tab === t;
+            const alert = t === 'today' && counts.today > 0;
+            return (
+              <Pressable
+                key={t}
+                onPress={() => setTab(t)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: on }}
+                accessibilityLabel={`${TAB_LABEL[t]}, ${counts[t]}`}
+                style={({ pressed }) => [s.tab, on && s.tabOn, pressed && { opacity: 0.8 }]}
+              >
+                <Txt style={[s.tabText, on && s.tabTextOn]}>{TAB_LABEL[t]}</Txt>
+                <View
+                  style={[s.count, on && s.countOn, alert && { backgroundColor: color.pendBg }]}
+                >
+                  <Txt
+                    style={[s.countText, on && s.countTextOn, alert && { color: color.pendText }]}
+                  >
+                    {counts[t]}
+                  </Txt>
+                </View>
+              </Pressable>
+            );
+          })}
         </ScrollView>
-        <View style={s.toggles}>
-          <ToggleChip
-            label={`Priority ≥ ${list.minScore}`}
-            value={list.minScoreOn}
-            onPress={toggleMinScore}
-          />
-          <ToggleChip label="Hide no-need" value={list.hideNoNeed} onPress={toggleHideNoNeed} />
-        </View>
       </View>
 
-      <FlatList
-        data={shown}
-        keyExtractor={(v) => v.id}
-        renderItem={({ item }) => <ProspectCard v={item} />}
+      <View style={s.summary}>
+        <Txt style={s.summaryText} numberOfLines={1}>
+          {summaryText(list.minScoreOn, list.minScore, list.hideNoNeed)}
+        </Txt>
+        <Pressable
+          onPress={() => setFilters((f) => ({ ...f, sort: nextSort(f.sort) }))}
+          accessibilityRole="button"
+          accessibilityLabel={`Sort: ${SORT_LABEL[filters.sort]}. Change sort`}
+          style={({ pressed }) => [s.sortBtn, pressed && { opacity: 0.7 }]}
+        >
+          <ArrowUpDown size={14} color={color.navy} />
+          <Txt style={s.sortText}>Sort: {SORT_LABEL[filters.sort]}</Txt>
+        </Pressable>
+      </View>
+
+      <SectionList
+        sections={groups}
+        keyExtractor={(r) => r.v.id}
+        stickySectionHeadersEnabled={false}
         contentContainerStyle={s.list}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        keyboardShouldPersistTaps="handled"
+        renderSectionHeader={({ section }) => (
+          <View style={s.sectionHead}>
+            <Txt style={s.sectionTitle}>
+              {section.title.toUpperCase()} · {section.data.length}
+            </Txt>
+            {section.hint ? <Txt style={s.sectionHint}>{section.hint}</Txt> : null}
+          </View>
+        )}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        renderItem={({ item }) => (
+          <ProspectListCard
+            row={item}
+            onPress={() => nav.navigate('ProspectDetail', { id: item.v.id })}
+          />
+        )}
         ListEmptyComponent={
           <View style={s.empty}>
-            <Txt style={type.itemTitle}>{copy('emptyTitle')}</Txt>
+            <Txt style={s.emptyTitle}>No prospects match</Txt>
+            <Txt style={s.emptyText}>Try another search or clear the filters.</Txt>
             <OutlineButton
-              label={copy('emptyAction')}
+              label="Clear search and filters"
               onPress={clearAll}
               style={{ paddingHorizontal: 18 }}
             />
@@ -124,31 +249,128 @@ export function ProspectsScreen() {
 
 const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.bg },
+  banner: { backgroundColor: '#FBEBD3', paddingVertical: 6, paddingHorizontal: 16 },
+  bannerText: { fontFamily: font.semibold, fontSize: 12, color: color.warnText },
   header: {
-    backgroundColor: color.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: color.border,
+    backgroundColor: color.navy,
     paddingTop: 14,
     paddingHorizontal: 16,
-    paddingBottom: 10,
     gap: 10,
   },
-  titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  title: { fontFamily: font.bold, fontSize: 22, color: HEAD.text },
+  subtitle: { fontFamily: font.regular, fontSize: 12, color: HEAD.soft },
+  iconBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: HEAD.border,
+    backgroundColor: HEAD.field,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchRow: { flexDirection: 'row', gap: 8 },
+  search: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: HEAD.border,
+    backgroundColor: HEAD.field,
+    paddingLeft: 12,
+    paddingRight: 4,
+  },
+  searchInput: {
+    flex: 1,
+    minWidth: 0,
+    height: '100%',
+    fontFamily: font.regular,
+    fontSize: 14,
+    color: HEAD.text,
+  },
+  clearBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
   filterBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    minHeight: 40,
-    paddingHorizontal: 14,
+    height: 44,
+    paddingHorizontal: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: color.borderStrong,
-    backgroundColor: color.surface,
+    borderColor: HEAD.border,
+    backgroundColor: HEAD.field,
   },
-  filterBtnOn: { backgroundColor: color.navy, borderColor: color.navy },
-  filterText: { fontFamily: font.semibold, fontSize: 14, color: color.navy },
-  chips: { gap: 8 },
-  toggles: { flexDirection: 'row', gap: 8 },
-  list: { padding: 16, paddingTop: 12, flexGrow: 1 },
-  empty: { alignItems: 'center', gap: 10, paddingVertical: 40, paddingHorizontal: 12 },
+  filterText: { fontFamily: font.semibold, fontSize: 14, color: HEAD.text },
+  badge: {
+    minWidth: 20,
+    height: 20,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: color.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontFamily: font.mono, fontSize: 11, color: color.navy },
+  // Rounded pills, like Radar's signal chips.
+  tabs: { gap: 8, paddingBottom: 12 },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 44,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: HEAD.border,
+  },
+  tabOn: { backgroundColor: color.surface, borderColor: color.surface },
+  tabText: { fontFamily: font.semibold, fontSize: 14, color: HEAD.text },
+  tabTextOn: { fontFamily: font.bold, color: color.navy },
+  count: {
+    minWidth: 22,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 10,
+    backgroundColor: HEAD.field,
+    alignItems: 'center',
+  },
+  countOn: { backgroundColor: color.blueTint },
+  countText: { fontFamily: font.mono, fontSize: 11, color: HEAD.text },
+  countTextOn: { color: color.navy },
+  summary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    backgroundColor: color.bg,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+  },
+  summaryText: { flex: 1, fontFamily: font.regular, fontSize: 12, color: color.text3 },
+  sortBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 44,
+    paddingHorizontal: 4,
+  },
+  sortText: { fontFamily: font.semibold, fontSize: 13, color: color.navy },
+  list: { paddingHorizontal: 16, paddingBottom: 24, flexGrow: 1 },
+  sectionHead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingTop: 14,
+    paddingBottom: 8,
+  },
+  sectionTitle: { fontFamily: font.bold, fontSize: 12, letterSpacing: 0.6, color: color.text2 },
+  sectionHint: { fontFamily: font.regular, fontSize: 12, color: color.text3 },
+  empty: { alignItems: 'center', gap: 8, paddingVertical: 48, paddingHorizontal: 12 },
+  emptyTitle: { fontFamily: font.semibold, fontSize: 16, color: color.text },
+  emptyText: { fontFamily: font.regular, fontSize: 13, color: color.text3, textAlign: 'center' },
 });

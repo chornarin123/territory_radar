@@ -85,6 +85,10 @@ src/
 - **Radar** uses the shared filters too, but not those two list-only toggles. It
   shows every live prospect, excluding closed and no-need, so a low-priority
   pin can appear there and not in the list.
+- **Sample prospects.** `node scripts/add-sample-prospects.mjs` adds 60 generated
+  prospects (`prospect_s001`…) to `data.json` for officer_001, 15 in each demo
+  sangkat, each pinned inside its sangkat's real polygon, with a signal, evidence
+  and product match. All synthetic; re-running replaces the batch.
 - **Today** says what to do next: next visit, actions, new leads, area pulse. Its
   numbers come from the shared visit plan and workspace, so they match Visits and
   Radar. With nothing saved for the day, the plan starts from the server's route.

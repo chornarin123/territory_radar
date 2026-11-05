@@ -5,9 +5,10 @@
  *   node scripts/generate-area-demand.mjs
  *
  * Shape (see apps/mobile/src/data/areaDemand.ts):
- *   score[type] 0–100 = demand for that loan type relative to every other commune
- *                       (a percentile rank across the country);
  *   mix[type]   %     = share of the commune's own predicted demand; sums to 100.
+ *   score[type] 0–100 = how that share compares with every other commune (a
+ *                       percentile rank of mix[type] across the country), so the
+ *                       top scores are where the loan is the biggest part of demand.
  *
  * The numbers are invented. The only structure in them is a mild urban/rural
  * lean: Phnom Penh sangkats lean to car, home, payroll and personal loans,
@@ -71,10 +72,19 @@ const raw = new Map(
   }),
 );
 
-// Score: percentile rank of the commune's raw demand among all communes.
+// Mix: each loan type's share of the commune's own demand, in whole percent.
+const share = (code, i) => raw.get(code)[i] / raw.get(code).reduce((a, b) => a + b, 0);
+const mix = new Map(codes.map((code) => [code, toPercent(raw.get(code))]));
+
+// Score: percentile rank of that loan type's share, among all communes. So the
+// highest scores are where the loan makes up the biggest part of demand, and a
+// higher percentage never scores lower: ranked by the shown percentage, with the
+// exact share breaking ties.
 const score = new Map(codes.map((c) => [c, {}]));
 LOAN_TYPES.forEach((t, i) => {
-  const sorted = [...codes].sort((a, b) => raw.get(a)[i] - raw.get(b)[i]);
+  const sorted = [...codes].sort(
+    (a, b) => mix.get(a)[i] - mix.get(b)[i] || share(a, i) - share(b, i),
+  );
   sorted.forEach((code, rank) => {
     score.get(code)[t] = Math.round((rank / (sorted.length - 1)) * 100);
   });
@@ -82,10 +92,9 @@ LOAN_TYPES.forEach((t, i) => {
 
 const communes = {};
 for (const code of codes) {
-  const pct = toPercent(raw.get(code));
   communes[code] = {
     score: score.get(code),
-    mix: Object.fromEntries(LOAN_TYPES.map((t, i) => [t, pct[i]])),
+    mix: Object.fromEntries(LOAN_TYPES.map((t, i) => [t, mix.get(code)[i]])),
   };
 }
 

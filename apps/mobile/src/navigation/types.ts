@@ -18,6 +18,8 @@ export type RootStackParamList = {
   /** `question` is sent as the first message, once. */
   Coach: { id: string; question?: string };
   Filters: undefined;
+  /** Drill-down area picker for the Prospects filter. */
+  AreaPicker: undefined;
   /** Why a sangkat scores what it does; `chat` opens Ask Radar straight away. */
   Evidence: { code: string; loanType: LoanType; chat?: boolean };
 };

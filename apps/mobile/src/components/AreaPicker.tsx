@@ -10,7 +10,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Check, ChevronLeft, ChevronRight, Minus, Search, X } from 'lucide-react-native';
+import { ChevronLeft, Search, X } from 'lucide-react-native';
 import {
   SEARCH_LIMIT,
   inAreas,
@@ -23,9 +23,9 @@ import {
   toggleArea,
   type AreaNode,
   type AreaTree,
-  type Tick,
 } from '../data/areas';
 import { color, font } from '../theme/tokens';
+import { AreaRow } from './AreaRow';
 import { OutlineButton, PrimaryButton, Txt } from './ui';
 
 // From the area-filter spec; the rest comes from the app's tokens.
@@ -36,11 +36,7 @@ const C = {
   meta: '#5b6576',
   fieldBg: '#f6f8fb',
   fieldBorder: '#d5dbe4',
-  rowBorder: '#e1e5ec',
   rowOnBg: '#eef3fa',
-  rowOnBorder: '#bccbe3',
-  allBg: '#f3f6fa',
-  boxOff: '#8a94a6',
   footerLine: '#e6e9ef',
   chipBorder: '#c7d3e6',
 };
@@ -309,66 +305,6 @@ export function AreaPicker({
   );
 }
 
-/** One area: the box ticks it; the body drills in, or ticks a commune. */
-function AreaRow({
-  node,
-  title = node.name_en,
-  tick,
-  meta,
-  onTick,
-  onOpen,
-  all,
-}: {
-  node: AreaNode;
-  title?: string;
-  tick: Tick;
-  meta: string;
-  onTick: () => void;
-  onOpen?: () => void;
-  all?: boolean;
-}) {
-  const on = tick !== 'off';
-  return (
-    <View style={[s.row, all && s.rowAll, on && !all && s.rowOn]}>
-      <Pressable
-        onPress={onTick}
-        accessibilityRole="checkbox"
-        accessibilityState={{
-          checked: tick === 'on' ? true : tick === 'partial' ? 'mixed' : false,
-        }}
-        aria-label={`Select ${title}`}
-        style={s.tickArea}
-      >
-        <View style={[s.box, on ? s.boxOn : s.boxOff]}>
-          {tick === 'on' ? <Check size={15} color={color.surface} strokeWidth={3} /> : null}
-          {tick === 'partial' ? <Minus size={15} color={color.surface} strokeWidth={3} /> : null}
-        </View>
-      </Pressable>
-      <Pressable
-        onPress={onOpen ?? onTick}
-        accessibilityRole="button"
-        aria-label={onOpen ? `Open ${title}` : `${on ? 'Unselect' : 'Select'} ${title}`}
-        style={({ pressed }) => [s.rowBody, pressed && { opacity: 0.7 }]}
-      >
-        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-          <View style={s.names}>
-            <Txt style={[s.name, all && { fontFamily: font.bold }]} numberOfLines={1}>
-              {title}
-            </Txt>
-            {!all && node.name_km ? (
-              <Txt style={s.nameKm} numberOfLines={1}>
-                {node.name_km}
-              </Txt>
-            ) : null}
-          </View>
-          {meta ? <Txt style={s.meta}>{meta}</Txt> : null}
-        </View>
-        {onOpen ? <ChevronRight size={20} color={C.label} /> : null}
-      </Pressable>
-    </View>
-  );
-}
-
 function IconButton({
   label,
   onPress,
@@ -486,40 +422,6 @@ const s = StyleSheet.create({
   state: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
   list: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
   empty: { textAlign: 'center', paddingVertical: 24 },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 64,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: C.rowBorder,
-    backgroundColor: color.surface,
-  },
-  rowOn: { backgroundColor: C.rowOnBg, borderColor: C.rowOnBorder },
-  rowAll: { backgroundColor: C.allBg },
-  tickArea: { width: 52, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center' },
-  box: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  boxOn: { backgroundColor: color.navy, borderColor: color.navy },
-  boxOff: { backgroundColor: color.surface, borderColor: C.boxOff },
-  rowBody: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    gap: 8,
-    paddingVertical: 10,
-    paddingRight: 12,
-  },
-  names: { flexDirection: 'row', alignItems: 'baseline', gap: 8, minWidth: 0 },
-  name: { flexShrink: 1, fontFamily: font.semibold, fontSize: 15, color: color.text },
-  nameKm: { flexShrink: 2, fontSize: 13, color: C.meta },
   meta: { fontFamily: font.regular, fontSize: 13, color: C.meta },
   footer: {
     borderTopWidth: 1,

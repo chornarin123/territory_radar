@@ -96,6 +96,7 @@ export function Chip({
   count,
   shape = 'round',
   onNavy,
+  disabled,
 }: {
   label: string;
   selected: boolean;
@@ -103,6 +104,8 @@ export function Chip({
   count?: number;
   shape?: 'round' | 'square';
   onNavy?: boolean;
+  /** Greyed out and not tappable, e.g. an option nothing matches. */
+  disabled?: boolean;
 }) {
   const empty = count === 0 && !selected;
   const look = onNavy
@@ -117,8 +120,9 @@ export function Chip({
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       accessibilityRole="button"
-      accessibilityState={{ selected }}
+      accessibilityState={{ selected, disabled: !!disabled }}
       accessibilityLabel={count === undefined ? label : `${label}, ${count}`}
       style={({ pressed }) => [
         s.chip,

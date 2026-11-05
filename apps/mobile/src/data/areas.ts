@@ -226,12 +226,80 @@ export const SEARCH_LIMIT = 60;
  * English names match case-insensitively, Khmer names as an exact substring.
  * Provinces first, then districts, then communes; at most SEARCH_LIMIT shown.
  */
-export function searchAreas(tree: AreaTree, query: string): { results: AreaNode[]; total: number } {
+export function searchAreas(
+  tree: AreaTree,
+  query: string,
+  limit: number = SEARCH_LIMIT,
+): { results: AreaNode[]; total: number } {
   const q = query.trim();
   if (!q) return { results: [], total: 0 };
   const lower = q.toLowerCase();
   const hits = tree.all.filter(
     (n) => n.name_en.toLowerCase().includes(lower) || (n.name_km ?? '').includes(q),
   );
-  return { results: hits.slice(0, SEARCH_LIMIT), total: hits.length };
+  return { results: hits.slice(0, limit), total: hits.length };
+}
+
+// ─── Prospect counts (the Prospects filter) ──────────────────────────────────
+
+const LEVEL_RANK: Record<AreaLevel, number> = { province: 0, district: 1, commune: 2 };
+
+/** Most prospects first; then provinces before districts before communes; then A–Z. */
+export function byCount(nodes: readonly AreaNode[], counts: ReadonlyMap<string, number>) {
+  return [...nodes].sort(
+    (a, b) =>
+      (counts.get(b.code) ?? 0) - (counts.get(a.code) ?? 0) ||
+      LEVEL_RANK[a.level] - LEVEL_RANK[b.level] ||
+      a.name_en.localeCompare(b.name_en),
+  );
+}
+
+/**
+ * Search for the picker: every match ranked by prospect count, optionally only
+ * areas that have prospects, at most `limit`. `hidden` counts the matches left
+ * out for having none.
+ */
+export function searchByCount(
+  tree: AreaTree,
+  query: string,
+  counts: ReadonlyMap<string, number>,
+  { onlyWithProspects, limit }: { onlyWithProspects: boolean; limit: number },
+) {
+  const { results } = searchAreas(tree, query, Infinity);
+  const shown = onlyWithProspects ? results.filter((n) => counts.get(n.code)) : results;
+  const ranked = byCount(shown, counts);
+  return {
+    results: ranked.slice(0, limit),
+    total: ranked.length,
+    hidden: results.length - shown.length,
+  };
+}
+
+/** The summary row: "Boeng Kak Ti Pir" over "Tuol Kouk · 2 prospects". */
+export function selectionSummary(
+  sel: readonly string[],
+  tree: AreaTree | null,
+  prospects: number,
+): { title: string; sub: string } {
+  const sorted = [...sel].sort();
+  const nodes = sorted.map((c) => tree?.byCode.get(c)).filter((n) => n !== undefined);
+  const parents = [...new Set(nodes.map((n) => n.parent?.name_en ?? 'Cambodia'))];
+  const where = sel.length ? (parents.length ? parents.join(', ') : 'Cambodia') : 'Cambodia';
+  const title = !sel.length
+    ? 'All areas'
+    : !nodes.length
+      ? `${sel.length} area${sel.length === 1 ? '' : 's'}`
+      : sel.length === 1
+        ? nodes[0]!.name_en
+        : `${nodes[0]!.name_en} +${sel.length - 1} more`;
+  return { title, sub: `${where} · ${prospectsText(prospects)}` };
+}
+
+/** Communes with the most prospects, for the territory chips. */
+export function topCommunes(counts: ReadonlyMap<string, number>, n: number): string[] {
+  return [...counts]
+    .filter(([code, k]) => code.length === 6 && k > 0)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, n)
+    .map(([code]) => code);
 }

@@ -3,11 +3,12 @@
 import {
   STAGE_STATUSES,
   productShortName,
+  sectorLabel,
   signalGroupOf,
   type SignalGroup,
   type Stage,
 } from './labels';
-import { inAreas } from './areas';
+import { inAreas, prospectCounts } from './areas';
 import type {
   InterestStatus,
   PriorityBand,
@@ -84,7 +85,7 @@ export const isStale = (v: ProspectView) =>
 
 // ─── Filters (shared by Filters, Prospects and Radar) ─────────────────────────
 
-export type SortKey = 'priority' | 'fresh' | 'name';
+export type SortKey = 'priority' | 'nearest' | 'fresh' | 'name';
 
 export interface FilterState {
   area: string[]; // area codes at any level: "12", "1201", "120101"
@@ -148,6 +149,20 @@ export function matchesFilters(v: ProspectView, f: FilterState, skip?: ChipGroup
   return true;
 }
 
+/**
+ * Prospects per area code at every level (province, district, commune), given
+ * every filter except area: one pass over the prospects, rolled up by prefix.
+ */
+export function areaCounts(
+  views: ProspectView[],
+  f: FilterState,
+  base: (v: ProspectView) => boolean = () => true,
+): Map<string, number> {
+  return prospectCounts(
+    views.filter((v) => base(v) && matchesFilters(v, f, 'area')).map((v) => v.communeCode),
+  );
+}
+
 /** Count per option of one chip group, given every other active filter. */
 export function chipCounts<T extends string>(
   views: ProspectView[],
@@ -190,10 +205,21 @@ export function sortViews(views: ProspectView[], sort: SortKey): ProspectView[] 
 
 // ─── Prospects-screen quick controls ──────────────────────────────────────────
 
-export type ListStatus = 'active' | ProspectStatus | 'closedset';
+/** Prospects-screen tabs; which prospects each holds is in features/prospects. */
+export type ProspectTab = 'all' | 'today' | 'new' | 'working' | 'referred' | 'closed';
+export const PROSPECT_TABS: ProspectTab[] = [
+  'all',
+  'today',
+  'new',
+  'working',
+  'referred',
+  'closed',
+];
 
 export interface ListControls {
-  status: ListStatus;
+  tab: ProspectTab;
+  /** Matches name, sector and sangkat, ignoring case. */
+  search: string;
   /** "Priority ≥ N" toggle; N = settings.defaultProspectFilter.minScore. */
   minScoreOn: boolean;
   minScore: number;
@@ -201,18 +227,21 @@ export interface ListControls {
   hideNoNeed: boolean;
 }
 
+/** Search, the priority floor and hide-no-need. The tab is applied separately. */
 export function matchesListControls(v: ProspectView, c: ListControls): boolean {
-  if (c.status === 'active') {
-    if (v.status === 'closed') return false;
-  } else if (c.status === 'closedset') {
-    if (v.status !== 'closed' && v.status !== 'not_interested') return false;
-  } else if (v.status !== c.status) {
-    return false;
-  }
+  if (!matchesSearch(v, c.search)) return false;
   if (c.minScoreOn && v.score < c.minScore) return false;
-  // Viewing the closed set means asking for no-need prospects, so don't hide them.
-  if (c.hideNoNeed && c.status !== 'closedset' && v.status === 'not_interested') return false;
+  // The Closed tab is where no-need prospects live, so don't hide them there.
+  if (c.hideNoNeed && c.tab !== 'closed' && v.status === 'not_interested') return false;
   return true;
+}
+
+export function matchesSearch(v: ProspectView, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return [v.name, sectorLabel(v.p.sector), v.p.sector, v.commune].some((s) =>
+    s.toLowerCase().includes(q),
+  );
 }
 
 /** Radar shows live prospects only: closed and no-need are excluded (spec §3.2). */

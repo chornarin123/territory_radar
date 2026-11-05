@@ -27,11 +27,13 @@ async function officerWorkspace(officerId = 'officer_001'): Promise<Workspace> {
 }
 
 const ws = await officerWorkspace();
+// Everything officer_001 owns in data.json is inside their territory.
+const OWN = raw.prospects.filter((p) => p.assignmentOfficerId === 'officer_001').length;
 const views = buildProspectViews(ws);
 
 describe('workspace scoping', () => {
   it('only contains the officer’s own prospects', () => {
-    expect(ws.prospects).toHaveLength(32);
+    expect(ws.prospects).toHaveLength(OWN);
     expect(ws.prospects.every((p) => p.assignmentOfficerId === 'officer_001')).toBe(true);
   });
 
@@ -62,7 +64,7 @@ describe('area codes', () => {
 describe('prospect views', () => {
   it('skip the directory listing when picking the signal to show', () => {
     expect(views.every((v) => v.signal?.type !== 'directory_presence')).toBe(true);
-    expect(views.filter((v) => v.signal).length).toBe(32);
+    expect(views.filter((v) => v.signal).length).toBe(OWN);
   });
 
   it('give every signal a Radar group', () => {
@@ -108,7 +110,7 @@ describe('chip counts', () => {
 
 describe('filters', () => {
   it('pass everything when empty', () => {
-    expect(views.filter((v) => matchesFilters(v, EMPTY_FILTERS))).toHaveLength(32);
+    expect(views.filter((v) => matchesFilters(v, EMPTY_FILTERS))).toHaveLength(OWN);
     expect(activeFilterCount(EMPTY_FILTERS)).toBe(0);
   });
 
@@ -129,17 +131,34 @@ describe('filters', () => {
 });
 
 describe('Prospects list controls', () => {
-  const base = { status: 'active' as const, minScoreOn: false, minScore: 60, hideNoNeed: false };
+  const base = {
+    tab: 'all' as const,
+    search: '',
+    minScoreOn: false,
+    minScore: 60,
+    hideNoNeed: false,
+  };
 
-  it('"All active" excludes closed only', () => {
-    const hits = views.filter((v) => matchesListControls(v, base));
-    expect(hits.some((v) => v.status === 'closed')).toBe(false);
-    expect(hits.some((v) => v.status === 'not_interested')).toBe(true);
+  it('with nothing set, keep everything', () => {
+    expect(views.filter((v) => matchesListControls(v, base))).toHaveLength(views.length);
   });
 
-  it('"Hide no-need" does not hide them when you asked for the closed set', () => {
+  it('search name, sector and sangkat, ignoring case', () => {
+    const find = (search: string) =>
+      views.filter((v) => matchesListControls(v, { ...base, search })).map((v) => v.name);
+    expect(find('lotus corner')).toEqual(['Lotus Corner Café']);
+    expect(find('FOOD & bev').length).toBeGreaterThan(0);
+    expect(find('tonle basak').length).toBe(
+      views.filter((v) => v.commune === 'Tonle Basak').length,
+    );
+    expect(find('zzz-no-such-thing')).toEqual([]);
+  });
+
+  it('"Hide no-need" hides them, except on the Closed tab', () => {
+    const hidden = views.filter((v) => matchesListControls(v, { ...base, hideNoNeed: true }));
+    expect(hidden.some((v) => v.status === 'not_interested')).toBe(false);
     const closed = views.filter((v) =>
-      matchesListControls(v, { ...base, status: 'closedset', hideNoNeed: true }),
+      matchesListControls(v, { ...base, tab: 'closed', hideNoNeed: true }),
     );
     expect(closed.some((v) => v.status === 'not_interested')).toBe(true);
   });

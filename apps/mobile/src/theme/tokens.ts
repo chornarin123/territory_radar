@@ -7,7 +7,7 @@ export const color = {
   navySoft: '#C9D5E8', // secondary text on navy (prototype)
   navyBar: '#2A4A7A', // bar track / count badge on navy
   navyBarFill: '#A9C1E2',
-  blue: '#5B83BE',
+  blue: '#3E6AAE',
   blueTint: '#E6EDF7',
   grey: '#9AA0AA',
   bg: '#F3F4F6',
@@ -26,6 +26,8 @@ export const color = {
   warnDot: '#C2620F',
   warnStrong: '#9A4A0B', // flag pill text
   overdue: '#B4400B',
+  overdueBg: '#FCE4DA',
+  overdueText: '#9C2F06',
   selectedRing: '#E8913F',
   okBg: '#E5F2E8',
   okText: '#1F5E33',

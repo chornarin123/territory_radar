@@ -11,6 +11,7 @@ import {
   fillFor,
   lightTextOn,
   mixBarWidth,
+  scoreMeaning,
   mixRows,
   rankCommunes,
   shortName,
@@ -46,9 +47,44 @@ describe('shading', () => {
     expect(lightTextOn(60)).toBe(true);
   });
 
-  it('caps mix bars at full width', () => {
-    expect(mixBarWidth(12)).toBe(36);
-    expect(mixBarWidth(40)).toBe(100);
+  it('draws mix bars at the share itself', () => {
+    expect(mixBarWidth(25)).toBe(25);
+    expect(mixBarWidth(140)).toBe(100);
+  });
+
+  it('explains a score through the loan’s share of demand', () => {
+    expect(scoreMeaning(100, 31, 'Car loan')).toBe(
+      'Car loan is 31% of predicted loan demand here, one of the biggest shares of any area in Cambodia.',
+    );
+    expect(scoreMeaning(76, 18, 'Car loan')).toBe(
+      'Car loan is 18% of predicted loan demand here, a bigger share than in 76% of areas in Cambodia.',
+    );
+    expect(scoreMeaning(0, 3, 'Car loan')).toMatch(/smallest/);
+  });
+
+  it('scores a bigger share higher, everywhere and for every loan type', () => {
+    const all = Object.values(demand.communes);
+    for (const t of LOAN_TYPES) {
+      const sorted = [...all].sort((a, b) => a.mix[t] - b.mix[t]);
+      for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i]!.mix[t] > sorted[i - 1]!.mix[t]) {
+          expect(sorted[i]!.score[t]).toBeGreaterThanOrEqual(sorted[i - 1]!.score[t]);
+        }
+      }
+    }
+  });
+
+  it('ranks the bigger share first when rounded scores tie', () => {
+    const pp = communesIn(tree.byCode.get('12')!);
+    const ranked = rankCommunes(pp, demand, 'car');
+    for (let i = 1; i < ranked.length; i++) {
+      const [a, b] = [ranked[i - 1]!, ranked[i]!];
+      if (a.score === b.score) {
+        expect(demand.communes[a.node.code]!.mix.car).toBeGreaterThanOrEqual(
+          demand.communes[b.node.code]!.mix.car,
+        );
+      }
+    }
   });
 });
 

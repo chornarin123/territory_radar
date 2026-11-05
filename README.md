@@ -22,13 +22,13 @@ meeting customers.
 It turns public signals into a plan for the day, and shows the evidence behind
 each suggestion, so the officer can judge it.
 
-| Screen    | What the officer gets                                                                                                        |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Today     | The next visit with why now and what to ask, actions that need attention, new leads, and the biggest change in area demand.  |
-| Radar     | Prospects on a map, filtered by province, district or sangkat and by signal. **Area demand** shades sangkats by loan type.    |
-| Prospects | The full list with filters, and a profile for each business with its signals, evidence and suggested products.                |
-| Visits    | Prospects near the officer's location, picked into a day's route, with check-ins. Distances are straight-line, not road.      |
-| Profile   | The officer's territory and settings, including Khmer labels.                                                                 |
+| Screen    | What the officer gets                                                                                                       |
+| --------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Today     | The next visit with why now and what to ask, actions that need attention, new leads, and the biggest change in area demand. |
+| Radar     | Prospects on a map, filtered by province, district or sangkat and by signal. **Area demand** shades sangkats by loan type.  |
+| Prospects | The full list with filters, and a profile for each business with its signals, evidence and suggested products.              |
+| Visits    | Prospects near the officer's location, picked into a day's route, with check-ins. Distances are straight-line, not road.    |
+| Profile   | The officer's territory and settings, including Khmer labels.                                                               |
 
 Two AI assistants support this:
 
