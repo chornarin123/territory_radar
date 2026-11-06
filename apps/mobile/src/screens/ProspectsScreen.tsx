@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Pressable, ScrollView, SectionList, StyleSheet, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowUpDown, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react-native';
+import { useGutter, useWide } from '../components/layout';
 import { OutlineButton, Txt } from '../components/ui';
 import { useFilters } from '../data/FilterContext';
 import {
@@ -91,6 +92,19 @@ export function ProspectsScreen() {
     () => sections(list.tab === 'closed' ? rows : live, list.tab, filters.sort),
     [rows, live, list.tab, filters.sort],
   );
+  // Wide screens: two cards per row, content centred at LIST_MAX. Phones: one per row.
+  const wide = useWide();
+  const gutter = useGutter(LIST_MAX);
+  const perRow = wide ? 2 : 1;
+  const gridGroups = useMemo(
+    () =>
+      groups.map((g) => {
+        const data: (typeof g.data)[] = [];
+        for (let i = 0; i < g.data.length; i += perRow) data.push(g.data.slice(i, i + perRow));
+        return { ...g, data };
+      }),
+    [groups, perRow],
+  );
   const shown = groups.reduce((n, g) => n + g.data.length, 0);
   const todayCount = live.filter((r) => r.today).length;
   const nFilters = activeFilterCount(filters);
@@ -103,7 +117,7 @@ export function ProspectsScreen() {
         </View>
       ) : null}
 
-      <View style={s.header}>
+      <View style={[s.header, { paddingHorizontal: gutter }]}>
         <View style={s.titleRow}>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Txt style={s.title}>Prospects</Txt>
@@ -195,7 +209,7 @@ export function ProspectsScreen() {
         </ScrollView>
       </View>
 
-      <View style={s.summary}>
+      <View style={[s.summary, { paddingHorizontal: gutter }]}>
         <Txt style={s.summaryText} numberOfLines={1}>
           {summaryText(list.minScoreOn, list.minScore, list.hideNoNeed)}
         </Txt>
@@ -211,10 +225,10 @@ export function ProspectsScreen() {
       </View>
 
       <SectionList
-        sections={groups}
-        keyExtractor={(r) => r.v.id}
+        sections={gridGroups}
+        keyExtractor={(pair) => pair[0]!.v.id}
         stickySectionHeadersEnabled={false}
-        contentContainerStyle={s.list}
+        contentContainerStyle={[s.list, { paddingHorizontal: gutter }]}
         keyboardShouldPersistTaps="handled"
         renderSectionHeader={({ section }) => (
           <View style={s.sectionHead}>
@@ -226,10 +240,17 @@ export function ProspectsScreen() {
         )}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         renderItem={({ item }) => (
-          <ProspectListCard
-            row={item}
-            onPress={() => nav.navigate('ProspectDetail', { id: item.v.id })}
-          />
+          <View style={s.cardRow}>
+            {item.map((r) => (
+              <View key={r.v.id} style={s.cardCell}>
+                <ProspectListCard
+                  row={r}
+                  onPress={() => nav.navigate('ProspectDetail', { id: r.v.id })}
+                />
+              </View>
+            ))}
+            {item.length < perRow ? <View style={s.cardCell} /> : null}
+          </View>
         )}
         ListEmptyComponent={
           <View style={s.empty}>
@@ -246,6 +267,9 @@ export function ProspectsScreen() {
     </View>
   );
 }
+
+/** Widest the Prospects content grows on a big screen. */
+const LIST_MAX = 1100;
 
 const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.bg },
@@ -361,6 +385,8 @@ const s = StyleSheet.create({
   },
   sortText: { fontFamily: font.semibold, fontSize: 13, color: color.navy },
   list: { paddingHorizontal: 16, paddingBottom: 24, flexGrow: 1 },
+  cardRow: { flexDirection: 'row', gap: 12 },
+  cardCell: { flex: 1, minWidth: 0 },
   sectionHead: {
     flexDirection: 'row',
     justifyContent: 'space-between',

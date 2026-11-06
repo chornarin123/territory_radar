@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { readColumn } from '../components/layout';
 import { ChevronLeft, Search, X } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AreaRow } from '../components/AreaRow';
@@ -192,7 +193,7 @@ export function AreaPickerScreen({ navigation }: RootScreenProps<'AreaPicker'>) 
   };
 
   return (
-    <View style={[s.screen, { paddingTop: insets.top }]}>
+    <View style={[s.screen, readColumn, { paddingTop: insets.top }]}>
       <View style={s.head}>
         <Pressable
           onPress={back}

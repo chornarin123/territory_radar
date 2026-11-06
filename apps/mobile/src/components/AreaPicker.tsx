@@ -9,6 +9,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import { SHEET_WIDE, WIDE_FROM } from './layout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, Search, X } from 'lucide-react-native';
 import {
@@ -66,7 +67,8 @@ export function AreaPicker({
   selected: string[];
   onApply: (codes: string[]) => void;
 }) {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const wide = width >= WIDE_FROM;
   const insets = useSafeAreaInsets();
   const [draft, setDraft] = useState<Set<string>>(new Set(selected));
   const [currentCode, setCurrentCode] = useState<string | null>(null);
@@ -125,7 +127,7 @@ export function AreaPicker({
           role="dialog"
           aria-modal
           aria-label="Filter by area"
-          style={[s.sheet, { height: Math.min(620, height * 0.9) }]}
+          style={[s.sheet, wide && SHEET_WIDE, { height: Math.min(620, height * 0.9) }]}
         >
           <View style={s.grabber} />
 

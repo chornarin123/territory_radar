@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { PANEL_WIDTH, useWide } from '../../components/layout';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowLeft, Check } from 'lucide-react-native';
 import { MapView } from '../../components/map/MapView';
@@ -76,6 +77,20 @@ export function VisitRoute({
         : [...p.checkedIn, id],
     }));
 
+  // Wide screens: the map fills the left, the stops scroll in a panel on the right.
+  const wide = useWide();
+  const map = (
+    <MapView
+      style={wide ? s.mapWide : s.map}
+      center={start.point}
+      zoom={zoom}
+      pins={pins}
+      origin={mapOrigin}
+      route={route}
+      fit={fit}
+    />
+  );
+
   return (
     <View style={s.screen}>
       <View style={s.header}>
@@ -96,112 +111,110 @@ export function VisitRoute({
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
-        <MapView
-          style={s.map}
-          center={start.point}
-          zoom={zoom}
-          pins={pins}
-          origin={mapOrigin}
-          route={route}
-          fit={fit}
-        />
+      <View style={wide ? s.split : s.stack}>
+        {wide ? map : null}
+        <ScrollView
+          style={wide ? s.panel : undefined}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        >
+          {wide ? null : map}
 
-        <View style={s.statBar}>
-          <View style={s.stat}>
-            <Txt style={s.statValue}>{n}</Txt>
-            <Txt style={s.statLabel}>visits · {n * MINUTES_PER_VISIT} min</Txt>
+          <View style={s.statBar}>
+            <View style={s.stat}>
+              <Txt style={s.statValue}>{n}</Txt>
+              <Txt style={s.statLabel}>visits · {n * MINUTES_PER_VISIT} min</Txt>
+            </View>
+            <View style={s.stat}>
+              <Txt style={s.statValue}>{km.toFixed(1)}</Txt>
+              <Txt style={s.statLabel}>km straight-line</Txt>
+            </View>
+            <View style={s.stat}>
+              <Txt style={s.statValue}>
+                {done}/{n}
+              </Txt>
+              <Txt style={s.statLabel}>completed</Txt>
+            </View>
           </View>
-          <View style={s.stat}>
-            <Txt style={s.statValue}>{km.toFixed(1)}</Txt>
-            <Txt style={s.statLabel}>km straight-line</Txt>
-          </View>
-          <View style={s.stat}>
-            <Txt style={s.statValue}>
-              {done}/{n}
+
+          <View style={{ paddingHorizontal: 16, paddingTop: 12, gap: 6 }}>
+            {plan.optimized ? (
+              <OutlineButton
+                label="Optimized · nearest stop first"
+                onPress={() => update((p) => ({ ...p, optimized: false }))}
+              />
+            ) : (
+              <PrimaryButton
+                label="Optimize route order"
+                onPress={() => update((p) => ({ ...p, optimized: true }))}
+              />
+            )}
+            <Txt style={[type.caption, { fontSize: 11 }]}>
+              Simulated straight-line distances, not real road navigation.
             </Txt>
-            <Txt style={s.statLabel}>completed</Txt>
           </View>
-        </View>
 
-        <View style={{ paddingHorizontal: 16, paddingTop: 12, gap: 6 }}>
-          {plan.optimized ? (
-            <OutlineButton
-              label="Optimized · nearest stop first"
-              onPress={() => update((p) => ({ ...p, optimized: false }))}
-            />
-          ) : (
-            <PrimaryButton
-              label="Optimize route order"
-              onPress={() => update((p) => ({ ...p, optimized: true }))}
-            />
-          )}
-          <Txt style={[type.caption, { fontSize: 11 }]}>
-            Simulated straight-line distances, not real road navigation.
-          </Txt>
-        </View>
-
-        <View style={s.cards}>
-          {n === 0 ? (
-            <Txt style={[type.body, { textAlign: 'center', paddingVertical: 16 }]}>
-              None of the planned prospects are available any more. Go back to plan again.
-            </Txt>
-          ) : null}
-          {order.map((c, i) => {
-            const isIn = checked.has(c.id);
-            return (
-              <View key={c.id} style={s.card}>
-                <View style={s.cardTop}>
-                  <View style={[s.num, { backgroundColor: isIn ? P.green : color.navy }]}>
-                    <Txt style={s.numText}>{i + 1}</Txt>
-                  </View>
-                  <View style={{ flex: 1, gap: 2 }}>
-                    <View style={s.rowBetween}>
-                      <Txt style={s.name} numberOfLines={1}>
-                        {c.name}
-                      </Txt>
-                      <Txt style={s.time}>{timeSlot(i)}</Txt>
+          <View style={s.cards}>
+            {n === 0 ? (
+              <Txt style={[type.body, { textAlign: 'center', paddingVertical: 16 }]}>
+                None of the planned prospects are available any more. Go back to plan again.
+              </Txt>
+            ) : null}
+            {order.map((c, i) => {
+              const isIn = checked.has(c.id);
+              return (
+                <View key={c.id} style={s.card}>
+                  <View style={s.cardTop}>
+                    <View style={[s.num, { backgroundColor: isIn ? P.green : color.navy }]}>
+                      <Txt style={s.numText}>{i + 1}</Txt>
                     </View>
-                    <Txt style={type.caption}>
-                      {c.commune} · priority {c.score}
-                    </Txt>
+                    <View style={{ flex: 1, gap: 2 }}>
+                      <View style={s.rowBetween}>
+                        <Txt style={s.name} numberOfLines={1}>
+                          {c.name}
+                        </Txt>
+                        <Txt style={s.time}>{timeSlot(i)}</Txt>
+                      </View>
+                      <Txt style={type.caption}>
+                        {c.commune} · priority {c.score}
+                      </Txt>
+                    </View>
                   </View>
+                  <Txt style={type.bodySm}>{purposeFor(c.group)}</Txt>
+                  {plan.checks[c.id]?.map((check) => (
+                    <Txt key={check} style={s.check}>
+                      ☐ {check}
+                    </Txt>
+                  ))}
+                  <View style={s.pills}>
+                    {c.contactConfirmed ? null : (
+                      <Pill label="Contact not confirmed" bg={color.bg} fg={color.text3} />
+                    )}
+                    {c.locationVerified ? null : (
+                      <Pill label="Location not verified" bg={color.bg} fg={color.text3} />
+                    )}
+                  </View>
+                  <Pressable
+                    onPress={() => toggleCheckIn(c.id)}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isIn }}
+                    aria-label={isIn ? `Checked in at ${c.name}. Undo` : `Check in at ${c.name}`}
+                    style={({ pressed }) => [
+                      s.checkBtn,
+                      isIn ? s.checkBtnOn : s.checkBtnOff,
+                      pressed && { opacity: 0.8 },
+                    ]}
+                  >
+                    {isIn ? <Check size={16} color={color.surface} strokeWidth={3} /> : null}
+                    <Txt style={[s.checkText, { color: isIn ? color.surface : color.navy }]}>
+                      {isIn ? 'Checked in' : 'Check in'}
+                    </Txt>
+                  </Pressable>
                 </View>
-                <Txt style={type.bodySm}>{purposeFor(c.group)}</Txt>
-                {plan.checks[c.id]?.map((check) => (
-                  <Txt key={check} style={s.check}>
-                    ☐ {check}
-                  </Txt>
-                ))}
-                <View style={s.pills}>
-                  {c.contactConfirmed ? null : (
-                    <Pill label="Contact not confirmed" bg={color.bg} fg={color.text3} />
-                  )}
-                  {c.locationVerified ? null : (
-                    <Pill label="Location not verified" bg={color.bg} fg={color.text3} />
-                  )}
-                </View>
-                <Pressable
-                  onPress={() => toggleCheckIn(c.id)}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isIn }}
-                  aria-label={isIn ? `Checked in at ${c.name}. Undo` : `Check in at ${c.name}`}
-                  style={({ pressed }) => [
-                    s.checkBtn,
-                    isIn ? s.checkBtnOn : s.checkBtnOff,
-                    pressed && { opacity: 0.8 },
-                  ]}
-                >
-                  {isIn ? <Check size={16} color={color.surface} strokeWidth={3} /> : null}
-                  <Txt style={[s.checkText, { color: isIn ? color.surface : color.navy }]}>
-                    {isIn ? 'Checked in' : 'Check in'}
-                  </Txt>
-                </Pressable>
-              </View>
-            );
-          })}
-        </View>
-      </ScrollView>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -222,6 +235,15 @@ const s = StyleSheet.create({
   },
   back: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   map: { height: 220, backgroundColor: '#E9ECE6' },
+  stack: { flex: 1 },
+  split: { flex: 1, flexDirection: 'row' },
+  mapWide: { flex: 1, backgroundColor: '#E9ECE6' },
+  panel: {
+    width: PANEL_WIDTH,
+    flexGrow: 0,
+    borderLeftWidth: 1,
+    borderLeftColor: color.border,
+  },
   statBar: {
     marginTop: -16,
     marginHorizontal: 16,

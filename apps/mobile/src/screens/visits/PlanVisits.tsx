@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PANEL_WIDTH, useWide } from '../../components/layout';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowUpDown, Check } from 'lucide-react-native';
 import { MapView } from '../../components/map/MapView';
@@ -102,6 +103,7 @@ export function PlanVisits({
 
   const n = plan.ids.length;
   const radiusText = formatRadius(radius);
+  const wide = useWide();
 
   return (
     <View style={s.screen}>
@@ -110,123 +112,128 @@ export function PlanVisits({
         <LocationLine origin={origin} />
       </View>
 
-      <View style={s.map}>
-        <MapView
-          style={StyleSheet.absoluteFill}
-          center={center}
-          zoom={zoom}
-          pins={pins}
-          dots={dots}
-          origin={mapOrigin}
-          circle={circle}
-          fit={fit}
-          onPinPress={toggle}
-        />
-        <View style={s.radiusPill}>
-          <Txt style={s.radiusPillText}>Radius {radiusText} · straight-line</Txt>
-        </View>
-      </View>
-
-      <View style={s.controls}>
-        <View style={{ flex: 1 }}>
-          <Segmented
-            value={String(radius)}
-            onChange={(r) => setRadius(Number(r) as Radius)}
-            options={RADII.map((r) => ({ id: String(r), label: formatRadius(r) }))}
+      {/* Wide screens: map on the left, picking panel on the right. */}
+      <View style={wide ? s.split : s.stack}>
+        <View style={wide ? s.mapWide : s.map}>
+          <MapView
+            style={StyleSheet.absoluteFill}
+            center={center}
+            zoom={zoom}
+            pins={pins}
+            dots={dots}
+            origin={mapOrigin}
+            circle={circle}
+            fit={fit}
+            onPinPress={toggle}
           />
+          <View style={s.radiusPill}>
+            <Txt style={s.radiusPillText}>Radius {radiusText} · straight-line</Txt>
+          </View>
         </View>
-        <Pressable
-          onPress={() => setSort((x) => (x === 'nearest' ? 'priority' : 'nearest'))}
-          accessibilityRole="button"
-          aria-label={`Sorted by ${sort}. Sort by ${sort === 'nearest' ? 'priority' : 'distance'}`}
-          style={({ pressed }) => [s.sortBtn, pressed && { opacity: 0.7 }]}
-        >
-          <ArrowUpDown size={16} color={color.navy} />
-          <Txt style={s.sortText}>{sort === 'nearest' ? 'Nearest' : 'Priority'}</Txt>
-        </Pressable>
-      </View>
 
-      <View style={s.countRow}>
-        <Txt style={s.count}>
-          {inside.length} prospect{inside.length === 1 ? '' : 's'} within {radiusText}
-        </Txt>
-        {next && more ? (
-          <Pressable onPress={() => setRadius(next)} accessibilityRole="link" hitSlop={10}>
-            <Txt style={s.link}>
-              {more} more · widen to {formatRadius(next)}
+        <View style={wide ? s.panel : s.stack}>
+          <View style={s.controls}>
+            <View style={{ flex: 1 }}>
+              <Segmented
+                value={String(radius)}
+                onChange={(r) => setRadius(Number(r) as Radius)}
+                options={RADII.map((r) => ({ id: String(r), label: formatRadius(r) }))}
+              />
+            </View>
+            <Pressable
+              onPress={() => setSort((x) => (x === 'nearest' ? 'priority' : 'nearest'))}
+              accessibilityRole="button"
+              aria-label={`Sorted by ${sort}. Sort by ${sort === 'nearest' ? 'priority' : 'distance'}`}
+              style={({ pressed }) => [s.sortBtn, pressed && { opacity: 0.7 }]}
+            >
+              <ArrowUpDown size={16} color={color.navy} />
+              <Txt style={s.sortText}>{sort === 'nearest' ? 'Nearest' : 'Priority'}</Txt>
+            </Pressable>
+          </View>
+
+          <View style={s.countRow}>
+            <Txt style={s.count}>
+              {inside.length} prospect{inside.length === 1 ? '' : 's'} within {radiusText}
             </Txt>
-          </Pressable>
-        ) : null}
-      </View>
-      {outsideSelected ? (
-        <Txt style={s.outside}>
-          {outsideSelected} selected outside {radiusText}
-        </Txt>
-      ) : null}
-
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.list}>
-        {inside.length === 0 ? (
-          <Txt style={s.empty}>No prospects within {radiusText}. Try a wider radius.</Txt>
-        ) : (
-          inside.map((c, i) => {
-            const on = picked.has(c.id);
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => toggle(c.id)}
-                accessibilityRole="checkbox"
-                accessibilityState={{ checked: on }}
-                aria-label={`Add ${c.name} to visit plan`}
-                style={({ pressed }) => [s.row, on && s.rowOn, pressed && { opacity: 0.85 }]}
-              >
-                <View style={s.tick}>
-                  <View style={[s.box, on ? s.boxOn : s.boxOff]}>
-                    {on ? <Check size={15} color={color.surface} strokeWidth={3} /> : null}
-                  </View>
-                </View>
-                <View style={[s.rank, { backgroundColor: on ? P.amber : P.navy }]}>
-                  <Txt style={s.rankText}>{i + 1}</Txt>
-                </View>
-                <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-                  <Txt style={s.name} numberOfLines={1}>
-                    {c.name}
-                  </Txt>
-                  <Txt style={s.sub} numberOfLines={1}>
-                    {c.commune} · {c.signal}
-                  </Txt>
-                </View>
-                <View style={s.right}>
-                  <Txt style={s.distance}>{formatDistance(c.distance)}</Txt>
-                  <Txt style={s.score}>P{c.score}</Txt>
-                </View>
+            {next && more ? (
+              <Pressable onPress={() => setRadius(next)} accessibilityRole="link" hitSlop={10}>
+                <Txt style={s.link}>
+                  {more} more · widen to {formatRadius(next)}
+                </Txt>
               </Pressable>
-            );
-          })
-        )}
-      </ScrollView>
+            ) : null}
+          </View>
+          {outsideSelected ? (
+            <Txt style={s.outside}>
+              {outsideSelected} selected outside {radiusText}
+            </Txt>
+          ) : null}
 
-      <View style={s.bar}>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Txt style={s.barTitle}>
-            {n} visit{n === 1 ? '' : 's'} selected
-          </Txt>
-          <Txt style={s.barSub} numberOfLines={1}>
-            ~{km.toFixed(1)} km straight-line · {n * MINUTES_PER_VISIT} min on site
-          </Txt>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={s.list}>
+            {inside.length === 0 ? (
+              <Txt style={s.empty}>No prospects within {radiusText}. Try a wider radius.</Txt>
+            ) : (
+              inside.map((c, i) => {
+                const on = picked.has(c.id);
+                return (
+                  <Pressable
+                    key={c.id}
+                    onPress={() => toggle(c.id)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: on }}
+                    aria-label={`Add ${c.name} to visit plan`}
+                    style={({ pressed }) => [s.row, on && s.rowOn, pressed && { opacity: 0.85 }]}
+                  >
+                    <View style={s.tick}>
+                      <View style={[s.box, on ? s.boxOn : s.boxOff]}>
+                        {on ? <Check size={15} color={color.surface} strokeWidth={3} /> : null}
+                      </View>
+                    </View>
+                    <View style={[s.rank, { backgroundColor: on ? P.amber : P.navy }]}>
+                      <Txt style={s.rankText}>{i + 1}</Txt>
+                    </View>
+                    <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+                      <Txt style={s.name} numberOfLines={1}>
+                        {c.name}
+                      </Txt>
+                      <Txt style={s.sub} numberOfLines={1}>
+                        {c.commune} · {c.signal}
+                      </Txt>
+                    </View>
+                    <View style={s.right}>
+                      <Txt style={s.distance}>{formatDistance(c.distance)}</Txt>
+                      <Txt style={s.score}>P{c.score}</Txt>
+                    </View>
+                  </Pressable>
+                );
+              })
+            )}
+          </ScrollView>
+
+          <View style={s.bar}>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Txt style={s.barTitle}>
+                {n} visit{n === 1 ? '' : 's'} selected
+              </Txt>
+              <Txt style={s.barSub} numberOfLines={1}>
+                ~{km.toFixed(1)} km straight-line · {n * MINUTES_PER_VISIT} min on site
+              </Txt>
+            </View>
+            <PrimaryButton
+              label="Plan route →"
+              disabled={!n}
+              onPress={() =>
+                update((p) => ({
+                  ...p,
+                  stage: 'route',
+                  start: origin,
+                  checkedIn: p.checkedIn.filter((id) => p.ids.includes(id)),
+                }))
+              }
+              style={{ paddingHorizontal: 18 }}
+            />
+          </View>
         </View>
-        <PrimaryButton
-          label="Plan route →"
-          disabled={!n}
-          onPress={() =>
-            update((p) => ({
-              ...p,
-              stage: 'route',
-              start: origin,
-              checkedIn: p.checkedIn.filter((id) => p.ids.includes(id)),
-            }))
-          }
-          style={{ paddingHorizontal: 18 }}
-        />
       </View>
     </View>
   );
@@ -245,6 +252,15 @@ const s = StyleSheet.create({
   },
   title: { fontFamily: font.bold, fontSize: 22, color: color.text },
   map: { height: 240, backgroundColor: '#E9ECE6' },
+  stack: { flex: 1 },
+  split: { flex: 1, flexDirection: 'row' },
+  mapWide: { flex: 1, backgroundColor: '#E9ECE6' },
+  panel: {
+    width: PANEL_WIDTH,
+    borderLeftWidth: 1,
+    borderLeftColor: color.border,
+    backgroundColor: color.bg,
+  },
   radiusPill: {
     pointerEvents: 'none',
     position: 'absolute',

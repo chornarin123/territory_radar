@@ -19,6 +19,7 @@ import {
   SignalLow,
   SignalMedium,
 } from 'lucide-react-native';
+import { READ_WIDTH, readColumn, useGutter } from '../components/layout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiError, api } from '../api/client';
 import { OutlineButton, Txt } from '../components/ui';
@@ -110,6 +111,7 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
 
   // Scrolling to a cited card: remember where each card sits.
   const scroller = useRef<ScrollViewInstance>(null);
+  const gutter = useGutter(READ_WIDTH);
   const cardsTop = useRef(0);
   const cardY = useRef(new Map<number, number>());
   const scrollToCard = useCallback((n: number) => {
@@ -187,7 +189,7 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
 
   return (
     <View style={s.screen}>
-      <View style={s.head}>
+      <View style={[s.head, { paddingHorizontal: gutter }]}>
         <Pressable
           onPress={back}
           accessibilityRole="button"
@@ -227,7 +229,11 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
         </View>
       </View>
 
-      <ScrollView ref={scroller} style={{ flex: 1 }} contentContainerStyle={s.content}>
+      <ScrollView
+        ref={scroller}
+        style={{ flex: 1 }}
+        contentContainerStyle={[s.content, readColumn]}
+      >
         <Txt style={s.h2}>What drives this score</Txt>
         <View
           style={s.bar}
@@ -379,7 +385,7 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
         {feedbackError ? <Txt style={s.error}>{feedbackError}</Txt> : null}
       </ScrollView>
 
-      <View style={[s.footer, { paddingBottom: 10 + insets.bottom }]}>
+      <View style={[s.footer, { paddingHorizontal: gutter, paddingBottom: 10 + insets.bottom }]}>
         <Pressable
           onPress={() => setChatOpen(true)}
           accessibilityRole="button"

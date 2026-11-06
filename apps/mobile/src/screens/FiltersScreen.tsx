@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { readColumn } from '../components/layout';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MapPin } from 'lucide-react-native';
@@ -153,7 +154,7 @@ export function FiltersScreen() {
   );
 
   return (
-    <View style={s.screen}>
+    <View style={[s.screen, readColumn]}>
       <ScrollView contentContainerStyle={s.body}>
         <View style={{ gap: 8 }}>
           <SectionLabel>Quick views</SectionLabel>

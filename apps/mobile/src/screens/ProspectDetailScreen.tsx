@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { readColumn } from '../components/layout';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { MessageCircle } from 'lucide-react-native';
 import { api } from '../api/client';
@@ -89,7 +90,7 @@ export function ProspectDetailScreen({ route, navigation }: RootScreenProps<'Pro
         : (detail.match?.unverifiedRequirements ?? []);
 
   return (
-    <ScrollView style={s.screen} contentContainerStyle={s.body}>
+    <ScrollView style={s.screen} contentContainerStyle={[s.body, readColumn]}>
       {/* Identity */}
       <View style={{ gap: 6 }}>
         <Txt style={s.h1}>{p.displayName}</Txt>

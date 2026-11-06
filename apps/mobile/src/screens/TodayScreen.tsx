@@ -12,6 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { ChevronRight } from 'lucide-react-native';
 import { api } from '../api/client';
+import { Column, useWide } from '../components/layout';
 import { OutlineButton, PrimaryButton, Txt } from '../components/ui';
 import { LOAN_LABEL } from '../data/areaDemand';
 import { useFilters } from '../data/FilterContext';
@@ -80,9 +81,13 @@ function useLeave() {
   return { opacity, leave };
 }
 
+/** Widest the Today page grows on a big screen. */
+const WIDE_MAX = 1100;
+
 /** The officer's home: what to do next, from the same data as the other tabs. */
 export function TodayScreen() {
   const { ws, views, run, reload } = useLoadedWorkspace();
+  const wide = useWide();
   const nav = useNavigation();
   const { setFilters } = useFilters();
   const { plan, update } = useTodayPlan();
@@ -188,193 +193,207 @@ export function TodayScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />}
     >
       <View style={s.header}>
-        <View style={s.headerTop}>
-          <View style={{ gap: 2, flex: 1 }}>
-            <Txt style={s.headerSub}>
-              {dayMonth(now)} · {ws.branch?.name ?? ''}
-            </Txt>
-            <Txt style={s.hello}>
-              {greeting(now)}, {firstName}
-            </Txt>
-          </View>
-          <View style={s.avatar}>
-            <Txt style={s.avatarText}>{ws.officer.avatarInitials}</Txt>
-          </View>
-        </View>
-        <View style={s.tiles}>
-          <Tile n={activeCount(views)} label="Active prospects" onPress={() => openRadar(false)} />
-          <Tile n={leads.length} label="New to review" onPress={() => openRadar(true)} />
-          <Tile n={order.length} label="Visits today" onPress={openRoute} />
-        </View>
-        <View style={s.progressRow}>
-          <View style={s.track}>
-            <View
-              style={[s.fill, { width: `${order.length ? (done / order.length) * 100 : 0}%` }]}
-            />
-          </View>
-          <Txt style={s.progressText}>
-            {done}/{order.length} visits
-          </Txt>
-        </View>
-      </View>
-
-      <View style={s.body}>
-        <View style={s.card}>
-          {!plan ? null : order.length === 0 ? (
-            <>
-              <Txt style={s.nextName}>No visits planned</Txt>
-              <PrimaryButton label="Plan visits near me" onPress={openPlanning} />
-            </>
-          ) : !next ? (
-            <>
-              <Txt style={s.nextName}>All visits done</Txt>
-              <Txt style={s.line}>Add a nearby prospect below, or log notes from today.</Txt>
-            </>
-          ) : (
-            <>
-              <View style={s.rowBetween}>
-                <Txt style={s.eyebrow}>NEXT VISIT · {timeSlot(next.index)}</Txt>
-                {gps ? (
-                  <Txt style={s.distance}>{formatDistance(haversine(gps, next.stop))} from you</Txt>
-                ) : null}
-              </View>
-              <View style={{ gap: 2 }}>
-                <Txt style={s.nextName}>{next.stop.name}</Txt>
-                <Txt style={s.line}>
-                  {next.stop.commune} · {next.stop.signal}
-                </Txt>
-              </View>
-              {nextView ? (
-                <View style={s.whyBox}>
-                  {whyNowText(nextView, now) ? (
-                    <Txt style={s.line}>
-                      <Txt style={s.strong}>Why now: </Txt>
-                      {whyNowText(nextView, now)}
-                    </Txt>
-                  ) : null}
-                  <Txt style={s.line}>
-                    <Txt style={s.strong}>Ask about: </Txt>
-                    {nextView.p.ask_about}
-                  </Txt>
-                </View>
-              ) : null}
-              <View style={s.buttons}>
-                <OutlineButton
-                  label="Directions"
-                  onPress={() => void Linking.openURL(directionsUrl(next.stop))}
-                  style={{ flex: 1 }}
-                />
-                <PrimaryButton
-                  label="Check in"
-                  onPress={() =>
-                    update((p) => ({ ...p, checkedIn: [...p.checkedIn, next.stop.id] }))
-                  }
-                  style={{ flex: 1 }}
-                />
-              </View>
-              <Pressable onPress={openRoute} accessibilityRole="link" style={s.linkRow}>
-                <Txt style={s.link}>
-                  {next.remaining
-                    ? `Then ${next.remaining} more · see route →`
-                    : 'Last stop · see route →'}
-                </Txt>
-              </Pressable>
-            </>
-          )}
-        </View>
-
-        <View style={s.rowBetween}>
-          <Txt style={s.h2}>Needs your action</Txt>
-          <Txt style={s.caption}>{actions.length} open</Txt>
-        </View>
-        {actions.length === 0 ? (
-          <View style={s.caughtUp}>
-            <Txt style={s.caughtUpText}>You&apos;re all caught up.</Txt>
-          </View>
-        ) : (
-          actions.map((item) => (
-            <ActionCard
-              key={item.key}
-              item={item}
-              canPlan={canPlan(item.prospectId)}
-              onCall={() => callNow(item)}
-              onTomorrow={() => snooze(item.key, addDays(today, 1))}
-              onAdd={() => {
-                addToToday(item.prospectId!);
-                snooze(item.key, FOREVER);
-              }}
-              onNotNow={() => snooze(item.key, addDays(today, 7))}
-              onVerify={() => verifyOnVisit(item)}
-              onVerified={() => snooze(item.key, FOREVER)}
-              onSkip={() => snooze(item.key, FOREVER)}
-            />
-          ))
-        )}
-        {upcoming.total ? (
-          <Txt style={s.caption}>
-            Not overdue yet: {upcoming.dueToday} follow-up{upcoming.dueToday === 1 ? '' : 's'} due
-            today, {upcoming.total} in all.
-          </Txt>
-        ) : null}
-        {error ? <Txt style={s.error}>{error}</Txt> : null}
-
-        <View style={s.rowBetween}>
-          <Txt style={s.h2}>New in your territory</Txt>
-          {ws.metadata.lastScanAt ? (
-            <Txt style={s.caption}>since {weekday(ws.metadata.lastScanAt)} scan</Txt>
-          ) : null}
-        </View>
-        {!ws.metadata.lastScanAt ? (
-          <Txt style={s.error}>The server is out of date: restart it (pnpm mock:server).</Txt>
-        ) : leads.length === 0 ? (
-          <Txt style={s.caption}>
-            No new leads since {weekday(ws.metadata.lastScanAt)}&apos;s scan.
-          </Txt>
-        ) : null}
-        {leads.slice(0, 3).map((v) => (
-          <LeadCard
-            key={v.id}
-            v={v}
-            distance={gps && v.p.location ? haversine(gps, v.p.location as Point) : null}
-            added={!!plan?.ids.includes(v.id)}
-            canAdd={canPlan(v.id)}
-            onAdd={() => addToToday(v.id)}
-            onDismiss={() => act(() => api.leadNotRelevant(v.id))}
-          />
-        ))}
-        {leads.length ? (
-          <Pressable onPress={() => openRadar(true)} accessibilityRole="link" style={s.linkRow}>
-            <Txt style={s.link}>Review all {leads.length} new leads →</Txt>
-          </Pressable>
-        ) : null}
-
-        {pulse ? (
-          <Pressable
-            onPress={() =>
-              nav.navigate('Evidence', { code: pulse.communeCode, loanType: pulse.loanType })
-            }
-            accessibilityRole="button"
-            accessibilityLabel={`Area pulse. ${LOAN_LABEL[pulse.loanType]} demand in ${pulse.name} rose ${pulse.oldScore} to ${pulse.newScore}: ${pulse.reason ?? 'see the evidence'}.`}
-            style={({ pressed }) => [s.pulse, pressed && { opacity: 0.9 }]}
-          >
-            <View style={{ flex: 1, gap: 4 }}>
-              <Txt style={s.pulseEyebrow}>AREA PULSE</Txt>
-              <Txt style={s.pulseText}>
-                {LOAN_LABEL[pulse.loanType]} demand in {pulse.name} rose{' '}
-                <Txt style={s.pulseNum}>
-                  {pulse.oldScore} → {pulse.newScore}
-                </Txt>
-                {pulse.reason ? `: ${pulse.reason}.` : '.'}
+        <Column max={WIDE_MAX} style={s.headerInner}>
+          <View style={s.headerTop}>
+            <View style={{ gap: 2, flex: 1 }}>
+              <Txt style={s.headerSub}>
+                {dayMonth(now)} · {ws.branch?.name ?? ''}
+              </Txt>
+              <Txt style={s.hello}>
+                {greeting(now)}, {firstName}
               </Txt>
             </View>
-            <ChevronRight size={20} color={C.headSoft} />
-          </Pressable>
-        ) : null}
+            <View style={s.avatar}>
+              <Txt style={s.avatarText}>{ws.officer.avatarInitials}</Txt>
+            </View>
+          </View>
+          <View style={s.tiles}>
+            <Tile
+              n={activeCount(views)}
+              label="Active prospects"
+              onPress={() => openRadar(false)}
+            />
+            <Tile n={leads.length} label="New to review" onPress={() => openRadar(true)} />
+            <Tile n={order.length} label="Visits today" onPress={openRoute} />
+          </View>
+          <View style={s.progressRow}>
+            <View style={s.track}>
+              <View
+                style={[s.fill, { width: `${order.length ? (done / order.length) * 100 : 0}%` }]}
+              />
+            </View>
+            <Txt style={s.progressText}>
+              {done}/{order.length} visits
+            </Txt>
+          </View>
+        </Column>
+      </View>
+
+      <Column max={WIDE_MAX} style={s.body}>
+        {/* Wide screens: two columns, what to do now | what is new. */}
+        <View style={wide ? s.cols : s.stack}>
+          <View style={wide ? s.colMain : s.stack}>
+            <View style={s.card}>
+              {!plan ? null : order.length === 0 ? (
+                <>
+                  <Txt style={s.nextName}>No visits planned</Txt>
+                  <PrimaryButton label="Plan visits near me" onPress={openPlanning} />
+                </>
+              ) : !next ? (
+                <>
+                  <Txt style={s.nextName}>All visits done</Txt>
+                  <Txt style={s.line}>Add a nearby prospect below, or log notes from today.</Txt>
+                </>
+              ) : (
+                <>
+                  <View style={s.rowBetween}>
+                    <Txt style={s.eyebrow}>NEXT VISIT · {timeSlot(next.index)}</Txt>
+                    {gps ? (
+                      <Txt style={s.distance}>
+                        {formatDistance(haversine(gps, next.stop))} from you
+                      </Txt>
+                    ) : null}
+                  </View>
+                  <View style={{ gap: 2 }}>
+                    <Txt style={s.nextName}>{next.stop.name}</Txt>
+                    <Txt style={s.line}>
+                      {next.stop.commune} · {next.stop.signal}
+                    </Txt>
+                  </View>
+                  {nextView ? (
+                    <View style={s.whyBox}>
+                      {whyNowText(nextView, now) ? (
+                        <Txt style={s.line}>
+                          <Txt style={s.strong}>Why now: </Txt>
+                          {whyNowText(nextView, now)}
+                        </Txt>
+                      ) : null}
+                      <Txt style={s.line}>
+                        <Txt style={s.strong}>Ask about: </Txt>
+                        {nextView.p.ask_about}
+                      </Txt>
+                    </View>
+                  ) : null}
+                  <View style={s.buttons}>
+                    <OutlineButton
+                      label="Directions"
+                      onPress={() => void Linking.openURL(directionsUrl(next.stop))}
+                      style={{ flex: 1 }}
+                    />
+                    <PrimaryButton
+                      label="Check in"
+                      onPress={() =>
+                        update((p) => ({ ...p, checkedIn: [...p.checkedIn, next.stop.id] }))
+                      }
+                      style={{ flex: 1 }}
+                    />
+                  </View>
+                  <Pressable onPress={openRoute} accessibilityRole="link" style={s.linkRow}>
+                    <Txt style={s.link}>
+                      {next.remaining
+                        ? `Then ${next.remaining} more · see route →`
+                        : 'Last stop · see route →'}
+                    </Txt>
+                  </Pressable>
+                </>
+              )}
+            </View>
+
+            <View style={s.rowBetween}>
+              <Txt style={s.h2}>Needs your action</Txt>
+              <Txt style={s.caption}>{actions.length} open</Txt>
+            </View>
+            {actions.length === 0 ? (
+              <View style={s.caughtUp}>
+                <Txt style={s.caughtUpText}>You&apos;re all caught up.</Txt>
+              </View>
+            ) : (
+              actions.map((item) => (
+                <ActionCard
+                  key={item.key}
+                  item={item}
+                  canPlan={canPlan(item.prospectId)}
+                  onCall={() => callNow(item)}
+                  onTomorrow={() => snooze(item.key, addDays(today, 1))}
+                  onAdd={() => {
+                    addToToday(item.prospectId!);
+                    snooze(item.key, FOREVER);
+                  }}
+                  onNotNow={() => snooze(item.key, addDays(today, 7))}
+                  onVerify={() => verifyOnVisit(item)}
+                  onVerified={() => snooze(item.key, FOREVER)}
+                  onSkip={() => snooze(item.key, FOREVER)}
+                />
+              ))
+            )}
+            {upcoming.total ? (
+              <Txt style={s.caption}>
+                Not overdue yet: {upcoming.dueToday} follow-up{upcoming.dueToday === 1 ? '' : 's'}{' '}
+                due today, {upcoming.total} in all.
+              </Txt>
+            ) : null}
+            {error ? <Txt style={s.error}>{error}</Txt> : null}
+          </View>
+          <View style={wide ? s.colSide : s.stack}>
+            <View style={s.rowBetween}>
+              <Txt style={s.h2}>New in your territory</Txt>
+              {ws.metadata.lastScanAt ? (
+                <Txt style={s.caption}>since {weekday(ws.metadata.lastScanAt)} scan</Txt>
+              ) : null}
+            </View>
+            {!ws.metadata.lastScanAt ? (
+              <Txt style={s.error}>The server is out of date: restart it (pnpm mock:server).</Txt>
+            ) : leads.length === 0 ? (
+              <Txt style={s.caption}>
+                No new leads since {weekday(ws.metadata.lastScanAt)}&apos;s scan.
+              </Txt>
+            ) : null}
+            {leads.slice(0, 3).map((v) => (
+              <LeadCard
+                key={v.id}
+                v={v}
+                distance={gps && v.p.location ? haversine(gps, v.p.location as Point) : null}
+                added={!!plan?.ids.includes(v.id)}
+                canAdd={canPlan(v.id)}
+                onAdd={() => addToToday(v.id)}
+                onDismiss={() => act(() => api.leadNotRelevant(v.id))}
+              />
+            ))}
+            {leads.length ? (
+              <Pressable onPress={() => openRadar(true)} accessibilityRole="link" style={s.linkRow}>
+                <Txt style={s.link}>Review all {leads.length} new leads →</Txt>
+              </Pressable>
+            ) : null}
+
+            {pulse ? (
+              <Pressable
+                onPress={() =>
+                  nav.navigate('Evidence', { code: pulse.communeCode, loanType: pulse.loanType })
+                }
+                accessibilityRole="button"
+                accessibilityLabel={`Area pulse. ${LOAN_LABEL[pulse.loanType]} demand in ${pulse.name} rose ${pulse.oldScore} to ${pulse.newScore}: ${pulse.reason ?? 'see the evidence'}.`}
+                style={({ pressed }) => [s.pulse, pressed && { opacity: 0.9 }]}
+              >
+                <View style={{ flex: 1, gap: 4 }}>
+                  <Txt style={s.pulseEyebrow}>AREA PULSE</Txt>
+                  <Txt style={s.pulseText}>
+                    {LOAN_LABEL[pulse.loanType]} demand in {pulse.name} rose{' '}
+                    <Txt style={s.pulseNum}>
+                      {pulse.oldScore} → {pulse.newScore}
+                    </Txt>
+                    {pulse.reason ? `: ${pulse.reason}.` : '.'}
+                  </Txt>
+                </View>
+                <ChevronRight size={20} color={C.headSoft} />
+              </Pressable>
+            ) : null}
+          </View>
+        </View>
 
         {ws.metadata.isSynthetic ? (
           <Txt style={s.caption}>[Sample data] Prospects, scans and area scores are samples.</Txt>
         ) : null}
-      </View>
+      </Column>
     </ScrollView>
   );
 }
@@ -556,6 +575,11 @@ const s = StyleSheet.create({
   fill: { height: '100%', backgroundColor: C.amber },
   progressText: { fontFamily: font.mono, fontSize: 12, color: C.headSoft },
   body: { padding: 16, gap: 12 },
+  headerInner: { gap: 12 },
+  stack: { gap: 12 },
+  cols: { flexDirection: 'row', alignItems: 'flex-start', gap: 20 },
+  colMain: { flex: 6, minWidth: 0, gap: 12 },
+  colSide: { flex: 5, minWidth: 0, gap: 12 },
   card: {
     backgroundColor: color.surface,
     borderWidth: 1,

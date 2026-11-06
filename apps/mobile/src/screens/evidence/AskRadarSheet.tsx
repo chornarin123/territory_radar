@@ -11,6 +11,7 @@ import {
   type ScrollViewInstance,
   type ViewInstance,
 } from 'react-native';
+import { SHEET_WIDE, WIDE_FROM } from '../../components/layout';
 import { Send, X } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ApiError, api } from '../../api/client';
@@ -63,7 +64,8 @@ export function AskRadarSheet({
   onOpenArea: (code: string) => void;
   onAction: (a: RadarAction) => void;
 }) {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const wide = width >= WIDE_FROM;
   const insets = useSafeAreaInsets();
   const label = LOAN_LABEL[pack.loanType];
   const [turns, setTurns] = useChat(pack.communeCode, pack.loanType);
@@ -124,7 +126,14 @@ export function AskRadarSheet({
           ref={sheet}
           role="dialog"
           aria-label="Ask Radar"
-          style={[s.sheet, { height: height * 0.9, paddingBottom: keyboard || insets.bottom }]}
+          style={[
+            s.sheet,
+            wide && SHEET_WIDE,
+            {
+              height: wide ? Math.min(760, height * 0.9) : height * 0.9,
+              paddingBottom: keyboard || insets.bottom,
+            },
+          ]}
         >
           <View style={s.head}>
             <Txt style={s.title}>Ask Radar</Txt>

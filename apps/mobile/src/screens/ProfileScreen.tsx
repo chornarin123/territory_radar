@@ -1,4 +1,5 @@
 import React from 'react';
+import { READ_WIDTH, readColumn, useGutter } from '../components/layout';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Card, OutlineButton, Pill, Txt } from '../components/ui';
 import { productShortName } from '../data/labels';
@@ -23,9 +24,10 @@ export function ProfileScreen() {
     ['Hide "no need" from recommendations', st.excludeNotInterestedFromRecommendations],
   ];
 
+  const gutter = useGutter(READ_WIDTH);
   return (
     <View style={s.screen}>
-      <View style={s.header}>
+      <View style={[s.header, { paddingHorizontal: Math.max(20, gutter) }]}>
         <View style={s.avatar}>
           <Txt style={s.avatarText}>{ws.officer.avatarInitials}</Txt>
         </View>
@@ -37,7 +39,7 @@ export function ProfileScreen() {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={s.body}>
+      <ScrollView contentContainerStyle={[s.body, readColumn]}>
         <Card>
           <Txt style={type.cardTitle}>Language</Txt>
           <View style={s.twoCol}>

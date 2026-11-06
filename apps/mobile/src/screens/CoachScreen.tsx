@@ -9,6 +9,7 @@ import {
   type ScrollViewInstance,
   type ViewInstance,
 } from 'react-native';
+import { readColumn } from '../components/layout';
 import { Bot, Send } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card, Txt } from '../components/ui';
@@ -88,7 +89,7 @@ export function CoachScreen({ route, navigation }: RootScreenProps<'Coach'>) {
   return (
     // Lifted by exactly the part the keyboard covers, so the composer stays visible;
     // otherwise clear of the home indicator / Android nav bar (edge-to-edge).
-    <View ref={screen} style={[s.screen, { paddingBottom: keyboard || insets.bottom }]}>
+    <View ref={screen} style={[s.screen, readColumn, { paddingBottom: keyboard || insets.bottom }]}>
       <View style={s.context}>
         <View style={s.botIcon}>
           <Bot size={18} color={color.surface} strokeWidth={2} />

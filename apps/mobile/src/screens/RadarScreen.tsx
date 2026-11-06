@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'reac
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { ChevronDown, MapPin } from 'lucide-react-native';
 import { AreaPicker } from '../components/AreaPicker';
+import { useWide } from '../components/layout';
 import { MapView, type MapAreas } from '../components/map/MapView';
 import { Chip, InterestPill, OutlineButton, StatusPill, Txt } from '../components/ui';
 import { useFilters } from '../data/FilterContext';
@@ -118,6 +119,7 @@ export function RadarScreen() {
     if (!bbox) return null;
     return { bbox, shapes: shapes?.key === areaKey ? shapes.features : [] };
   }, [areaTree.tree, filters.area, areaKey, shapes]);
+  const wide = useWide();
 
   return (
     <View style={s.screen}>
@@ -237,7 +239,7 @@ export function RadarScreen() {
           ))}
         </View>
 
-        <View style={s.bottom}>
+        <View style={[s.bottom, wide && s.bottomWide]}>
           {selected ? (
             <Pressable
               onPress={() => nav.navigate('ProspectDetail', { id: selected.id })}
@@ -339,6 +341,8 @@ const s = StyleSheet.create({
   legendDot: { width: 10, height: 10, borderRadius: 5 },
   legendText: { fontFamily: font.regular, fontSize: 11, color: color.text2 },
   bottom: { position: 'absolute', left: 12, right: 12, bottom: 12 },
+  // Wide screens: a card-sized summary in the corner, not a strip across the map.
+  bottomWide: { right: undefined, left: 20, bottom: 20, width: 420 },
   card: {
     backgroundColor: color.surface,
     borderWidth: 1,

@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'reac
 import { MapView, type MapChoropleth } from '../../components/map/MapView';
 import { NO_TILES_BG } from '../../components/map/mapHtml';
 import { useNavigation } from '@react-navigation/native';
+import { PANEL_WIDTH, useWide } from '../../components/layout';
 import { OutlineButton, PrimaryButton, Txt } from '../../components/ui';
 import {
   BIN_COLORS,
@@ -201,6 +202,7 @@ export function AreaDemand({
   const unit = inScope[0] ? kindOf(inScope[0]).toLowerCase() : 'sangkat';
   const d = selected && data ? data.demand.communes[selected.code] : undefined;
   const ranking = isKhan ? ranked : ranked.slice(0, PROVINCE_TOP);
+  const wide = useWide();
 
   return (
     <View style={{ flex: 1 }}>
@@ -260,154 +262,157 @@ export function AreaDemand({
         </View>
       </View>
 
-      <View style={s.map}>
-        <MapView
-          style={StyleSheet.absoluteFill}
-          center={{ lat: province.lat, lng: province.lng }}
-          zoom={11}
-          basemap={false}
-          pins={NO_PINS}
-          choropleth={choropleth}
-          fit={fit}
-          onPinPress={onRegion}
-          accessibilityLabel={`${label} demand by ${unit} in ${scopeTitle}`}
-        />
-        <View style={s.mapPill}>
-          <Txt style={s.mapPillText}>
-            {label} demand · tap a {unit}
-          </Txt>
-        </View>
-        {!data ? (
-          <View style={s.mapState}>
-            {error ? (
-              <>
-                <Txt style={s.meta}>Couldn&apos;t load demand data. {error}</Txt>
-                <OutlineButton label="Try again" onPress={retry} style={{ width: 140 }} />
-              </>
-            ) : (
-              <ActivityIndicator color={color.navy} />
-            )}
-          </View>
-        ) : null}
-      </View>
-
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.body}>
-        {selected && d ? (
-          <View style={s.card}>
-            <View style={s.cardHead}>
-              <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-                <Txt style={s.cardTitle}>
-                  {kindOf(selected)} {selected.name_en}
-                </Txt>
-                <Txt style={s.meta}>
-                  {kindOf(selected.parent!)} {selected.parent!.name_en} · #{rank} of {ranked.length}{' '}
-                  for {label}
-                </Txt>
-              </View>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Txt style={s.bigScore}>{d.score[type]}</Txt>
-                <Txt style={s.meta}>{label} score</Txt>
-                <Txt style={s.meta}>vs other {unit}s</Txt>
-              </View>
-            </View>
-            <Txt style={s.explain}>{scoreMeaning(d.score[type], d.mix[type], label)}</Txt>
-
-            <Txt style={s.section}>Loan mix in this {unit} · share of demand</Txt>
-            {mixRows(d).map((row) => {
-              const on = row.type === type;
-              return (
-                <View key={row.type} style={s.mixRow}>
-                  <Txt style={[s.mixLabel, on && { fontFamily: font.bold, color: color.text }]}>
-                    {LOAN_LABEL[row.type]}
-                  </Txt>
-                  <View style={s.track}>
-                    <View
-                      style={[
-                        s.fill,
-                        {
-                          width: `${mixBarWidth(row.pct)}%`,
-                          backgroundColor: on ? C.amber : C.bar,
-                        },
-                      ]}
-                    />
-                  </View>
-                  <Txt style={s.pct}>{row.pct}%</Txt>
-                </View>
-              );
-            })}
-
-            <View style={s.whyRow}>
-              <PrimaryButton
-                label={`Why ${d.score[type]}?`}
-                onPress={() => nav.navigate('Evidence', { code: selected.code, loanType: type })}
-                style={{ flex: 1 }}
-              />
-              <OutlineButton
-                label="Ask Radar"
-                onPress={() =>
-                  nav.navigate('Evidence', { code: selected.code, loanType: type, chat: true })
-                }
-                style={{ flex: 1 }}
-              />
-            </View>
-            <OutlineButton
-              label={`View prospects in ${shortName(selected.name_en)}`}
-              onPress={() => onViewProspects(selected.code)}
-            />
-          </View>
-        ) : null}
-
-        {ranking.length ? (
-          <View style={s.card}>
-            <Txt style={s.cardTitleSm}>
-              {label} · top {unit}s in {scopeTitle}
+      {/* Wide screens: map on the left, details panel on the right. */}
+      <View style={wide ? s.split : s.stack}>
+        <View style={wide ? s.mapWide : s.map}>
+          <MapView
+            style={StyleSheet.absoluteFill}
+            center={{ lat: province.lat, lng: province.lng }}
+            zoom={11}
+            basemap={false}
+            pins={NO_PINS}
+            choropleth={choropleth}
+            fit={fit}
+            onPinPress={onRegion}
+            accessibilityLabel={`${label} demand by ${unit} in ${scopeTitle}`}
+          />
+          <View style={s.mapPill}>
+            <Txt style={s.mapPillText}>
+              {label} demand · tap a {unit}
             </Txt>
-            {!isKhan && ranked.length > PROVINCE_TOP ? (
-              <Txt style={s.meta}>
-                Top {PROVINCE_TOP} of {ranked.length}
-              </Txt>
-            ) : null}
-            {ranking.map((r, i) => {
-              const on = r.node.code === selectedCode;
-              return (
-                <Pressable
-                  key={r.node.code}
-                  onPress={() => setPicked(r.node.code)}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  aria-label={`${r.node.name_en}, rank ${i + 1}, score ${r.score}`}
-                  style={({ pressed }) => [
-                    s.rankRow,
-                    on && s.rankRowOn,
-                    pressed && { opacity: 0.75 },
-                  ]}
-                >
-                  <Txt style={s.rankNum}>{i + 1}</Txt>
-                  <Txt style={s.rankName} numberOfLines={1}>
-                    {r.node.name_en}
-                  </Txt>
-                  <View style={[s.track, { flex: 1 }]}>
-                    <View
-                      style={[
-                        s.fill,
-                        { width: `${r.score}%`, backgroundColor: on ? C.amber : C.bar },
-                      ]}
-                    />
-                  </View>
-                  <Txt style={s.rankScore}>{r.score}</Txt>
-                </Pressable>
-              );
-            })}
           </View>
-        ) : null}
+          {!data ? (
+            <View style={s.mapState}>
+              {error ? (
+                <>
+                  <Txt style={s.meta}>Couldn&apos;t load demand data. {error}</Txt>
+                  <OutlineButton label="Try again" onPress={retry} style={{ width: 140 }} />
+                </>
+              ) : (
+                <ActivityIndicator color={color.navy} />
+              )}
+            </View>
+          ) : null}
+        </View>
 
-        {data?.demand.sample ? (
-          <Txt style={s.footnote}>
-            Sample scores — score 0–100 = predicted demand relative to other {unit}s; loan mix =
-            share of predicted demand inside the {unit}.
-          </Txt>
-        ) : null}
-      </ScrollView>
+        <ScrollView style={wide ? s.panel : s.stack} contentContainerStyle={s.body}>
+          {selected && d ? (
+            <View style={s.card}>
+              <View style={s.cardHead}>
+                <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+                  <Txt style={s.cardTitle}>
+                    {kindOf(selected)} {selected.name_en}
+                  </Txt>
+                  <Txt style={s.meta}>
+                    {kindOf(selected.parent!)} {selected.parent!.name_en} · #{rank} of{' '}
+                    {ranked.length} for {label}
+                  </Txt>
+                </View>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Txt style={s.bigScore}>{d.score[type]}</Txt>
+                  <Txt style={s.meta}>{label} score</Txt>
+                  <Txt style={s.meta}>vs other {unit}s</Txt>
+                </View>
+              </View>
+              <Txt style={s.explain}>{scoreMeaning(d.score[type], d.mix[type], label)}</Txt>
+
+              <Txt style={s.section}>Loan mix in this {unit} · share of demand</Txt>
+              {mixRows(d).map((row) => {
+                const on = row.type === type;
+                return (
+                  <View key={row.type} style={s.mixRow}>
+                    <Txt style={[s.mixLabel, on && { fontFamily: font.bold, color: color.text }]}>
+                      {LOAN_LABEL[row.type]}
+                    </Txt>
+                    <View style={s.track}>
+                      <View
+                        style={[
+                          s.fill,
+                          {
+                            width: `${mixBarWidth(row.pct)}%`,
+                            backgroundColor: on ? C.amber : C.bar,
+                          },
+                        ]}
+                      />
+                    </View>
+                    <Txt style={s.pct}>{row.pct}%</Txt>
+                  </View>
+                );
+              })}
+
+              <View style={s.whyRow}>
+                <PrimaryButton
+                  label={`Why ${d.score[type]}?`}
+                  onPress={() => nav.navigate('Evidence', { code: selected.code, loanType: type })}
+                  style={{ flex: 1 }}
+                />
+                <OutlineButton
+                  label="Ask Radar"
+                  onPress={() =>
+                    nav.navigate('Evidence', { code: selected.code, loanType: type, chat: true })
+                  }
+                  style={{ flex: 1 }}
+                />
+              </View>
+              <OutlineButton
+                label={`View prospects in ${shortName(selected.name_en)}`}
+                onPress={() => onViewProspects(selected.code)}
+              />
+            </View>
+          ) : null}
+
+          {ranking.length ? (
+            <View style={s.card}>
+              <Txt style={s.cardTitleSm}>
+                {label} · top {unit}s in {scopeTitle}
+              </Txt>
+              {!isKhan && ranked.length > PROVINCE_TOP ? (
+                <Txt style={s.meta}>
+                  Top {PROVINCE_TOP} of {ranked.length}
+                </Txt>
+              ) : null}
+              {ranking.map((r, i) => {
+                const on = r.node.code === selectedCode;
+                return (
+                  <Pressable
+                    key={r.node.code}
+                    onPress={() => setPicked(r.node.code)}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: on }}
+                    aria-label={`${r.node.name_en}, rank ${i + 1}, score ${r.score}`}
+                    style={({ pressed }) => [
+                      s.rankRow,
+                      on && s.rankRowOn,
+                      pressed && { opacity: 0.75 },
+                    ]}
+                  >
+                    <Txt style={s.rankNum}>{i + 1}</Txt>
+                    <Txt style={s.rankName} numberOfLines={1}>
+                      {r.node.name_en}
+                    </Txt>
+                    <View style={[s.track, { flex: 1 }]}>
+                      <View
+                        style={[
+                          s.fill,
+                          { width: `${r.score}%`, backgroundColor: on ? C.amber : C.bar },
+                        ]}
+                      />
+                    </View>
+                    <Txt style={s.rankScore}>{r.score}</Txt>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : null}
+
+          {data?.demand.sample ? (
+            <Txt style={s.footnote}>
+              Sample scores — score 0–100 = predicted demand relative to other {unit}s; loan mix =
+              share of predicted demand inside the {unit}.
+            </Txt>
+          ) : null}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -454,6 +459,16 @@ const s = StyleSheet.create({
   legendText: { fontFamily: font.mono, fontSize: 10, color: C.label },
   swatch: { width: 14, height: 10, borderRadius: 2 },
   map: { height: 290, backgroundColor: NO_TILES_BG },
+  stack: { flex: 1 },
+  split: { flex: 1, flexDirection: 'row' },
+  mapWide: { flex: 1, backgroundColor: NO_TILES_BG },
+  panel: {
+    width: PANEL_WIDTH,
+    flexGrow: 0,
+    borderLeftWidth: 1,
+    borderLeftColor: color.border,
+    backgroundColor: color.bg,
+  },
   mapPill: {
     pointerEvents: 'none',
     position: 'absolute',
