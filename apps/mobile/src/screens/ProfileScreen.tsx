@@ -82,7 +82,7 @@ export function ProfileScreen() {
             <View key={c.id} style={s.row}>
               <Txt style={[type.body, { color: color.text }]}>Sangkat {c.nameEn}</Txt>
               <Txt style={s.count}>
-                {views.filter((v) => v.commune === c.nameEn).length} prospects
+                {views.filter((v) => v.communeCode === c.officialCode).length} prospects
               </Txt>
             </View>
           ))}

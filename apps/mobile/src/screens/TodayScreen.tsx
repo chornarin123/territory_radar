@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ChevronRight } from 'lucide-react-native';
 import { api } from '../api/client';
 import { Column, useWide } from '../components/layout';
+import { SAMPLE_NOTICE } from '../data/labels';
 import { OutlineButton, PrimaryButton, Txt } from '../components/ui';
 import { LOAN_LABEL } from '../data/areaDemand';
 import { useFilters } from '../data/FilterContext';
@@ -213,9 +214,10 @@ export function TodayScreen() {
               label="Active prospects"
               onPress={() => openRadar(false)}
             />
-            <Tile n={leads.length} label="New to review" onPress={() => openRadar(true)} />
+            <Tile n={leads.length} label="New since last scan" onPress={() => openRadar(true)} />
             <Tile n={order.length} label="Visits today" onPress={openRoute} />
           </View>
+          <Txt style={s.tilesNote}>All your prospects, before any list filters</Txt>
           <View style={s.progressRow}>
             <View style={s.track}>
               <View
@@ -390,9 +392,7 @@ export function TodayScreen() {
           </View>
         </View>
 
-        {ws.metadata.isSynthetic ? (
-          <Txt style={s.caption}>[Sample data] Prospects, scans and area scores are samples.</Txt>
-        ) : null}
+        {ws.metadata.isSynthetic ? <Txt style={s.caption}>{SAMPLE_NOTICE}</Txt> : null}
       </Column>
     </ScrollView>
   );
@@ -498,10 +498,9 @@ function LeadCard({
     <Animated.View style={[s.leadCard, { opacity }]}>
       <View style={s.rowBetween}>
         <Txt style={s.leadName} numberOfLines={1}>
-          {v.p.isSynthetic ? '[Sample] ' : ''}
           {v.name}
         </Txt>
-        <Txt style={s.priority}>P{v.score}</Txt>
+        <Txt style={s.priority}>Priority {v.score}</Txt>
       </View>
       <Txt style={s.leadLine}>
         {v.p.why_now ?? 'No signal'} · {productName(v)}
@@ -557,6 +556,7 @@ const s = StyleSheet.create({
   },
   avatarText: { fontFamily: font.bold, fontSize: 15, color: color.navy },
   tiles: { flexDirection: 'row', gap: 8 },
+  tilesNote: { fontFamily: font.regular, fontSize: 11, color: color.navySoft, marginTop: -4 },
   tile: {
     flex: 1,
     minHeight: 64,

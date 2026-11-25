@@ -185,7 +185,8 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
 
   const label = LOAN_LABEL[pack.loanType];
   const conf = CONFIDENCE[pack.confidence];
-  const total = pack.breakdown.reduce((a, i) => a + i.points, 0) || 1;
+  // The bar shows what pushes the score up; lines below the median (negative) are in the cards.
+  const total = pack.breakdown.reduce((a, i) => a + Math.max(0, i.points), 0) || 1;
 
   return (
     <View style={s.screen}>
@@ -270,7 +271,7 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
                   onPress={() => setExpanded(open ? null : item.n)}
                   accessibilityRole="button"
                   accessibilityState={{ expanded: open }}
-                  aria-label={`Evidence ${item.n}: ${item.title}, plus ${item.points} points`}
+                  aria-label={`Evidence ${item.n}: ${item.title}, ${signed(item.points)} points`}
                   style={s.cardHead}
                 >
                   <View style={[s.badge, { backgroundColor: segmentColor(item, i) }]}>
@@ -283,7 +284,9 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
                       {item.source} · {item.date}
                     </Txt>
                   </View>
-                  <Txt style={s.points}>+{item.points}</Txt>
+                  <Txt style={[s.points, item.points < 0 && s.pointsDown]}>
+                    {signed(item.points)}
+                  </Txt>
                   {item.n > 0 ? (
                     open ? (
                       <ChevronUp size={18} color={C.label} />
@@ -423,6 +426,9 @@ export function EvidenceScreen({ route, navigation }: RootScreenProps<'Evidence'
   );
 }
 
+/** "+12", "−4", "0". */
+const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
+
 const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.bg },
   center: { alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
@@ -477,6 +483,7 @@ const s = StyleSheet.create({
   cardLine: { fontFamily: font.regular, fontSize: 13, color: color.text2 },
   cardSource: { fontFamily: font.regular, fontSize: 12, color: C.label },
   points: { fontFamily: font.mono, fontSize: 15, color: color.navy },
+  pointsDown: { color: color.overdueText },
   cardBody: {
     borderTopWidth: 1,
     borderTopColor: color.divider,

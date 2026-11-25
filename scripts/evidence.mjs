@@ -121,34 +121,146 @@ export const daysBetween = (fromIso, toIso) =>
   Math.floor((Date.parse(toIso) - Date.parse(fromIso)) / 86_400_000);
 
 /**
- * high: ≥4 independent signals agree with the score; medium: 3; low: ≤2, or
- * the scan is older than `staleAfterDays`.
+ * high: all 3 scored signals point the same way as the score; medium: 2;
+ * low: 1 or none, or the scan is older than `staleAfterDays`.
  */
 export function confidenceOf(agreeing, scanDate, today, staleAfterDays = 30) {
   if (daysBetween(scanDate, today) > staleAfterDays) return 'low';
-  if (agreeing >= 4) return 'high';
-  if (agreeing === 3) return 'medium';
+  if (agreeing >= 3) return 'high';
+  if (agreeing === 2) return 'medium';
   return 'low';
 }
 
+// ─── Area score ───────────────────────────────────────────────────────────────
+
+/** A sangkat with every signal at the city median scores this. */
+export const AREA_BASELINE = 50;
+/**
+ * Most points each signal can add (top of the city) or take away (bottom).
+ * They sum to 50, so 50 ± 50 always stays inside 0–100: no clamping, and the
+ * breakdown always adds up to the score.
+ */
+export const AREA_WEIGHTS = { businesses: 24, households: 13, growth: 13 };
+/** With low confidence the score can't go above this (shown as its own line). */
+export const LOW_CONFIDENCE_CAP = 75;
+
+/** Linear-interpolated quantile, q in 0–1. */
+export function quantile(values, q) {
+  if (!values.length) return 0;
+  const v = [...values].sort((x, y) => x - y);
+  const i = (v.length - 1) * q;
+  const lo = Math.floor(i);
+  return v[lo] + (v[Math.min(lo + 1, v.length - 1)] - v[lo]) * (i - lo);
+}
+
+/** Median and the 5th/95th percentiles: where a signal reaches ±its full weight. */
+export function spreadOf(values) {
+  return {
+    median: quantile(values, 0.5),
+    low: quantile(values, 0.05),
+    high: quantile(values, 0.95),
+  };
+}
+
+/**
+ * Points for a value against the city: exactly 0 at the median, rising
+ * linearly to +weight at the 95th percentile, falling to −weight at the 5th,
+ * and no further beyond them.
+ */
+export function relativePoints(spread, x, weight) {
+  const { median, low, high } = spread;
+  let t = 0;
+  if (x > median) t = high > median ? Math.min(1, (x - median) / (high - median)) : 1;
+  else if (x < median) t = low < median ? -Math.min(1, (median - x) / (median - low)) : -1;
+  return Math.round(weight * t);
+}
+
+const distributions = new WeakMap();
+/** Median and spread of each signal across every sangkat in the sample. */
+export function cityValues(sample) {
+  if (!distributions.has(sample)) {
+    const all = Object.values(sample.communes);
+    const businesses = {};
+    for (const c of all) {
+      for (const [t, list] of Object.entries(c.newBusinesses)) {
+        (businesses[t] ??= []).push(list.length);
+      }
+    }
+    distributions.set(sample, {
+      businesses: Object.fromEntries(Object.entries(businesses).map(([t, v]) => [t, spreadOf(v)])),
+      households: spreadOf(all.map((c) => c.householdsPerKm2).filter((v) => v !== null)),
+      growth: spreadOf(all.map((c) => c.newPlaces90d - c.closedPlaces90d)),
+    });
+  }
+  return distributions.get(sample);
+}
+
+/**
+ * The demand score for one sangkat and loan type from its public signals,
+ * relative to every sangkat in the sample. The map and the evidence pack both
+ * use this, so they always show the same number.
+ *
+ * @returns {{ score: number, points: { businesses: number, households: number|null, growth: number }, agreeing: number, capped: number, confidence: string }}
+ */
+export function areaScore({ facts, sample, loanType, today, staleAfterDays = 30 }) {
+  const city = cityValues(sample);
+  const points = {
+    businesses: relativePoints(
+      city.businesses[loanType] ?? spreadOf([]),
+      (facts.newBusinesses[loanType] ?? []).length,
+      AREA_WEIGHTS.businesses,
+    ),
+    households:
+      facts.householdsPerKm2 === null
+        ? null
+        : relativePoints(city.households, facts.householdsPerKm2, AREA_WEIGHTS.households),
+    growth: relativePoints(
+      city.growth,
+      facts.newPlaces90d - facts.closedPlaces90d,
+      AREA_WEIGHTS.growth,
+    ),
+  };
+  const values = Object.values(points).filter((v) => v !== null);
+  const raw = AREA_BASELINE + values.reduce((a, b) => a + b, 0);
+  const up = raw >= AREA_BASELINE;
+  const agreeing = values.filter((v) => (up ? v > 0 : v < 0)).length;
+  const confidence = confidenceOf(agreeing, sample.scanDate, today, staleAfterDays);
+  const capped = confidence === 'low' && raw > LOW_CONFIDENCE_CAP ? LOW_CONFIDENCE_CAP - raw : 0;
+  return { score: raw + capped, points, agreeing, capped, confidence };
+}
+
+/** "+12", "−4", "0": signed points for display. */
+export const signedPoints = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
+
 // ─── Pack ────────────────────────────────────────────────────────────────────
 
-const BASELINE_POINTS = 25;
 const SHOWN_RECORDS = 5;
-// How much each signal can move a score, before its strength is applied.
-const IMPORTANCE = { businesses: 0.4, households: 0.2, leads: 0.2, growth: 0.2 };
 
 const fmt = (n) => n.toLocaleString('en-US');
+/** Medians of counts can be halves: show 5.5, not 5.50 or 6. */
+const fmtMedian = (n) => Math.round(n * 10) / 10;
+
+/**
+ * The previous scan's score on today's scale. The sample stores previous scores
+ * from the old percentile model, so keep its change (old score → old previous)
+ * and apply it to the new score.
+ */
+export function previousOnScale(score, oldScore, oldPrevious) {
+  if (oldPrevious === null || oldPrevious === undefined || oldScore === undefined) return null;
+  return Math.max(0, Math.min(100, score - (oldScore - oldPrevious)));
+}
 
 /**
  * Builds the evidence pack for one sangkat and loan type, or null when there
- * is no evidence for it.
+ * is no evidence for it. The score is areaScore()'s, and the breakdown lines
+ * add up to it exactly: baseline 50, each scored signal's points (negative
+ * when below the city median), and the low-confidence cap if it applied.
  *
  * @param {object} p
  * @param {string} p.code       commune code
  * @param {string} p.loanType
  * @param {object} p.commune    { name_en, district: { name_en } } from address.json
- * @param {number} p.score      the demand score shown in the app (area_demand.json)
+ * @param {number} [p.oldScore] the area_demand.json score, only to carry the previous scan's change over
  * @param {object} p.sample     data/evidence_sample.json
  * @param {object} p.config     data/evidence_config.json
  * @param {object[]} p.leads    the officer's open leads in this sangkat: { prospectId, name, lat, lng, signals: [{ type, detectedAt }] }
@@ -158,7 +270,7 @@ export function buildEvidencePack({
   code,
   loanType,
   commune,
-  score,
+  oldScore,
   sample,
   config,
   leads,
@@ -166,46 +278,63 @@ export function buildEvidencePack({
 }) {
   const facts = sample.communes[code];
   const typeConfig = config.loanTypes[loanType];
-  if (!facts || !typeConfig || score === undefined) return null;
-  const median = sample.cityMedian;
-  const up = score >= 50; // a signal "agrees" if it points the same way as the score
+  if (!facts || !typeConfig) return null;
+  const city = cityValues(sample);
+  const scored = areaScore({
+    facts,
+    sample,
+    loanType,
+    today,
+    staleAfterDays: config.staleAfterDays,
+  });
 
   const signals = [];
 
   // 1. New loan-type businesses (OSM diff).
   const found = facts.newBusinesses[loanType] ?? [];
-  const m = median.newBusinesses[loanType] ?? 0;
   signals.push({
     id: 'businesses',
     title: typeConfig.businessTitle,
-    strength: found.length / Math.max(m, 1),
-    line: `${found.length} new in 90 days · city median ${m}`,
+    points: scored.points.businesses,
+    line: `${found.length} new in 90 days · city median ${fmtMedian(city.businesses[loanType]?.median ?? 0)}`,
     source: 'osm',
     records: found.map(({ name, tag, when, lat, lng }) => ({ name, tag, when, lat, lng })),
   });
 
-  // 2. Household density (census). Missing for some sangkats.
-  if (facts.householdsPerKm2 !== null) {
+  // 2. Household density (census). Missing for some sangkats: not scored then.
+  if (scored.points.households !== null) {
     signals.push({
       id: 'households',
       title: 'Household density',
-      strength: facts.householdsPerKm2 / Math.max(median.householdsPerKm2, 1),
-      line: `${fmt(facts.householdsPerKm2)} households/km² · city median ${fmt(median.householdsPerKm2)}`,
+      points: scored.points.households,
+      line: `${fmt(facts.householdsPerKm2)} households/km² · city median ${fmt(Math.round(city.households.median))}`,
       source: 'census',
       records: [],
     });
   }
 
-  // 3. The officer's open Radar leads with signals that fit this loan type.
+  // 3. Commercial growth: new vs closed places (OSM diff).
+  const net = facts.newPlaces90d - facts.closedPlaces90d;
+  signals.push({
+    id: 'growth',
+    title: 'Commercial growth',
+    points: scored.points.growth,
+    line: `${facts.newPlaces90d} new vs ${facts.closedPlaces90d} closed places in 90 days (net ${net >= 0 ? '+' : '−'}${Math.abs(net)}) · city median net ${signedPoints(fmtMedian(city.growth.median))}`,
+    source: 'osm',
+    records: [],
+  });
+
+  // 4. The officer's open Radar leads that fit this loan type. Context only:
+  // the area score is the same for every officer, so it doesn't count.
   const wanted = new Set(config.leadSignals[loanType] ?? []);
   const matching = leads
-    .map((l) => ({ ...l, hit: l.signals.find((s) => wanted.has(s.type)) }))
+    .map((l) => ({ ...l, hit: l.signals.find((x) => wanted.has(x.type)) }))
     .filter((l) => l.hit);
   signals.push({
     id: 'leads',
-    title: 'Open Radar leads with matching signals',
-    strength: matching.length, // one matching lead is "typical"
-    line: `${matching.length} open lead${matching.length === 1 ? '' : 's'} with ${[...wanted].map((t) => t.replace(/_/g, ' ')).join(', ')} signals`,
+    title: 'Your open leads with matching signals',
+    points: 0,
+    line: `${matching.length} open lead${matching.length === 1 ? '' : 's'} with ${[...wanted].map((t) => t.replace(/_/g, ' ')).join(', ')} signals · context, not scored`,
     source: 'radar',
     records: matching.map((l) => ({
       name: l.name,
@@ -216,67 +345,60 @@ export function buildEvidencePack({
     })),
   });
 
-  // 4. Commercial growth: new vs closed places (OSM diff).
-  const net = facts.newPlaces90d - facts.closedPlaces90d;
-  signals.push({
-    id: 'growth',
-    title: 'Commercial growth',
-    strength: Math.max(0, net) / Math.max(median.netNewPlaces90d, 1),
-    line: `${facts.newPlaces90d} new vs ${facts.closedPlaces90d} closed places in 90 days · city median net +${median.netNewPlaces90d}`,
-    source: 'osm',
-    records: [],
-  });
-
-  const baseline = Math.min(score, BASELINE_POINTS);
-  const points = allocate(
-    score - baseline,
-    signals.map((s) => s.strength * IMPORTANCE[s.id]),
-  );
-  // Nothing to share out (all signals at zero): the baseline carries the score.
-  const baselinePoints = baseline + (score - baseline - points.reduce((a, b) => a + b, 0));
-
-  const agreeing = signals.filter((s) => (up ? s.strength >= 1 : s.strength < 1)).length;
   const src = (key) => config.sources[key];
-
   const breakdown = [
     {
       id: 'baseline',
       n: 0,
-      title: 'Phnom Penh baseline',
-      points: baselinePoints,
-      line: 'Every sangkat starts here before local signals',
+      title: 'City median',
+      points: AREA_BASELINE,
+      line: 'A sangkat with every signal at the Phnom Penh median scores 50',
       source: 'Radar model',
       sourceUrl: null,
       date: sample.scanDate,
       records: [],
       totalRecords: 0,
     },
-    ...signals.map((s, i) => ({
-      id: s.id,
+    ...signals.map((x, i) => ({
+      id: x.id,
       n: i + 1,
-      title: s.title,
-      points: points[i],
-      line: s.line,
-      source: src(s.source).label,
-      sourceUrl: src(s.source).url,
+      title: x.title,
+      points: x.points,
+      line: x.line,
+      source: src(x.source).label,
+      sourceUrl: src(x.source).url,
       date: sample.scanDate,
-      records: s.records.slice(0, SHOWN_RECORDS),
-      totalRecords: s.records.length,
+      records: x.records.slice(0, SHOWN_RECORDS),
+      totalRecords: x.records.length,
     })),
   ];
+  if (scored.capped) {
+    breakdown.push({
+      id: 'cap',
+      n: breakdown.length,
+      title: 'Low-confidence cap',
+      points: scored.capped,
+      line: `Few signals agree, so the score is held at ${LOW_CONFIDENCE_CAP} until more evidence does`,
+      source: 'Radar model',
+      sourceUrl: null,
+      date: sample.scanDate,
+      records: [],
+      totalRecords: 0,
+    });
+  }
 
   return assertPublicPack({
     communeCode: code,
     name: commune.name_en,
     districtName: commune.district.name_en,
     loanType,
-    score,
+    score: scored.score,
     scanDate: sample.scanDate,
     previousScanDate: sample.previousScanDate,
-    previousScore: facts.previousScore[loanType] ?? null,
-    confidence: confidenceOf(agreeing, sample.scanDate, today, config.staleAfterDays),
-    signalsAvailable: signals.length,
-    signalsTotal: 4,
+    previousScore: previousOnScale(scored.score, oldScore, facts.previousScore[loanType]),
+    confidence: scored.confidence,
+    signalsAvailable: signals.filter((x) => x.id !== 'leads').length,
+    signalsTotal: 3,
     breakdown,
     limitations: config.limitations,
     sample: sample.sample === true,
@@ -444,13 +566,13 @@ export function validateAnswer(reply, packs) {
  */
 export function offlineAnswer(question, pack, comparePack = null) {
   const q = question.toLowerCase();
-  const signals = pack.breakdown.filter((i) => i.n > 0);
-  const top = [...signals].sort((a, b) => b.points - a.points).slice(0, 3);
+  const signals = pack.breakdown.filter((i) => i.n > 0 && i.id !== 'leads' && i.id !== 'cap');
+  const top = [...signals].sort((a, b) => Math.abs(b.points) - Math.abs(a.points)).slice(0, 3);
 
   if (comparePack) {
     return {
       answer: `${pack.name} scores ${pack.score}, ${comparePack.name} scores ${comparePack.score}.\n${top
-        .map((i) => `- ${pack.name}: ${i.title}, +${i.points} [${i.n}]`)
+        .map((i) => `- ${pack.name}: ${i.title}, ${signedPoints(i.points)} [${i.n}]`)
         .join('\n')}`,
       citations: top.map((i) => i.n),
       action: null,
@@ -492,8 +614,8 @@ export function offlineAnswer(question, pack, comparePack = null) {
   }
   if (/\b(why|high|low|drive|score|demand)/.test(q)) {
     return {
-      answer: `${pack.name} scores ${pack.score}. The biggest contributions:\n${top
-        .map((i) => `- ${i.title}: +${i.points} [${i.n}]`)
+      answer: `${pack.name} scores ${pack.score}. The biggest contributions, against a city-median baseline of 50:\n${top
+        .map((i) => `- ${i.title}: ${signedPoints(i.points)} [${i.n}]`)
         .join('\n')}`,
       citations: top.map((i) => i.n),
       action: null,

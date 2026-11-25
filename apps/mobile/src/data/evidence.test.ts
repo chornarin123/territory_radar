@@ -5,6 +5,12 @@ import sample from '../../../../data/evidence_sample.json';
 import { areaDemand, communeInfo } from '../../../../scripts/area-codes.mjs';
 import {
   allocate,
+  AREA_BASELINE,
+  LOW_CONFIDENCE_CAP,
+  areaScore,
+  cityValues,
+  relativePoints,
+  spreadOf,
   assertPublicPack,
   buildAskMessages,
   COMPARE_OFFSET,
@@ -28,7 +34,7 @@ function pack(code: string, loanType = 'car', leads: (typeof lead)[] = []) {
     code,
     loanType,
     commune: communeInfo(code),
-    score: demand.communes[code].score[loanType],
+    oldScore: demand.communes[code].score[loanType],
     sample,
     config,
     leads,
@@ -53,7 +59,10 @@ describe('evidence pack', () => {
           p.score,
         );
         expect(p.breakdown[0].n).toBe(0);
-        expect(p.breakdown.every((i: { points: number }) => i.points >= 0)).toBe(true);
+        expect(p.score).toBeGreaterThanOrEqual(0);
+        expect(p.score).toBeLessThanOrEqual(100);
+        // "Low confidence" next to a high score is impossible.
+        if (p.confidence === 'low') expect(p.score).toBeLessThanOrEqual(LOW_CONFIDENCE_CAP);
       }
     }
   });
@@ -61,10 +70,10 @@ describe('evidence pack', () => {
   it('is sample data, and missing census leaves fewer signals', () => {
     const p = pack('120101')!;
     expect(p.sample).toBe(true);
-    expect(p.signalsTotal).toBe(4);
+    expect(p.signalsTotal).toBe(3);
     const noCensus = Object.entries(sample.communes).find(([, c]) => c.householdsPerKm2 === null);
     expect(noCensus).toBeDefined();
-    expect(pack(noCensus![0])!.signalsAvailable).toBe(3);
+    expect(pack(noCensus![0])!.signalsAvailable).toBe(2);
   });
 
   it('lists matching leads with their prospect ids', () => {
@@ -81,16 +90,59 @@ describe('evidence pack', () => {
   });
 });
 
+describe('area score is relative to the city', () => {
+  const spread = spreadOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]); // median 6
+
+  it('gives 0 at the median, negative below, positive above, growing with distance', () => {
+    expect(relativePoints(spread, 6, 24)).toBe(0);
+    expect(relativePoints(spread, 5, 24)).toBeLessThan(0);
+    expect(relativePoints(spread, 7, 24)).toBeGreaterThan(0);
+    expect(relativePoints(spread, 9, 24)).toBeGreaterThan(relativePoints(spread, 7, 24));
+    // Capped at ±weight beyond the 5th/95th percentiles.
+    expect(relativePoints(spread, 100, 24)).toBe(24);
+    expect(relativePoints(spread, -100, 24)).toBe(-24);
+  });
+
+  it('scores a sangkat at the median on every signal at the baseline', () => {
+    const city = cityValues(sample);
+    const at = {
+      householdsPerKm2: city.households.median,
+      newPlaces90d: city.growth.median,
+      closedPlaces90d: 0,
+      newBusinesses: { car: Array(city.businesses.car.median).fill({}) },
+      previousScore: {},
+    };
+    const r = areaScore({ facts: at, sample, loanType: 'car', today: TODAY });
+    expect(r.points).toEqual({ businesses: 0, households: 0, growth: 0 });
+    expect(r.score).toBe(AREA_BASELINE);
+  });
+
+  it('Tuol Tumpung Ti Pir, car: median businesses add 0, growth below the median subtracts', () => {
+    const p = pack('120109')!;
+    const by = (id: string) => p.breakdown.find((i: { id: string }) => i.id === id).points;
+    expect(by('businesses')).toBe(0); // 6 new, city median 6
+    expect(by('growth')).toBeLessThan(0); // net +3 vs median +8
+    expect(by('households')).toBeGreaterThan(0); // above the median
+  });
+
+  it('spreads out: not everything near the top', () => {
+    const scores = Object.keys(sample.communes).map((c) => pack(c)!.score);
+    const high = scores.filter((x) => x >= 85).length / scores.length;
+    expect(high).toBeLessThan(0.2);
+    expect(Math.max(...scores) - Math.min(...scores)).toBeGreaterThan(40);
+  });
+});
+
 describe('confidence', () => {
   it('follows the signal-agreement rules', () => {
-    expect(confidenceOf(4, '2026-10-03', TODAY)).toBe('high');
-    expect(confidenceOf(3, '2026-10-03', TODAY)).toBe('medium');
-    expect(confidenceOf(2, '2026-10-03', TODAY)).toBe('low');
+    expect(confidenceOf(3, '2026-10-03', TODAY)).toBe('high');
+    expect(confidenceOf(2, '2026-10-03', TODAY)).toBe('medium');
+    expect(confidenceOf(1, '2026-10-03', TODAY)).toBe('low');
   });
 
   it('is low when the scan is over 30 days old', () => {
-    expect(confidenceOf(4, '2026-09-01', TODAY)).toBe('low');
-    expect(confidenceOf(4, '2026-09-15', TODAY)).toBe('high'); // exactly 30 days
+    expect(confidenceOf(3, '2026-09-01', TODAY)).toBe('low');
+    expect(confidenceOf(3, '2026-09-15', TODAY)).toBe('high'); // exactly 30 days
   });
 
   it('shares out points exactly', () => {
@@ -108,10 +160,11 @@ describe('public-data allowlist', () => {
     const p = pack('120101', 'car', [lead])!;
     expect(() => assertPublicPack({ ...p, officerName: 'Dara' })).toThrow(/pack\.officerName/);
     const leaky = structuredClone(p);
-    leaky.breakdown[3].records[0].phone = '012 345 678';
+    const at = p.breakdown.findIndex((i: { id: string }) => i.id === 'leads');
+    leaky.breakdown[at].records[0].phone = '012 345 678';
     expect(() => assertPublicPack(leaky)).toThrow(/records\[0\]\.phone/);
-    leaky.breakdown[3].records[0] = { name: 'x', tag: 'y', when: 'z', accountNo: '1' };
-    expect(packViolations(leaky)).toContain('breakdown[3].records[0].accountNo');
+    leaky.breakdown[at].records[0] = { name: 'x', tag: 'y', when: 'z', accountNo: '1' };
+    expect(packViolations(leaky)).toContain(`breakdown[${at}].records[0].accountNo`);
   });
 
   it('keeps coordinates and officer feedback out of the prompt form', () => {

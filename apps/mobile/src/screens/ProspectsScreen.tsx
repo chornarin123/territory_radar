@@ -3,6 +3,7 @@ import { Pressable, ScrollView, SectionList, StyleSheet, TextInput, View } from 
 import { useNavigation } from '@react-navigation/native';
 import { ArrowUpDown, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react-native';
 import { useGutter, useWide } from '../components/layout';
+import { SAMPLE_NOTICE } from '../data/labels';
 import { OutlineButton, Txt } from '../components/ui';
 import { useFilters } from '../data/FilterContext';
 import {
@@ -101,7 +102,8 @@ export function ProspectsScreen() {
       groups.map((g) => {
         const data: (typeof g.data)[] = [];
         for (let i = 0; i < g.data.length; i += perRow) data.push(g.data.slice(i, i + perRow));
-        return { ...g, data };
+        // count: cards, not grid rows (a wide row holds two).
+        return { ...g, count: g.data.length, data };
       }),
     [groups, perRow],
   );
@@ -113,7 +115,7 @@ export function ProspectsScreen() {
     <View style={s.screen}>
       {ws.settings.showSyntheticDataBanner ? (
         <View style={s.banner}>
-          <Txt style={s.bannerText}>Demo data · fictional businesses</Txt>
+          <Txt style={s.bannerText}>{SAMPLE_NOTICE}</Txt>
         </View>
       ) : null}
 
@@ -233,7 +235,7 @@ export function ProspectsScreen() {
         renderSectionHeader={({ section }) => (
           <View style={s.sectionHead}>
             <Txt style={s.sectionTitle}>
-              {section.title.toUpperCase()} · {section.data.length}
+              {section.title.toUpperCase()} · {section.count}
             </Txt>
             {section.hint ? <Txt style={s.sectionHint}>{section.hint}</Txt> : null}
           </View>

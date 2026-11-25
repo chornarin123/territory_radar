@@ -64,7 +64,7 @@
       "nameEn": "Phnom Penh",
       "nameKm": "ភ្នំពេញ",
       "parentId": null,
-      "officialCode": null
+      "officialCode": "12"
     },
     {
       "id": "area_d1",
@@ -72,7 +72,7 @@
       "nameEn": "Chamkar Mon",
       "nameKm": null,
       "parentId": "area_pp",
-      "officialCode": null
+      "officialCode": "1201"
     },
     {
       "id": "area_d2",
@@ -80,23 +80,23 @@
       "nameEn": "Tuol Kouk",
       "nameKm": null,
       "parentId": "area_pp",
-      "officialCode": null
+      "officialCode": "1204"
     },
     {
       "id": "area_d3",
       "level": "district",
-      "nameEn": "Chroy Changvar",
+      "nameEn": "Chrouy Changvar",
       "nameKm": null,
       "parentId": "area_pp",
-      "officialCode": null
+      "officialCode": "1210"
     },
     {
       "id": "area_c1",
       "level": "commune",
-      "nameEn": "Tonle Bassac",
+      "nameEn": "Tonle Basak",
       "nameKm": null,
       "parentId": "area_d1",
-      "officialCode": null,
+      "officialCode": "120101",
       "mapCenter": {
         "lat": 11.546,
         "lng": 104.932
@@ -124,7 +124,7 @@
       "nameEn": "Tuol Tumpung Ti Muoy",
       "nameKm": null,
       "parentId": "area_d1",
-      "officialCode": null,
+      "officialCode": "120110",
       "mapCenter": {
         "lat": 11.539,
         "lng": 104.917
@@ -152,7 +152,7 @@
       "nameEn": "Boeng Kak Ti Muoy",
       "nameKm": null,
       "parentId": "area_d2",
-      "officialCode": null,
+      "officialCode": "120407",
       "mapCenter": {
         "lat": 11.584,
         "lng": 104.9
@@ -180,7 +180,7 @@
       "nameEn": "Boeng Kak Ti Pir",
       "nameKm": null,
       "parentId": "area_d2",
-      "officialCode": null,
+      "officialCode": "120408",
       "mapCenter": {
         "lat": 11.58,
         "lng": 104.89
@@ -205,10 +205,10 @@
     {
       "id": "area_c5",
       "level": "commune",
-      "nameEn": "Chroy Changvar",
+      "nameEn": "Chrouy Changvar",
       "nameKm": null,
       "parentId": "area_d3",
-      "officialCode": null,
+      "officialCode": "121001",
       "mapCenter": {
         "lat": 11.597,
         "lng": 104.945
@@ -470,7 +470,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 101, Demo Street 102, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 101, Demo Street 102, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -478,8 +478,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.545,
-        "lng": 104.9305,
+        "lat": 11.54846,
+        "lng": 104.94101,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -578,7 +578,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 102, Demo Street 101, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 102, Demo Street 101, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -586,8 +586,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.547,
-        "lng": 104.932,
+        "lat": 11.54766,
+        "lng": 104.93519,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -689,7 +689,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 103, Demo Street 102, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 103, Demo Street 102, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -697,8 +697,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.549,
-        "lng": 104.9335,
+        "lat": 11.54201,
+        "lng": 104.93281,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -800,7 +800,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 104, Demo Street 101, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 104, Demo Street 101, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -808,8 +808,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.543,
-        "lng": 104.935,
+        "lat": 11.54211,
+        "lng": 104.92852,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -908,7 +908,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 105, Demo Street 102, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 105, Demo Street 102, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -916,8 +916,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.545,
-        "lng": 104.929,
+        "lat": 11.53789,
+        "lng": 104.92749,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1018,7 +1018,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 106, Demo Street 101, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 106, Demo Street 101, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -1026,8 +1026,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.547,
-        "lng": 104.9305,
+        "lat": 11.53902,
+        "lng": 104.92663,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1129,7 +1129,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 107, Demo Street 102, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 107, Demo Street 102, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -1137,8 +1137,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.549,
-        "lng": 104.932,
+        "lat": 11.54698,
+        "lng": 104.93347,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1237,7 +1237,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 108, Demo Street 101, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 108, Demo Street 101, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -1245,8 +1245,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.543,
-        "lng": 104.9335,
+        "lat": 11.54009,
+        "lng": 104.93143,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1353,8 +1353,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.538,
-        "lng": 104.92,
+        "lat": 11.53599,
+        "lng": 104.91922,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1464,8 +1464,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54,
-        "lng": 104.914,
+        "lat": 11.53537,
+        "lng": 104.91508,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1575,8 +1575,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.542,
-        "lng": 104.9155,
+        "lat": 11.53957,
+        "lng": 104.91475,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1683,8 +1683,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.536,
-        "lng": 104.917,
+        "lat": 11.54044,
+        "lng": 104.91502,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1791,8 +1791,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.538,
-        "lng": 104.9185,
+        "lat": 11.54048,
+        "lng": 104.91692,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -1902,8 +1902,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54,
-        "lng": 104.92,
+        "lat": 11.53916,
+        "lng": 104.91719,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2013,8 +2013,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.542,
-        "lng": 104.914,
+        "lat": 11.53728,
+        "lng": 104.91839,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2123,8 +2123,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.536,
-        "lng": 104.9155,
+        "lat": 11.53524,
+        "lng": 104.91827,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2231,8 +2231,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.583,
-        "lng": 104.9,
+        "lat": 11.57763,
+        "lng": 104.90006,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2342,8 +2342,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.585,
-        "lng": 104.9015,
+        "lat": 11.58413,
+        "lng": 104.89615,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2453,8 +2453,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.587,
-        "lng": 104.903,
+        "lat": 11.58468,
+        "lng": 104.90212,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2561,8 +2561,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.581,
-        "lng": 104.897,
+        "lat": 11.58355,
+        "lng": 104.90484,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2672,8 +2672,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.583,
-        "lng": 104.8985,
+        "lat": 11.58099,
+        "lng": 104.89603,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2783,8 +2783,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.585,
-        "lng": 104.9,
+        "lat": 11.58141,
+        "lng": 104.90178,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2891,8 +2891,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.587,
-        "lng": 104.9015,
+        "lat": 11.58171,
+        "lng": 104.90308,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -2998,7 +2998,11 @@
         "provinceId": "area_pp",
         "isApproximate": true
       },
-      "location": null,
+      "location": {
+        "lat": 11.58201,
+        "lng": 104.90033,
+        "accuracy": "synthetic_approximate"
+      },
       "businessProfile": {
         "operatingMonths": 3,
         "operatingMonthsBasis": "fictional_demo_assumption",
@@ -3106,8 +3110,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.579,
-        "lng": 104.887,
+        "lat": 11.58302,
+        "lng": 104.8901,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3216,8 +3220,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.581,
-        "lng": 104.8885,
+        "lat": 11.57305,
+        "lng": 104.89292,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3327,8 +3331,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.583,
-        "lng": 104.89,
+        "lat": 11.57223,
+        "lng": 104.88937,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3435,8 +3439,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.577,
-        "lng": 104.8915,
+        "lat": 11.57245,
+        "lng": 104.89498,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3545,8 +3549,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.579,
-        "lng": 104.893,
+        "lat": 11.57316,
+        "lng": 104.89371,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3656,8 +3660,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.581,
-        "lng": 104.887,
+        "lat": 11.57475,
+        "lng": 104.89414,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3767,8 +3771,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.583,
-        "lng": 104.8885,
+        "lat": 11.57866,
+        "lng": 104.88951,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3875,8 +3879,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.577,
-        "lng": 104.89,
+        "lat": 11.57742,
+        "lng": 104.8964,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -3977,7 +3981,7 @@
         "area_v52"
       ],
       "address": {
-        "display": "Demo building 133, Demo Street 502, Chroy Changvar, Phnom Penh",
+        "display": "Demo building 133, Demo Street 502, Chrouy Changvar, Phnom Penh",
         "villageId": "area_v52",
         "communeId": "area_c5",
         "districtId": "area_d3",
@@ -3985,8 +3989,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.596,
-        "lng": 104.9465,
+        "lat": 11.59181,
+        "lng": 104.92466,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4085,7 +4089,7 @@
         "area_v51"
       ],
       "address": {
-        "display": "Demo building 134, Demo Street 501, Chroy Changvar, Phnom Penh",
+        "display": "Demo building 134, Demo Street 501, Chrouy Changvar, Phnom Penh",
         "villageId": "area_v51",
         "communeId": "area_c5",
         "districtId": "area_d3",
@@ -4093,8 +4097,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.598,
-        "lng": 104.948,
+        "lat": 11.60713,
+        "lng": 104.9335,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4193,7 +4197,7 @@
         "area_v52"
       ],
       "address": {
-        "display": "Demo building 135, Demo Street 502, Chroy Changvar, Phnom Penh",
+        "display": "Demo building 135, Demo Street 502, Chrouy Changvar, Phnom Penh",
         "villageId": "area_v52",
         "communeId": "area_c5",
         "districtId": "area_d3",
@@ -4201,8 +4205,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.6,
-        "lng": 104.942,
+        "lat": 11.5907,
+        "lng": 104.93224,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4303,7 +4307,7 @@
         "area_v51"
       ],
       "address": {
-        "display": "Demo building 136, Demo Street 501, Chroy Changvar, Phnom Penh",
+        "display": "Demo building 136, Demo Street 501, Chrouy Changvar, Phnom Penh",
         "villageId": "area_v51",
         "communeId": "area_c5",
         "districtId": "area_d3",
@@ -4311,8 +4315,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.594,
-        "lng": 104.9435,
+        "lat": 11.59758,
+        "lng": 104.93982,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4402,7 +4406,7 @@
       "id": "prospect_s001",
       "displayName": "Blue River Print House",
       "entityType": "business",
-      "sector": "manufacturing",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -4413,7 +4417,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 201, Demo Street 425, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 201, Demo Street 425, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4421,8 +4425,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54663,
-        "lng": 104.94107,
+        "lat": 11.53552,
+        "lng": 104.92943,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4520,7 +4524,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 202, Demo Street 582, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 202, Demo Street 582, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4528,8 +4532,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54503,
-        "lng": 104.93669,
+        "lat": 11.54896,
+        "lng": 104.93839,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4627,7 +4631,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 203, Demo Street 130, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 203, Demo Street 130, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4635,8 +4639,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.55043,
-        "lng": 104.94113,
+        "lat": 11.54253,
+        "lng": 104.92883,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4734,7 +4738,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 204, Demo Street 552, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 204, Demo Street 552, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4742,8 +4746,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53222,
-        "lng": 104.93052,
+        "lat": 11.54971,
+        "lng": 104.9422,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4841,7 +4845,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 205, Demo Street 362, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 205, Demo Street 362, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4849,8 +4853,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54711,
-        "lng": 104.92986,
+        "lat": 11.54204,
+        "lng": 104.9306,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -4948,7 +4952,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 206, Demo Street 306, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 206, Demo Street 306, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -4956,8 +4960,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.55174,
-        "lng": 104.93874,
+        "lat": 11.54914,
+        "lng": 104.93388,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5044,7 +5048,7 @@
       "id": "prospect_s007",
       "displayName": "Monivong Auto Repair",
       "entityType": "business",
-      "sector": "manufacturing",
+      "sector": "automotive",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -5055,7 +5059,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 207, Demo Street 195, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 207, Demo Street 195, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5063,8 +5067,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54155,
-        "lng": 104.93451,
+        "lat": 11.53652,
+        "lng": 104.92492,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5162,7 +5166,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 208, Demo Street 210, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 208, Demo Street 210, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5170,8 +5174,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54364,
-        "lng": 104.92885,
+        "lat": 11.55023,
+        "lng": 104.94042,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5258,7 +5262,7 @@
       "id": "prospect_s009",
       "displayName": "Bassac Print House",
       "entityType": "business",
-      "sector": "manufacturing",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -5269,7 +5273,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 209, Demo Street 448, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 209, Demo Street 448, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5277,8 +5281,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.55393,
-        "lng": 104.94225,
+        "lat": 11.54629,
+        "lng": 104.94155,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5376,7 +5380,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 210, Demo Street 274, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 210, Demo Street 274, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5384,8 +5388,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54975,
-        "lng": 104.92878,
+        "lat": 11.55451,
+        "lng": 104.94767,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5486,7 +5490,7 @@
         "area_v12"
       ],
       "address": {
-        "display": "Demo building 211, Demo Street 112, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 211, Demo Street 112, Tonle Basak, Phnom Penh",
         "villageId": "area_v12",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5494,8 +5498,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54363,
-        "lng": 104.92442,
+        "lat": 11.55119,
+        "lng": 104.94245,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5596,7 +5600,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 212, Demo Street 196, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 212, Demo Street 196, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5604,8 +5608,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53951,
-        "lng": 104.92708,
+        "lat": 11.53779,
+        "lng": 104.93005,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5695,7 +5699,7 @@
       "id": "prospect_s013",
       "displayName": "Morning Star Auto Repair",
       "entityType": "business",
-      "sector": "manufacturing",
+      "sector": "automotive",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -5706,7 +5710,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 213, Demo Street 100, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 213, Demo Street 100, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5714,8 +5718,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.55113,
-        "lng": 104.93463,
+        "lat": 11.55174,
+        "lng": 104.93196,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5816,7 +5820,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 214, Demo Street 533, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 214, Demo Street 533, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5824,8 +5828,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53513,
-        "lng": 104.9238,
+        "lat": 11.55632,
+        "lng": 104.93826,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -5915,7 +5919,7 @@
       "id": "prospect_s015",
       "displayName": "Sokha Print House",
       "entityType": "business",
-      "sector": "manufacturing",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -5926,7 +5930,7 @@
         "area_v11"
       ],
       "address": {
-        "display": "Demo building 215, Demo Street 413, Tonle Bassac, Phnom Penh",
+        "display": "Demo building 215, Demo Street 413, Tonle Basak, Phnom Penh",
         "villageId": "area_v11",
         "communeId": "area_c1",
         "districtId": "area_d1",
@@ -5934,8 +5938,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54013,
-        "lng": 104.92866,
+        "lat": 11.53237,
+        "lng": 104.92629,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6041,8 +6045,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53884,
-        "lng": 104.91487,
+        "lat": 11.53655,
+        "lng": 104.91558,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6129,7 +6133,7 @@
       "id": "prospect_s017",
       "displayName": "Lucky Star Tire Shop",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "automotive",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -6148,8 +6152,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53621,
-        "lng": 104.91441,
+        "lat": 11.53708,
+        "lng": 104.91512,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6238,7 +6242,7 @@
       "id": "prospect_s018",
       "displayName": "Riverside Coffee",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "food_beverage",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -6257,8 +6261,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54083,
-        "lng": 104.91631,
+        "lat": 11.5423,
+        "lng": 104.9146,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6345,7 +6349,7 @@
       "id": "prospect_s019",
       "displayName": "Royal Palm Tire Shop",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "automotive",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -6364,8 +6368,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53564,
-        "lng": 104.91927,
+        "lat": 11.53643,
+        "lng": 104.91698,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6471,8 +6475,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53501,
-        "lng": 104.91437,
+        "lat": 11.54036,
+        "lng": 104.91636,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6578,8 +6582,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53718,
-        "lng": 104.92017,
+        "lat": 11.53463,
+        "lng": 104.91705,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6666,7 +6670,7 @@
       "id": "prospect_s022",
       "displayName": "Morning Star Coffee",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "food_beverage",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -6685,8 +6689,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53696,
-        "lng": 104.91888,
+        "lat": 11.54034,
+        "lng": 104.91771,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6794,8 +6798,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53386,
-        "lng": 104.91612,
+        "lat": 11.54005,
+        "lng": 104.91857,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -6882,7 +6886,7 @@
       "id": "prospect_s024",
       "displayName": "Silk Road Pharmacy",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "healthcare",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -6901,8 +6905,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53531,
-        "lng": 104.91707,
+        "lat": 11.5391,
+        "lng": 104.91544,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7008,8 +7012,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.5395,
-        "lng": 104.91741,
+        "lat": 11.537,
+        "lng": 104.91554,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7099,7 +7103,7 @@
       "id": "prospect_s026",
       "displayName": "Monivong Pharmacy",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "healthcare",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -7118,8 +7122,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53985,
-        "lng": 104.91576,
+        "lat": 11.54292,
+        "lng": 104.91492,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7228,8 +7232,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.53867,
-        "lng": 104.9158,
+        "lat": 11.53901,
+        "lng": 104.91478,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7319,7 +7323,7 @@
       "id": "prospect_s028",
       "displayName": "Orchid Coffee",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "food_beverage",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -7338,8 +7342,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54117,
-        "lng": 104.91404,
+        "lat": 11.53539,
+        "lng": 104.91667,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7429,7 +7433,7 @@
       "id": "prospect_s029",
       "displayName": "Bassac Tire Shop",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "automotive",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -7448,8 +7452,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.5352,
-        "lng": 104.91702,
+        "lat": 11.53602,
+        "lng": 104.91795,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7539,7 +7543,7 @@
       "id": "prospect_s030",
       "displayName": "Morning Star Pharmacy",
       "entityType": "business",
-      "sector": "retail",
+      "sector": "healthcare",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -7558,8 +7562,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.54334,
-        "lng": 104.91555,
+        "lat": 11.53651,
+        "lng": 104.91531,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7665,8 +7669,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58416,
-        "lng": 104.89958,
+        "lat": 11.58638,
+        "lng": 104.89855,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7753,7 +7757,7 @@
       "id": "prospect_s032",
       "displayName": "Sunrise Salon",
       "entityType": "business",
-      "sector": "food_beverage",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -7772,8 +7776,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58878,
-        "lng": 104.89567,
+        "lat": 11.58434,
+        "lng": 104.90285,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7879,8 +7883,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58675,
-        "lng": 104.8949,
+        "lat": 11.58394,
+        "lng": 104.89672,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -7986,8 +7990,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58872,
-        "lng": 104.89644,
+        "lat": 11.57899,
+        "lng": 104.89846,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8093,8 +8097,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57706,
-        "lng": 104.89993,
+        "lat": 11.58292,
+        "lng": 104.89809,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8200,8 +8204,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58153,
-        "lng": 104.89932,
+        "lat": 11.58419,
+        "lng": 104.90009,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8307,8 +8311,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58109,
-        "lng": 104.90621,
+        "lat": 11.58442,
+        "lng": 104.89847,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8414,8 +8418,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58326,
-        "lng": 104.89356,
+        "lat": 11.58639,
+        "lng": 104.89348,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8521,8 +8525,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58972,
-        "lng": 104.89651,
+        "lat": 11.57971,
+        "lng": 104.8984,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8609,7 +8613,7 @@
       "id": "prospect_s040",
       "displayName": "Bayon Salon",
       "entityType": "business",
-      "sector": "food_beverage",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -8628,8 +8632,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58011,
-        "lng": 104.90475,
+        "lat": 11.58735,
+        "lng": 104.89397,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8738,8 +8742,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57832,
-        "lng": 104.90211,
+        "lat": 11.58592,
+        "lng": 104.89746,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8829,7 +8833,7 @@
       "id": "prospect_s042",
       "displayName": "Morning Star Guesthouse",
       "entityType": "business",
-      "sector": "food_beverage",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -8848,8 +8852,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58612,
-        "lng": 104.89486,
+        "lat": 11.57989,
+        "lng": 104.90355,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -8958,8 +8962,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58547,
-        "lng": 104.89985,
+        "lat": 11.58735,
+        "lng": 104.89915,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9049,7 +9053,7 @@
       "id": "prospect_s044",
       "displayName": "Riverside Guesthouse",
       "entityType": "business",
-      "sector": "food_beverage",
+      "sector": "services",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -9068,8 +9072,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58385,
-        "lng": 104.90075,
+        "lat": 11.58758,
+        "lng": 104.89532,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9178,8 +9182,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58539,
-        "lng": 104.89541,
+        "lat": 11.58882,
+        "lng": 104.89739,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9285,8 +9289,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57223,
-        "lng": 104.89122,
+        "lat": 11.58025,
+        "lng": 104.88832,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9392,8 +9396,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57352,
-        "lng": 104.89799,
+        "lat": 11.5763,
+        "lng": 104.89788,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9480,7 +9484,7 @@
       "id": "prospect_s048",
       "displayName": "Silk Road Tuition Centre",
       "entityType": "business",
-      "sector": "services",
+      "sector": "education",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -9499,8 +9503,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57711,
-        "lng": 104.89272,
+        "lat": 11.57397,
+        "lng": 104.89772,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9606,8 +9610,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57223,
-        "lng": 104.89032,
+        "lat": 11.57753,
+        "lng": 104.89599,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9694,7 +9698,7 @@
       "id": "prospect_s050",
       "displayName": "Naga Tuition Centre",
       "entityType": "business",
-      "sector": "services",
+      "sector": "education",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -9713,8 +9717,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57625,
-        "lng": 104.90257,
+        "lat": 11.57521,
+        "lng": 104.90332,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9820,8 +9824,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58166,
-        "lng": 104.8905,
+        "lat": 11.57607,
+        "lng": 104.90225,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -9908,7 +9912,7 @@
       "id": "prospect_s052",
       "displayName": "Riverside Tuition Centre",
       "entityType": "business",
-      "sector": "services",
+      "sector": "education",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -9927,8 +9931,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57478,
-        "lng": 104.89018,
+        "lat": 11.57445,
+        "lng": 104.89419,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10034,8 +10038,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57362,
-        "lng": 104.89723,
+        "lat": 11.57343,
+        "lng": 104.89245,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10141,8 +10145,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57409,
-        "lng": 104.90029,
+        "lat": 11.57442,
+        "lng": 104.8943,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10248,8 +10252,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57989,
-        "lng": 104.89414,
+        "lat": 11.5729,
+        "lng": 104.88963,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10358,8 +10362,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57714,
-        "lng": 104.89219,
+        "lat": 11.58074,
+        "lng": 104.89165,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10468,8 +10472,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57772,
-        "lng": 104.89499,
+        "lat": 11.57213,
+        "lng": 104.89453,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10559,7 +10563,7 @@
       "id": "prospect_s058",
       "displayName": "Lucky Star Tuition Centre",
       "entityType": "business",
-      "sector": "services",
+      "sector": "education",
       "borrowerType": "individual",
       "isSynthetic": true,
       "assignmentOfficerId": "officer_001",
@@ -10578,8 +10582,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.58066,
-        "lng": 104.89057,
+        "lat": 11.5749,
+        "lng": 104.89677,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10688,8 +10692,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.57154,
-        "lng": 104.88882,
+        "lat": 11.57327,
+        "lng": 104.89784,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {
@@ -10798,8 +10802,8 @@
         "isApproximate": true
       },
       "location": {
-        "lat": 11.5855,
-        "lng": 104.88995,
+        "lat": 11.57632,
+        "lng": 104.90113,
         "accuracy": "synthetic_approximate"
       },
       "businessProfile": {

@@ -22,7 +22,8 @@ import {
   loadEvidenceConfig,
   loadEvidenceSample,
 } from './area-codes.mjs';
-import { buildEvidencePack, pickPulse } from './evidence.mjs';
+import { areaScore, buildEvidencePack, pickPulse } from './evidence.mjs';
+import { applyPriorities } from './prospect-priority.mjs';
 import { checkAskInput, compareTarget } from './radar-ask.mjs';
 
 /**
@@ -48,6 +49,9 @@ export function createWorkspace(rawData, options = {}) {
       communeName: at?.communeName ?? null,
     });
   }
+
+  // Visit priority from each prospect's own evidence, ranked per officer.
+  applyPriorities(db, meta.fixedClock ? meta.asOf : new Date().toISOString());
 
   // "Now" is metadata.asOf when fixedClock is set (spec §3). Real elapsed time
   // is added so actions recorded in one session keep their order.
@@ -80,13 +84,28 @@ export function createWorkspace(rawData, options = {}) {
     return ids;
   }
 
-  /** Assigned to this officer AND inside their territory — both, not either. */
-  function visibleProspects(officerId) {
+  /**
+   * Official commune codes of the officer's territory (address.json codes, via
+   * each seed area's officialCode). Territory always joins by code, never name.
+   */
+  function territoryCommuneCodes(officerId) {
     const area = territoryAreaIds(officerId);
+    return new Set(
+      db.administrativeAreas
+        .filter((a) => a.level === 'commune' && area.has(a.id) && a.officialCode)
+        .map((a) => a.officialCode),
+    );
+  }
+
+  /**
+   * Assigned to this officer AND inside their territory — both, not either.
+   * "Inside" is the sangkat the prospect's pin is in, by official code, so the
+   * list, map, Today and counts all agree with the Profile's territory.
+   */
+  function visibleProspects(officerId) {
+    const codes = territoryCommuneCodes(officerId);
     return db.prospects.filter(
-      (p) =>
-        p.assignmentOfficerId === officerId &&
-        (p.territoryPathIds ?? []).some((id) => area.has(id)),
+      (p) => p.assignmentOfficerId === officerId && codes.has(p.address.communeCode),
     );
   }
 
@@ -216,8 +235,8 @@ export function createWorkspace(rawData, options = {}) {
   function packFor(code, loanType, officerId) {
     const commune = communeInfo(code);
     const sample = loadEvidenceSample();
-    const score = areaDemand().communes[code]?.score?.[loanType];
-    if (!commune || score === undefined || !sample.communes[code]) return null;
+    const oldScore = areaDemand().communes[code]?.score?.[loanType];
+    if (!commune || !sample.communes[code]) return null;
     const leads = leadsIn(code, officerId);
     const key = [code, loanType, sample.scanDate, leads.map((l) => l.prospectId).join(',')].join(
       '|',
@@ -229,7 +248,7 @@ export function createWorkspace(rawData, options = {}) {
           code,
           loanType,
           commune,
-          score,
+          oldScore,
           sample,
           config: loadEvidenceConfig(),
           leads,
@@ -246,6 +265,35 @@ export function createWorkspace(rawData, options = {}) {
       if (key.endsWith(`|${code}|${loanType}|${scanDate}`)) counts[f.verdict] += 1;
     }
     return counts;
+  }
+
+  /**
+   * /area-demand with the sangkats that have evidence scored from it
+   * (areaScore), so the map shows the same number as "Why this score".
+   */
+  function demandWithEvidence(province) {
+    const data = areaDemand(province);
+    const sample = loadEvidenceSample();
+    const config = loadEvidenceConfig();
+    const today = now().slice(0, 10);
+    const communes = { ...data.communes };
+    for (const [code, facts] of Object.entries(sample.communes)) {
+      if (!communes[code]) continue;
+      const score = { ...communes[code].score };
+      for (const t of LOAN_TYPES) {
+        if (t in score) {
+          score[t] = areaScore({
+            facts,
+            sample,
+            loanType: t,
+            today,
+            staleAfterDays: config.staleAfterDays,
+          }).score;
+        }
+      }
+      communes[code] = { ...communes[code], score, basis: 'evidence' };
+    }
+    return { ...data, communes };
   }
 
   function evidenceFor(code, loanType, officerId) {
@@ -343,7 +391,7 @@ export function createWorkspace(rawData, options = {}) {
     }
     // Predicted loan demand per commune. Sample data until the model's output lands.
     if (path === '/area-demand' && method === 'GET') {
-      sendJson(200, areaDemand(url.searchParams.get('province')));
+      sendJson(200, demandWithEvidence(url.searchParams.get('province')));
       return true;
     }
 

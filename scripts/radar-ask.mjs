@@ -20,7 +20,8 @@ import {
 import {
   askClaude,
   askGemini,
-  describeFailure,
+  AI_OFFLINE_NOTICE,
+  logAiFailure,
   findSensitive,
   pickProvider,
 } from './mock-coach.mjs';
@@ -171,7 +172,8 @@ export function createRadarAsk(cfg, { log = (e) => console.log(JSON.stringify(e)
         // Never dead-end a demo: answer from the evidence and say why.
         result = offlineAnswer(question, pack, comparePack);
         source = 'offline';
-        notice = `AI unavailable (${describeFailure(err)}) — answer built from the evidence.`;
+        logAiFailure('ask_radar', err);
+        notice = AI_OFFLINE_NOTICE;
       }
     }
 

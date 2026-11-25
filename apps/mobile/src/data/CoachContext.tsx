@@ -77,8 +77,11 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
       } catch (e) {
         // Refused or failed: take the message back out so the chat stays a valid
         // user/assistant alternation, and show why under the input.
+        // Only our own validation messages are shown; anything else stays generic.
         const error =
-          e instanceof ApiError || e instanceof Error ? e.message : 'Could not reach the coach';
+          e instanceof ApiError && [400, 422, 429].includes(e.status)
+            ? e.message
+            : "Couldn't reach the coach. Try again.";
         update(prospectId, (c) => ({
           sending: false,
           error,

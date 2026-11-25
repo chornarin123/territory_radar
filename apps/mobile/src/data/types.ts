@@ -88,6 +88,11 @@ export interface Prospect {
     factors: PriorityFactors;
     maxPoints: PriorityFactors;
     explanation: string;
+    /** Sum of the factor points, before ranking within the officer's prospects. */
+    rawScore?: number;
+    /** 1 = highest raw score among the officer's prospects. */
+    rank?: number;
+    rankOf?: number;
   };
   signalIds: string[];
   recommendedProductIds: string[];
@@ -215,6 +220,8 @@ export interface AdministrativeArea {
   nameEn: string;
   nameKm: string;
   parentId: string | null;
+  /** Official commune/district/province code (address.json). Join on this, not the name. */
+  officialCode?: string | null;
 }
 
 export interface Officer {
