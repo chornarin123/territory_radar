@@ -99,7 +99,7 @@ export interface FilterState {
   pinned: boolean;
   /** Set by the "Needs checking" quick view: flagged or stale prospects only. */
   needsCheck: boolean;
-  /** Only leads first seen since the last scan (Today's "New to review"). */
+  /** Only leads first seen since the last scan (Today's "New since last scan"). */
   newLeads: boolean;
   sort: SortKey;
 }

@@ -104,3 +104,6 @@ export const PRIORITY_FACTOR_LABEL = {
 
 /** "Business Expansion — DEMO" → "Business Expansion". */
 export const productShortName = (name: string) => name.replace(/\s+—\s+DEMO$/, '');
+
+/** The one sample-data notice, word for word wherever it shows. */
+export const SAMPLE_NOTICE = 'Sample data — prospects, scans and area scores are synthetic';

@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createWorkspace } from './mock-workspace.mjs';
-import { createCoach, loadCoachEnv, pickProvider } from './mock-coach.mjs';
+import { checkAi, createCoach, loadCoachEnv, pickProvider } from './mock-coach.mjs';
 import { createRadarAsk } from './radar-ask.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,6 +43,8 @@ const coachProvider = {
   gemini: `Gemini ${coachEnv.geminiModel}`,
   offline: coachEnv.killSwitch ? 'offline (KILL_SWITCH)' : 'offline (no AI key)',
 }[pickProvider(coachEnv)];
+/** Last /health/ai result, reused for 30 s. */
+let aiHealth = null;
 const workspace = createWorkspace(rawData, {
   coach: createCoach(coachEnv),
   radar: createRadarAsk(coachEnv),
@@ -225,6 +227,17 @@ const server = http.createServer(async (req, res) => {
   };
 
   if (await workspace.handle(req, res, url, sendJson)) return;
+
+  // Route: AI health — one real test prompt. Cached 30 s so it can't be used to burn quota.
+  if (pathname === '/health/ai') {
+    if (!aiHealth || Date.now() - aiHealth.at > 30_000) {
+      aiHealth = { at: Date.now(), result: await checkAi(coachEnv) };
+    }
+    return sendJson(aiHealth.result.ok ? 200 : 503, {
+      ...aiHealth.result,
+      checkedAt: new Date(aiHealth.at).toISOString(),
+    });
+  }
 
   // Route: Health
   if (pathname === '/health') {

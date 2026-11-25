@@ -162,13 +162,24 @@ describe('stage and distance', () => {
     expect(signalCategory('imports')).toBe('STOCK & TRADE');
     expect(signalCategory('housing_project')).toBe('HOUSING');
     expect(signalCategory('new_employer')).toBe('EMPLOYER');
-    const v = views.find((x) => !x.p.location)!;
+    // Every seed prospect has a pin now: make one without.
+    const v = { ...views[0]!, p: { ...views[0]!.p, location: null } };
     expect(metaLine(v, null)).toMatch(/· no map pin$/);
   });
 });
 
 describe('tabs, sections, sorting', () => {
-  const rows = buildRows(views, ctx({ visitTimes: new Map([[views[0]!.id, '10:00']]) }), branch);
+  // Plus one prospect without a map pin, for "no pin last".
+  const pinless = {
+    ...views[1]!,
+    id: 'pinless',
+    p: { ...views[1]!.p, id: 'pinless', location: null },
+  };
+  const rows = buildRows(
+    [...views, pinless],
+    ctx({ visitTimes: new Map([[views[0]!.id, '10:00']]) }),
+    branch,
+  );
 
   it('lists each prospect once in All, with today winning', () => {
     const groups = sections(rows, 'all', 'priority');
@@ -184,6 +195,17 @@ describe('tabs, sections, sorting', () => {
     expect(counts.today).toBe(rows.filter((r) => r.today).length);
     expect(counts.closed).toBe(rows.filter((r) => inTab(r, 'closed')).length);
     expect(sections(rows, 'new', 'priority')[0]!.data).toHaveLength(counts.new);
+  });
+
+  it('agrees between tabs and the All sections: every prospect counted once', () => {
+    const counts = tabCounts(rows);
+    const all = sections(rows, 'all', 'priority');
+    for (const g of all) {
+      expect(g.data).toHaveLength(counts[g.key as keyof typeof counts]);
+    }
+    const inSections = all.reduce((n, g) => n + g.data.length, 0);
+    expect(inSections).toBe(counts.all);
+    expect(counts.today + counts.new + counts.working + counts.referred).toBe(counts.all);
   });
 
   it('sorts by priority then km, by km with no pin last, or by name', () => {

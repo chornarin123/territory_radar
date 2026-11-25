@@ -30,6 +30,8 @@ export interface CommuneDemand {
   score: Record<LoanType, number>;
   /** % share of the commune's own predicted demand; sums to 100. */
   mix: Record<LoanType, number>;
+  /** 'evidence': scored from public signals against the city median (see "Why this score"). */
+  basis?: 'evidence';
 }
 
 export interface AreaDemand {
@@ -61,6 +63,49 @@ export const binOf = (score: number) => Math.min(4, Math.max(0, Math.floor(score
 export const fillFor = (score: number) => BIN_COLORS[binOf(score)];
 /** White text on the two darkest bins, navy on the rest. */
 export const lightTextOn = (score: number) => binOf(score) >= 3;
+
+/**
+ * Colours by quintile of the scores on the map, so each shade holds about a
+ * fifth of the areas and real differences show even when scores bunch up.
+ */
+export interface ColorScale {
+  /** Upper bounds of bins 0–3; bin 4 is everything above. */
+  breaks: number[];
+  min: number;
+  max: number;
+  bin: (score: number) => number;
+  fill: (score: number) => string;
+  light: (score: number) => boolean;
+}
+
+export function quantileScale(scores: number[]): ColorScale {
+  const v = scores.filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
+  if (!v.length) {
+    return {
+      breaks: [20, 40, 60, 80],
+      min: 0,
+      max: 100,
+      bin: binOf,
+      fill: fillFor,
+      light: lightTextOn,
+    };
+  }
+  const at = (q: number) => v[Math.min(v.length - 1, Math.floor(q * v.length))]!;
+  // A score equal to a break goes in the lower bin, so a bin is never empty for ties.
+  const breaks = [0.2, 0.4, 0.6, 0.8].map(at);
+  const bin = (score: number) => {
+    const i = breaks.findIndex((b) => score < b);
+    return i === -1 ? 4 : i;
+  };
+  return {
+    breaks,
+    min: v[0]!,
+    max: v[v.length - 1]!,
+    bin,
+    fill: (score) => BIN_COLORS[bin(score)],
+    light: (score) => bin(score) >= 3,
+  };
+}
 
 // ─── Names ───────────────────────────────────────────────────────────────────
 
@@ -154,8 +199,16 @@ export const mixBarWidth = (pct: number) => Math.max(0, Math.min(100, pct));
  * What a score means in words. A score ranks this loan type's share of an area's
  * demand (`pct`) against its share in every commune in Cambodia.
  */
-export function scoreMeaning(score: number, pct: number, label: string): string {
+export function scoreMeaning(
+  score: number,
+  pct: number,
+  label: string,
+  basis?: 'evidence',
+): string {
   const share = `${label} is ${pct}% of predicted loan demand here`;
+  if (basis === 'evidence') {
+    return `${share}. The score compares local signals with the city: 50 is a sangkat at the median on every one, higher means stronger signals.`;
+  }
   if (score >= 100) return `${share}, one of the biggest shares of any area in Cambodia.`;
   if (score <= 0) return `${share}, one of the smallest shares of any area in Cambodia.`;
   return `${share}, a bigger share than in ${score}% of areas in Cambodia.`;

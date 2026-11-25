@@ -13,8 +13,7 @@ import {
   averageScore,
   communesIn,
   demandScope,
-  fillFor,
-  lightTextOn,
+  quantileScale,
   mixBarWidth,
   scoreMeaning,
   mixRows,
@@ -88,6 +87,12 @@ export function AreaDemand({
   const selected = selectedCode ? tree.byCode.get(selectedCode)! : null;
   const rank = ranked.findIndex((r) => r.node.code === selectedCode) + 1;
 
+  // Shades by quintile of every sangkat on the map for this loan type.
+  const scale = useMemo(
+    () => quantileScale(data ? Object.values(data.demand.communes).map((d) => d.score[type]) : []),
+    [data, type],
+  );
+
   const choropleth = useMemo<MapChoropleth | null>(() => {
     if (!data) return null;
     const scores = data.demand.communes;
@@ -101,7 +106,7 @@ export function AreaDemand({
       lng: r.node.lng,
       name: shortName(r.node.name_en),
       score: r.score,
-      light: lightTextOn(r.score),
+      light: scale.light(r.score),
       minZoom,
     });
     // The provinces around this one, by their average score, so zooming out
@@ -113,7 +118,7 @@ export function AreaDemand({
         return {
           code: f.properties.code,
           geometry: f.geometry,
-          fill: s !== undefined ? fillFor(s) : OUTSIDE_COLOR,
+          fill: s !== undefined ? scale.fill(s) : OUTSIDE_COLOR,
           faded: true,
         };
       });
@@ -126,7 +131,7 @@ export function AreaDemand({
             code: f.properties.code,
             geometry: f.geometry,
             // Every sangkat in its own blue; those outside the khan are faded.
-            fill: s !== undefined ? fillFor(s) : OUTSIDE_COLOR,
+            fill: s !== undefined ? scale.fill(s) : OUTSIDE_COLOR,
             faded: !inside(f.properties.code),
           };
         }),
@@ -138,7 +143,7 @@ export function AreaDemand({
           code: n.code,
           lat: n.lat,
           lng: n.lng,
-          fill: fillFor(scores[n.code]!.score[type]),
+          fill: scale.fill(scores[n.code]!.score[type]),
         })),
       outline: isKhan
         ? (data.outlines.features.find((f) => f.properties.code === scope.code)?.geometry ?? null)
@@ -163,7 +168,7 @@ export function AreaDemand({
                       lng: k.lng,
                       name: shortName(k.name_en),
                       score: avg,
-                      light: lightTextOn(avg),
+                      light: scale.light(avg),
                       maxZoom: SANGKAT_LABEL_ZOOM - 1,
                     },
                   ];
@@ -175,7 +180,7 @@ export function AreaDemand({
         tree,
       )!,
     };
-  }, [data, scope, inScope, isKhan, ranked, selectedCode, tree, type, province]);
+  }, [data, scope, inScope, isKhan, ranked, selectedCode, tree, type, province, scale]);
 
   // Frame the scope when it changes, or once its data arrives.
   const fitKey = `${scope.code}|${data ? 1 : 0}`;
@@ -253,12 +258,16 @@ export function AreaDemand({
             {scopeTitle} · {countOf(inScope.length, 'commune', scope.code)}
           </Txt>
         </View>
-        <View style={s.legend} accessibilityLabel="Score from 0 to 100, darker is higher">
-          <Txt style={s.legendText}>0</Txt>
+        <View
+          style={s.legend}
+          accessibilityLabel={`Five equal groups of ${unit}s, from ${scale.min} to ${scale.max}; darker is higher`}
+        >
+          <Txt style={s.legendText}>{scale.min}</Txt>
           {BIN_COLORS.map((c) => (
             <View key={c} style={[s.swatch, { backgroundColor: c }]} />
           ))}
-          <Txt style={s.legendText}>100</Txt>
+          <Txt style={s.legendText}>{scale.max}</Txt>
+          <Txt style={s.legendNote}>· 5 equal groups</Txt>
         </View>
       </View>
 
@@ -314,7 +323,9 @@ export function AreaDemand({
                   <Txt style={s.meta}>vs other {unit}s</Txt>
                 </View>
               </View>
-              <Txt style={s.explain}>{scoreMeaning(d.score[type], d.mix[type], label)}</Txt>
+              <Txt style={s.explain}>
+                {scoreMeaning(d.score[type], d.mix[type], label, d.basis)}
+              </Txt>
 
               <Txt style={s.section}>Loan mix in this {unit} · share of demand</Txt>
               {mixRows(d).map((row) => {
@@ -457,6 +468,7 @@ const s = StyleSheet.create({
   crumbHere: { flexShrink: 1, fontFamily: font.bold, fontSize: 13, color: color.text },
   legend: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   legendText: { fontFamily: font.mono, fontSize: 10, color: C.label },
+  legendNote: { fontFamily: font.regular, fontSize: 10, color: C.label },
   swatch: { width: 14, height: 10, borderRadius: 2 },
   map: { height: 290, backgroundColor: NO_TILES_BG },
   stack: { flex: 1 },

@@ -152,21 +152,19 @@ export function buildRows(
   });
 }
 
+/**
+ * The one group a prospect belongs to: closed, else "action today", else its
+ * stage. Tabs, the All view's sections and every count use this, so a lead
+ * that needs action today is counted there and nowhere else.
+ */
+export function bucketOf(r: ProspectRow): Exclude<ProspectTab, 'all'> {
+  if (r.stage === 'closed') return 'closed';
+  if (r.today) return 'today';
+  return r.stage;
+}
+
 export function inTab(r: ProspectRow, tab: ProspectTab): boolean {
-  switch (tab) {
-    case 'all':
-      return r.stage !== 'closed';
-    case 'today':
-      return r.today;
-    case 'new':
-      return r.stage === 'new';
-    case 'working':
-      return r.stage === 'working';
-    case 'referred':
-      return r.stage === 'referred';
-    case 'closed':
-      return r.stage === 'closed';
-  }
+  return tab === 'all' ? r.stage !== 'closed' : bucketOf(r) === tab;
 }
 
 export const TAB_LABEL: Record<ProspectTab, string> = {
@@ -221,31 +219,31 @@ export function sections(rows: readonly ProspectRow[], tab: ProspectTab, sort: S
     );
     return data.length ? [{ key: tab, title: TAB_LABEL[tab], hint: null, data }] : [];
   }
-  const live = rows.filter((r) => r.stage !== 'closed');
+  const live = rows.filter((r) => inTab(r, 'all'));
   const groups: Section[] = [
     {
       key: 'today',
       title: 'Needs action today',
       hint: 'Do these first',
-      data: live.filter((r) => r.today),
+      data: live.filter((r) => inTab(r, 'today')),
     },
     {
       key: 'new',
-      title: 'New to review',
+      title: 'New',
       hint: 'First contact',
-      data: live.filter((r) => !r.today && r.stage === 'new'),
+      data: live.filter((r) => inTab(r, 'new')),
     },
     {
       key: 'working',
       title: 'In progress',
       hint: null,
-      data: live.filter((r) => !r.today && r.stage === 'working'),
+      data: live.filter((r) => inTab(r, 'working')),
     },
     {
       key: 'referred',
       title: 'Referred',
       hint: 'Waiting on application',
-      data: live.filter((r) => !r.today && r.stage === 'referred'),
+      data: live.filter((r) => inTab(r, 'referred')),
     },
   ];
   return groups.filter((g) => g.data.length).map((g) => ({ ...g, data: sortRows(g.data, sort) }));

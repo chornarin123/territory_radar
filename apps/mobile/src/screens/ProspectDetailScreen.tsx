@@ -140,6 +140,12 @@ export function ProspectDetailScreen({ route, navigation }: RootScreenProps<'Pro
             </View>
           );
         })}
+        {p.priority.rawScore !== undefined && p.priority.rank !== undefined ? (
+          <Txt style={s.prioritySub}>
+            Evidence points {p.priority.rawScore}/100 · #{p.priority.rank} of {p.priority.rankOf} in
+            your territory, so priority {p.priority.score}
+          </Txt>
+        ) : null}
       </View>
 
       {/* Signals & evidence */}

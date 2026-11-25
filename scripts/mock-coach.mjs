@@ -20,8 +20,16 @@ import Anthropic from '@anthropic-ai/sdk';
 
 // The reference default for new Claude code. Override with COACH_CLAUDE_MODEL.
 const CLAUDE_MODEL = 'claude-opus-5-5';
-// Same default as review mining (apps/api review-mining.schema.ts).
-const GEMINI_MODEL = 'gemini-2.5-flash';
+// Gemini model. Override with AI_MODEL. gemini-2.5-flash was retired for new
+// keys (404), so the default is one confirmed against the models list on
+// 2026-11-25. Run `node scripts/check-ai.mjs` after changing it.
+export const GEMINI_MODEL = 'gemini-3.5-flash';
+// Tried once when the main model is retired, overloaded or rate-limited.
+export const GEMINI_FALLBACK_MODEL = 'gemini-flash-latest';
+
+/** What the app shows when the AI call fails. The real error goes to the server log. */
+export const AI_OFFLINE_NOTICE =
+  "AI is temporarily offline — here's a summary from the evidence on this screen.";
 
 const MAX_MESSAGES = 20;
 const MAX_CHARS = 2000;
@@ -43,7 +51,8 @@ export function loadCoachEnv(envFile, env = process.env) {
     geminiKey: get('GEMINI_API_KEY'),
     provider: get('COACH_PROVIDER') || get('AI_PROVIDER'),
     claudeModel: get('COACH_CLAUDE_MODEL') || CLAUDE_MODEL,
-    geminiModel: get('COACH_GEMINI_MODEL') || GEMINI_MODEL,
+    geminiModel: get('AI_MODEL') || get('COACH_GEMINI_MODEL') || GEMINI_MODEL,
+    geminiFallbackModel: get('AI_FALLBACK_MODEL') || GEMINI_FALLBACK_MODEL,
     killSwitch: get('KILL_SWITCH').toLowerCase() === 'true',
   };
 }
@@ -132,9 +141,31 @@ export async function askClaude(cfg, system, messages, { jsonSchema } = {}) {
   return { reply, model: response.model };
 }
 
-/** `json`: ask for a JSON reply. */
-export async function askGemini(cfg, system, messages, { json = false } = {}) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.geminiModel)}:generateContent`;
+/**
+ * `json`: ask for a JSON reply. If the model is retired (404), overloaded (503)
+ * or rate-limited (429), tries cfg.geminiFallbackModel once.
+ */
+export async function askGemini(cfg, system, messages, opts = {}) {
+  try {
+    return await askGeminiModel(cfg, cfg.geminiModel, system, messages, opts);
+  } catch (err) {
+    const fallback = cfg.geminiFallbackModel;
+    if (!fallback || fallback === cfg.geminiModel || ![404, 429, 503].includes(err.status))
+      throw err;
+    console.error(
+      JSON.stringify({
+        event: 'ai_model_fallback',
+        from: cfg.geminiModel,
+        to: fallback,
+        error: err.message,
+      }),
+    );
+    return askGeminiModel(cfg, fallback, system, messages, opts);
+  }
+}
+
+async function askGeminiModel(cfg, model, system, messages, { json = false } = {}) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': cfg.geminiKey },
@@ -158,7 +189,9 @@ export async function askGemini(cfg, system, messages, { json = false } = {}) {
     } catch {
       // raw text
     }
-    throw new Error(`Gemini ${res.status}: ${detail}`);
+    throw Object.assign(new Error(`Gemini ${model} ${res.status}: ${detail}`), {
+      status: res.status,
+    });
   }
   const data = await res.json();
   const cand = data.candidates?.[0];
@@ -166,7 +199,7 @@ export async function askGemini(cfg, system, messages, { json = false } = {}) {
   if (cand.finishReason === 'SAFETY' || cand.finishReason === 'RECITATION') {
     return {
       reply: 'I can’t help with that one. Try rephrasing the question about the conversation.',
-      model: cfg.geminiModel,
+      model,
     };
   }
   const reply = (cand.content?.parts ?? [])
@@ -174,17 +207,62 @@ export async function askGemini(cfg, system, messages, { json = false } = {}) {
     .join('')
     .trim();
   if (!reply) throw new Error('Gemini returned an empty answer');
-  return { reply, model: cfg.geminiModel };
+  return { reply, model };
 }
 
-/** Readable reason for a failed call, without leaking keys or stack traces. */
-export function describeFailure(err) {
-  if (err instanceof Anthropic.AuthenticationError) return 'the Claude API key was rejected';
-  if (err instanceof Anthropic.PermissionDeniedError) return 'the Claude API key lacks permission';
-  if (err instanceof Anthropic.RateLimitError) return 'Claude is rate-limited right now';
-  if (err instanceof Anthropic.APIConnectionError) return 'no connection to Claude';
-  if (err instanceof Anthropic.APIError) return `Claude returned ${err.status}`;
-  return err instanceof Error ? err.message.slice(0, 160) : 'the AI call failed';
+/**
+ * Writes a failed AI call to the server log in full. The app never sees this:
+ * it gets AI_OFFLINE_NOTICE. Keys are never part of the message.
+ */
+export function logAiFailure(where, err) {
+  console.error(
+    JSON.stringify({
+      event: 'ai_failure',
+      where,
+      status: err?.status ?? null,
+      error: err instanceof Error ? err.message : String(err),
+    }),
+  );
+}
+
+/**
+ * Sends one tiny test prompt through the configured provider. For the
+ * /health/ai endpoint and scripts/check-ai.mjs, to confirm AI works before a demo.
+ */
+export async function checkAi(cfg) {
+  const provider = pickProvider(cfg);
+  if (provider === 'offline') {
+    return {
+      ok: false,
+      provider,
+      model: null,
+      error: cfg.killSwitch ? 'KILL_SWITCH is on' : 'no AI key set',
+    };
+  }
+  const started = Date.now();
+  const messages = [{ role: 'user', content: 'Reply with the single word: ok' }];
+  try {
+    const { reply, model } =
+      provider === 'claude'
+        ? await askClaude(cfg, 'You are a health check.', messages)
+        : await askGemini(cfg, 'You are a health check.', messages);
+    return {
+      ok: true,
+      provider,
+      model,
+      reply: reply.slice(0, 40),
+      latencyMs: Date.now() - started,
+    };
+  } catch (err) {
+    logAiFailure('health_check', err);
+    return {
+      ok: false,
+      provider,
+      model: provider === 'claude' ? cfg.claudeModel : cfg.geminiModel,
+      error: err instanceof Error ? err.message.slice(0, 200) : 'AI call failed',
+      latencyMs: Date.now() - started,
+    };
+  }
 }
 
 /**
@@ -277,14 +355,15 @@ export function createCoach(cfg) {
           : await askGemini(cfg, system, messages);
       return { status: 200, body: { reply: plainText(reply), source: provider, model } };
     } catch (err) {
-      // Never dead-end a demo: fall back to the offline coach and say why.
+      // Never dead-end a demo: fall back to the offline coach. Details go to the log only.
+      logAiFailure('coach', err);
       return {
         status: 200,
         body: {
           reply: offlineReply(firstQuestion, ctx),
           source: 'offline',
           model: null,
-          notice: `AI unavailable (${describeFailure(err)}) — offline coach.`,
+          notice: "AI is temporarily offline — here's coaching built from this prospect's data.",
         },
       };
     }
